@@ -32,17 +32,6 @@
 
 <br />
 
-<h3 align="center">🚀 Research & Projects</h3>
-
-| **Key Projects** | **Description** |
-| :--- | :--- |
-| 🛡️ **KAVACH** | A CAD framework for zero-knowledge logic obfuscation integration and adversarial evaluation |
-| 🔓 **ULTRONE** | A novel logic locking attack technique achieving 100% key recovery benchmarks |
-| ⚡ **DyLock** | Dynamic key-based locking technique resilient to SAT and structural attacks  |
-| 🧠 **SHAKTI** | Cascade Gated Multiplexer-based obfuscation scheme |
-
-<br />
-
 <h3 align="center">🛠️ Technical Arsenal</h3>
 
 <div align="center">
