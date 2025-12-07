@@ -47,18 +47,34 @@
 
 <div align="center">
 
+  <b>Languages & Scripting</b><br/>
   <img src="https://img.shields.io/badge/VHDL-0071e3?style=for-the-badge&logo=statuspage&logoColor=white" />
   <img src="https://img.shields.io/badge/Verilog-555555?style=for-the-badge&logo=statuspage&logoColor=white" />
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/TCL_Scripting-A8B9CC?style=for-the-badge&logo=terminal&logoColor=black" />
-  <img src="https://img.shields.io/badge/C?style=for-the-badge&logo=c&logoColor=white" />
+  <img src="https://img.shields.io/badge/TCL-A8B9CC?style=for-the-badge&logo=terminal&logoColor=black" />
+  <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white" />
+  
+  <br/><br/>
 
-  <br/>
+  <b>ASIC & EDA Environments</b><br/>
+  <img src="https://img.shields.io/badge/Design_Compiler-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
+  <img src="https://img.shields.io/badge/IC_Compiler_II-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
+  <img src="https://img.shields.io/badge/StarRC-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
+  <img src="https://img.shields.io/badge/PrimeTime--PX-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
 
+  <br/><br/>
+
+  <b>FPGA Tools</b><br/>
   <img src="https://img.shields.io/badge/Xilinx_Vivado-FF3E00?style=for-the-badge&logo=xilinx&logoColor=white" />
-  <img src="https://img.shields.io/badge/Synopsys_DC-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
-  <img src="https://img.shields.io/badge/MATLAB-e16737?style=for-the-badge&logo=mathworks&logoColor=white" />
-  <img src="https://img.shields.io/badge/FPGA_Zynq-000000?style=for-the-badge&logo=amd&logoColor=white" />
+  <img src="https://img.shields.io/badge/Xilinx_ISE-FF3E00?style=for-the-badge&logo=xilinx&logoColor=white" />
+  <img src="https://img.shields.io/badge/ModelSim-1e3799?style=for-the-badge&logo=intel&logoColor=white" />
+  
+  <br/><br/>
+
+  <b>CMOS Technology Nodes</b><br/>
+  <img src="https://img.shields.io/badge/TSMC_28nm-333333?style=for-the-badge&logo=tsmc&logoColor=white" />
+  <img src="https://img.shields.io/badge/UMC_65nm-333333?style=for-the-badge&logo=umc&logoColor=white" />
+  <img src="https://img.shields.io/badge/SCL_180nm-333333?style=for-the-badge&logo=microchip&logoColor=white" />
 
 </div>
 
