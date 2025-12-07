@@ -147,17 +147,35 @@ body, .sidebar, .glass-card, .skill-pill, .status-badge, .chat-window, .nav-menu
     display: none;
 }
 
+/* --- UPDATED TRACK (Light to Dark Gradient) --- */
 .slider {
-    background-color: #e4e4e4; /* Light Mode Track */
+    /* Gradient from Light Gray (Left) to Deep Dark (Right) */
+    background: linear-gradient(to right, #dcdcdc 0%, #2c2c2e 100%); 
+    
     bottom: 0;
     cursor: pointer;
     left: 0;
     position: absolute;
     right: 0;
     top: 0;
-    transition: .4s;
     border-radius: 34px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); /* Inner shadow for depth */
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* --- UPDATED CHECKED STATE (Knob Movement Only) --- */
+input:checked + .slider {
+    /* We DO NOT change the background color here anymore. 
+       We keep the gradient visible so it looks like "sliding into the dark side" */
+    border-color: rgba(255,255,255,0.1);
+}
+
+input:checked + .slider .knob {
+    /* Move to the right (Dark Side) */
+    transform: translateX(28px);
+    /* Optional: Make the knob slightly darker in dark mode for style */
+    background-color: #f0f0f0; 
+    box-shadow: -2px 2px 8px rgba(0,0,0,0.3); /* Shadow shifts to left */
 }
 
 /* The Sliding Circle */
@@ -979,11 +997,15 @@ input:checked + .slider .icon-moon { opacity: 1; }
         <!--    <i class="fas fa-download"></i> Download CV-->
         <!--</a>-->
         <div class="theme-switch-wrapper">
+    <span id="theme-label" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-right: 10px; width: 80px; text-align: right;">Theme</span>
+    
     <label class="theme-switch" for="checkbox">
         <input type="checkbox" id="checkbox" onchange="toggleTheme(this)">
         <div class="slider">
-            <i class="fas fa-sun icon-sun"></i>
-            <i class="fas fa-moon icon-moon"></i>
+            <div class="knob">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+            </div>
         </div>
     </label>
 </div>
