@@ -63,7 +63,7 @@
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border-right: 1px solid rgba(0,0,0,0.05);
-            padding: 40px 25px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -137,15 +137,15 @@
         .main-content {
             margin-left: 300px;
             flex: 1;
-            padding: 60px 80px;
+            padding: 40px 50px;
         }
 
-        section { margin-bottom: 70px; scroll-margin-top: 80px; }
+        section { margin-bottom: 40px; scroll-margin-top: 80px; }
         
         .section-title {
             font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             color: var(--text-main);
             display: flex;
             align-items: center;
@@ -157,8 +157,8 @@
             background: var(--glass-bg);
             border: 1px solid white;
             border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
             box-shadow: var(--glass-shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -169,21 +169,41 @@
         }
 
         /* --- EDUCATION WITH LOGO --- */
-        .edu-item {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-        .edu-logo {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 12px;
-            padding: 5px;
-            object-fit: contain;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .edu-details { flex: 1; }
+       /* --- UPDATED EDUCATION LAYOUT --- */
+.edu-item {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* This forces the logo and text to be the same height */
+    width: 100%;
+}
+
+/* The Container for the Image */
+.edu-logo-box {
+    flex-shrink: 0;        /* Prevent shrinking */
+    width: 120px;          /* Fixed width you want for the logo column */
+    background: white;
+    border-radius: 12px;
+    padding: 10px;         /* Space inside the white box */
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;         /* centers the image inside */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* The Image Itself */
+.edu-logo-img {
+    width: 100%;           /* Fill the width of the box */
+    height: 100%;          /* Fill the height of the box */
+    object-fit: contain;   /* Keep aspect ratio (won't look squished) */
+}
+
+.edu-details {
+    flex: 1;               /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center the text if logo is taller */
+}
 
         /* --- LIQUID LINK EFFECT FOR PUBLICATIONS --- */
         .liquid-link {
@@ -332,6 +352,122 @@
             .testimonial-card { min-width: 100%; } /* Show 1 at a time on mobile */
             .nav-menu { display: none; } /* Hide sidebar menu on mobile, maybe add hamburger later */
         }
+        
+        /* --- FIX: Align Bullets with Text --- */
+.glass-card ul {
+    /* 18px is the magic number to align dots with the header text */
+    padding-left: 18px; 
+    margin-top: 15px;
+}
+
+.glass-card li {
+    margin-bottom: 2px; /* Adds nice spacing between bullet points */
+    padding-left: 5px;  /* Adds a tiny gap between the dot and the text */
+}
+
+
+/* --- UPDATED PROJECT LAYOUT --- */
+.project-item {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* Forces image box to match text height */
+    width: 100%;
+}
+
+/* The Container for the Project Image */
+.project-img-box {
+    flex-shrink: 0;        /* Prevents shrinking */
+    width: 120px;          /* Fixed width for the image column */
+    background: white;
+    border-radius: 12px;
+    padding: 0;            /* No padding for project images looks better usually */
+    overflow: hidden;      /* Crops the image to the rounded corners */
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.project-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* 'cover' fills the box (good for photos) */
+    /* Use 'contain' if you want to see the whole image without cropping */
+}
+
+.project-details {
+    flex: 1;               /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center the text */
+}
+
+/* Mobile Fix: Stack them on small screens */
+@media (max-width: 600px) {
+    .project-item { flex-direction: column; }
+    .project-img-box { width: 100%; height: 200px; margin-bottom: 15px; }
+}
+
+
+/* --- UNIVERSAL LISTING LAYOUT (Image Left, Text Right) --- */
+.listing-item {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* Forces image box to match text height */
+    width: 100%;
+}
+
+/* The Square Image/Logo Container */
+.listing-img-box {
+    flex-shrink: 0;
+    width: 80px;           /* Smaller, elegant size for icons/logos */
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.listing-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;   /* Ensures logos don't get cut off */
+    padding: 10px;         /* Adds breathing room for the logo */
+}
+
+/* Compact Badge Style */
+.status-badge {
+    display: inline-block;
+    width: fit-content;    /* <--- THE MAGIC FIX: Forces it to shrink to text size */
+    background: #eef2f5;
+    padding: 4px 10px;
+    border-radius: 6px;
+    
+    font-size: 0.7rem;
+    color: #555;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    
+    white-space: normal;   /* Allows text to wrap if it hits max-width */
+    max-width: 100%;       /* Prevents it from overflowing the card */
+    line-height: 1.2;
+    text-align: left;
+    margin: 0;             /* Reset margins to handle spacing via parent gap */
+}
+
+/* NEW CLASS: Use this for text-only sections to kill all gaps */
+.tight-text-col {
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: flex-start; /* Aligns everything to the left */
+    gap: 4px;                /* Controls spacing: 4px between every line. Change this number to adjust! */
+}
     </style>
 </head>
 <body>
@@ -377,32 +513,38 @@
         </section>
 
         <section id="education">
-            <h3 class="section-title">Education</h3>
+    <h3 class="section-title">Education</h3>
+    
+    <div class="glass-card">
+        <div class="edu-item">
+            <div class="edu-logo-box">
+                <img src="https://via.placeholder.com/150" alt="Uni Logo" class="edu-logo-img">
+            </div>
             
-            <div class="glass-card">
-                <div class="edu-item">
-                    <img src="https://via.placeholder.com/60" alt="Uni Logo" class="edu-logo">
-                    <div class="edu-details">
-                        <div class="role-title">PhD in Computer Engineering</div>
-                        <div class="company-name">Your Current University</div>
-                        <span class="date">2023 - Present</span>
-                        <p>Focus: Side-channel analysis, Logic Obfuscation, and Hardware Trojans.</p>
-                    </div>
-                </div>
+            <div class="edu-details">
+                <div class="role-title">PhD in Computer Engineering</div>
+                <div class="company-name">Your Current University</div>
+                <span class="date">2023 - Present</span>
+                <p>Focus: Side-channel analysis, Logic Obfuscation, and Hardware Trojans.</p>
             </div>
+        </div>
+    </div>
 
-            <div class="glass-card">
-                <div class="edu-item">
-                    <img src="https://via.placeholder.com/60" alt="Uni Logo" class="edu-logo">
-                    <div class="edu-details">
-                        <div class="role-title">M.Tech in Electronics</div>
-                        <div class="company-name">Previous University Name</div>
-                        <span class="date">2019 - 2023</span>
-                        <p>Graduated with Distinction. Major project on Embedded IoT Systems.</p>
-                    </div>
-                </div>
+    <div class="glass-card">
+        <div class="edu-item">
+            <div class="edu-logo-box">
+                <img src="https://via.placeholder.com/150" alt="Uni Logo" class="edu-logo-img">
             </div>
-        </section>
+            
+            <div class="edu-details">
+                <div class="role-title">M.Tech in Electronics</div>
+                <div class="company-name">Previous University Name</div>
+                <span class="date">2019 - 2023</span>
+                <p>Graduated with Distinction. Major project on Embedded IoT Systems.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
         <section id="experience">
             <h3 class="section-title">Professional Experience</h3>
@@ -481,38 +623,144 @@
 </section>
 
         <section id="projects">
-            <h3 class="section-title">Featured Projects</h3>
+    <h3 class="section-title">Featured Projects</h3>
+    
+    <div class="glass-card">
+        <div class="project-item">
+            <div class="project-img-box">
+                <img src="https://via.placeholder.com/150" alt="SARTHI" class="project-img">
+            </div>
             
-            <div class="glass-card">
+            <div class="project-details">
                 <div class="role-title">SARTHI: Hardware Security Module</div>
                 <div class="company-name">MeitY Sponsored Research</div>
                 <p>Designed a logic-obfuscated hardware authentication mechanism using a custom AES-256 core. Secured hardware IPs against reverse engineering and delivered a prototype to defense clients.</p>
             </div>
+        </div>
+    </div>
 
-            <div class="glass-card">
+    <div class="glass-card">
+        <div class="project-item">
+            <div class="project-img-box">
+                <img src="https://via.placeholder.com/150" alt="IoT System" class="project-img">
+            </div>
+            
+            <div class="project-details">
                 <div class="role-title">IoT Precision Agriculture System</div>
                 <div class="company-name">Rajasthan Region Implementation</div>
                 <p>Developed an end-to-end irrigation management system using ML for rainfall prediction. Designed the C-based edge computing node for real-time sensor data acquisition.</p>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
-        <section id="achievements">
-            <h3 class="section-title">Achievements & Publications</h3>
+<section id="publications">
+    <h3 class="section-title">Publications & Patents</h3>
+
+    <a href="https://doi.org/your-paper-link" target="_blank" class="glass-card liquid-link" style="display: block; text-decoration: none; color: inherit;">
+        <div class="listing-item">
+            <div class="listing-img-box">
+                <img src="https://via.placeholder.com/80" alt="Journal">
+            </div>
             
-            <a href="https://doi.org/your-paper-link" target="_blank" class="liquid-link glass-card">
-                <span class="pub-badge">Research Article</span>
-                <div class="role-title">Cryptanalysis of 4-bit S-boxes (Under Review)</div>
-                <div class="date">2025 | International Journal of Circuit Theory</div>
-                <p>Click to view paper <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 5px;"></i></p>
-            </a>
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                <span class="status-badge">Research Article (Under Review)</span>
+                <div class="role-title">Cryptanalysis of 4-bit S-boxes</div>
+                <div class="date">International Journal of Circuit Theory | 2025</div>
+            </div>
+        </div>
+    </a>
 
-            <a href="#" class="liquid-link glass-card">
-                <span class="pub-badge">Patent Filed</span>
+    <a href="#" class="glass-card liquid-link" style="display: block; text-decoration: none; color: inherit;">
+        <div class="listing-item">
+            <div class="listing-img-box">
+                <img src="" alt="Patent">
+            </div>
+            
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                <span class="status-badge">Patent Application</span>
                 <div class="role-title">Unified Multi-layer Combinational Logic Obfuscation</div>
-                <div class="date">2025 | Indian Patent Application</div>
-                <p>Click to view filing details <i class="fas fa-arrow-right" style="font-size: 0.8rem; margin-left: 5px;"></i></p>
-            </a>
-        </section>
+                <div class="date">Filed: 2025 | Ref: 2025110XXXXX</div>
+            </div>
+        </div>
+    </a>
+</section>
+
+
+<section id="achievements">
+    <h3 class="section-title">Achievements & Grants</h3>
+
+    <div class="glass-card">
+        <div class="listing-item">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
+                
+                <span class="status-badge" style="background: #e3f2fd; color: #0d47a1; margin-bottom: 4px;">Research Grant</span>
+                
+                <div class="role-title" style="margin-bottom: 2px;">Research Fellowship Award</div>
+                
+                <div class="company-name" style="margin-bottom: 6px;">Ministry of Electronics & IT (MeitY)</div>
+                
+                <p style="font-size: 0.9rem; margin: 0; line-height: 1.4;">Awarded for excellence in Hardware Security research under the SARTHI project.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="listing-item">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
+                
+                <span class="status-badge" style="background: #fff3e0; color: #e65100; margin-bottom: 4px;">Best Paper</span>
+                
+                <div class="role-title" style="margin-bottom: 2px;">Best Presentation Award</div>
+                
+                <div class="company-name" style="margin-bottom: 0;">IEEE International Conference 2024</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="service">
+    <h3 class="section-title">Voluntary Service</h3>
+
+    <div class="glass-card">
+        <div class="listing-item">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <div class="role-title">Technical Reviewer</div>
+                <div class="company-name">IEEE Transactions on VLSI Systems</div>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Peer-reviewed 5+ articles on FPGA design and cryptography.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div class="listing-item">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                <div class="role-title">Organizing Committee Member</div>
+                <div class="company-name">International Conference on Embedded Systems</div>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Coordinated technical sessions and keynote tracks.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!--<section id="achievements">-->
+        <!--    <h3 class="section-title">Achievements & Publications</h3>-->
+            
+        <!--    <a href="https://doi.org/your-paper-link" target="_blank" class="liquid-link glass-card">-->
+        <!--        <span class="pub-badge">Research Article</span>-->
+        <!--        <div class="role-title">Cryptanalysis of 4-bit S-boxes (Under Review)</div>-->
+        <!--        <div class="date">2025 | International Journal of Circuit Theory</div>-->
+        <!--        <p>Click to view paper <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 5px;"></i></p>-->
+        <!--    </a>-->
+
+        <!--    <a href="#" class="liquid-link glass-card">-->
+        <!--        <span class="pub-badge">Patent Filed</span>-->
+        <!--        <div class="role-title">Unified Multi-layer Combinational Logic Obfuscation</div>-->
+        <!--        <div class="date">2025 | Indian Patent Application</div>-->
+        <!--        <p>Click to view filing details <i class="fas fa-arrow-right" style="font-size: 0.8rem; margin-left: 5px;"></i></p>-->
+        <!--    </a>-->
+        <!--</section>-->
 
         <section id="testimonials">
             <h3 class="section-title">Endorsements</h3>
