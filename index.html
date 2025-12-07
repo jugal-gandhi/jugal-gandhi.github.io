@@ -9,16 +9,197 @@
     
     <style>
         /* --- CSS VARIABLES & RESET --- */
-        :root {
-            --bg-color: #f5f5f7; /* Apple light gray */
-            --text-main: #1d1d1f;
-            --text-muted: #86868b;
-            --accent: #0071e3; /* Apple Blue */
-            --glass-bg: rgba(255, 255, 255, 0.75); /* More opaque for performance */
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --glass-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            --blur-strength: 12px; /* Reduced slightly for smoother scroll */
-        }
+        /* --- THEME VARIABLES & TRANSITIONS --- */
+/* --- THEME VARIABLES (FIXED FOR CHATBOT & SIDEBAR) --- */
+/* --- THEME VARIABLES (Updated with Blue Hover) --- */
+:root {
+    /* LIGHT MODE COLORS */
+    --bg-color: #f5f5f7;
+    --text-main: #1d1d1f;
+    --text-muted: #86868b;
+    --accent: #0071e3;
+    
+    /* Backgrounds */
+    --sidebar-bg: rgba(255, 255, 255, 0.85);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    
+    /* HERE IS THE CHANGE: Very Light Blue instead of White */
+    --card-hover: rgba(0, 113, 227, 0.04); 
+    
+    /* Chatbot Specifics (Light) */
+    --chat-bg: rgba(255, 255, 255, 0.65);
+    --chat-header-bg: rgba(255, 255, 255, 0.8);
+    --bot-msg-bg: rgba(255, 255, 255, 0.9);
+    --bot-msg-text: #333;
+}
+
+/* DARK MODE COLORS */
+[data-theme="dark"] {
+    --bg-color: #000000;
+    --text-main: #f5f5f7;
+    --text-muted: #a1a1a6;
+    --accent: #2997ff;
+    
+    /* Backgrounds */
+    --sidebar-bg: rgba(28, 28, 30, 0.85);
+    --glass-bg: rgba(28, 28, 30, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    
+    /* Dark Mode Hover: Dark Blue tint instead of Grey */
+    --card-hover: rgba(41, 151, 255, 0.1); 
+    
+    /* Chatbot Specifics (Dark) */
+    --chat-bg: rgba(28, 28, 30, 0.75);
+    --chat-header-bg: rgba(44, 44, 46, 0.9);
+    --bot-msg-bg: rgba(44, 44, 46, 1);
+    --bot-msg-text: #f5f5f7;
+}
+
+
+/* --- FORCE ELEMENTS TO USE THEME VARIABLES --- */
+
+/* 1. Fix Sidebar & Main Background */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+}
+
+.sidebar {
+    background: var(--sidebar-bg) !important; /* Forces dark glass */
+    border-right: 1px solid var(--glass-border);
+}
+
+/* 2. Fix Glass Cards */
+.glass-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+}
+.glass-card:hover {
+    background: var(--card-hover);
+}
+
+/* 3. Fix Chatbot Window */
+.chat-window {
+    background: var(--chat-bg) !important;
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--glass-border);
+}
+
+.chat-header {
+    background: var(--chat-header-bg) !important;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+/* Fix Chatbot Header Text */
+.chat-header-info h3 {
+    color: var(--text-main) !important;
+}
+
+/* Fix Bot Message Bubbles */
+.bot-msg {
+    background: var(--bot-msg-bg) !important;
+    color: var(--bot-msg-text) !important;
+    border: 1px solid var(--glass-border);
+}
+
+/* Fix Option Buttons */
+.option-btn {
+    background: var(--bot-msg-bg);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+.option-btn:hover {
+    background: var(--accent);
+    color: white; /* Always white on hover */
+}
+
+/* 4. Fix Radial Background Gradient in Dark Mode */
+[data-theme="dark"] body::before {
+    /* Dim the background gradient so it doesn't look washed out */
+    opacity: 0.3; 
+}
+
+/* SMOOTH TRANSITION FOR EVERYTHING */
+body, .sidebar, .glass-card, .skill-pill, .status-badge, .chat-window, .nav-menu a {
+    transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+/* --- THE APPLE TOGGLE SWITCH CSS --- */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 64px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #e4e4e4; /* Light Mode Track */
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+    border-radius: 34px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* The Sliding Circle */
+.slider:before {
+    background-color: white;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: .4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy Apple Effect */
+    width: 26px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+/* Icons inside the slider */
+.icon-sun, .icon-moon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    z-index: 1;
+    transition: opacity 0.3s;
+}
+
+.icon-sun { left: 8px; color: #f39c12; opacity: 1; }
+.icon-moon { right: 8px; color: #f1c40f; opacity: 0; }
+
+/* CHECKED STATE (Dark Mode) */
+input:checked + .slider {
+    background-color: #303136; /* Dark Mode Track */
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+/* Toggle Icons visibility */
+input:checked + .slider .icon-sun { opacity: 0; }
+input:checked + .slider .icon-moon { opacity: 1; }
 
         html { scroll-behavior: smooth; }
 
@@ -682,6 +863,75 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
 }
+
+
+/* --- MOBILE CHATBOT FIX (Paste at bottom of CSS) --- */
+@media (max-width: 500px) {
+    
+    /* 1. Resize the Chat Window to fit the screen */
+    .chat-window {
+        width: 90%;          /* Uses 90% of screen width */
+        height: 60vh;        /* Uses 60% of screen height */
+        max-height: 500px;   /* Cap the height */
+        
+        /* Centering Logic */
+        right: 0; 
+        left: 0; 
+        margin: 0 auto;      /* Forces it to center horizontally */
+        bottom: 90px;        /* Sits nicely above the button */
+        
+        /* Adjust animation origin for center alignment */
+        transform-origin: bottom center; 
+    }
+
+    /* 2. Adjust the Floating Button position */
+    .chat-btn {
+        right: 20px;
+        bottom: 20px;
+        width: 55px;         /* Slightly smaller button */
+        height: 55px;
+        font-size: 1.4rem;
+    }
+
+    /* 3. Hide the Greeting Bubble on mobile */
+    /* It takes up too much space on small screens */
+    .chat-greeting {
+        display: none !important;
+    }
+
+    /* 4. Tweak Chat Body text for readability */
+    .bot-msg, .user-msg {
+        font-size: 0.85rem;
+        max-width: 90%;      /* Allow bubbles to use more width */
+    }
+}
+
+
+/* --- FINAL HOVER FIX (Paste at the bottom of CSS) --- */
+
+/* 1. Force Light Mode Hover to be Light Blue (Not White) */
+.glass-card:hover, 
+.liquid-link:hover {
+    background-color: rgba(0, 113, 227, 0.04) !important;
+}
+
+/* 2. Force Dark Mode Hover to be Dark Blue (Not White) */
+[data-theme="dark"] .glass-card:hover,
+[data-theme="dark"] .liquid-link:hover,
+[data-theme="dark"] .skill-pill:hover {
+    background-color: rgba(41, 151, 255, 0.15) !important;
+    border-color: rgba(41, 151, 255, 0.3) !important;
+}
+
+/* 3. Ensure Text stays visible in Dark Mode hover */
+[data-theme="dark"] .glass-card:hover h3,
+[data-theme="dark"] .glass-card:hover .role-title,
+[data-theme="dark"] .glass-card:hover p,
+[data-theme="dark"] .glass-card:hover li {
+    color: #f5f5f7 !important; /* Forces text to stay white/light */
+}
+
+
     </style>
 </head>
 <body>
@@ -725,9 +975,19 @@
             <a href="#testimonials"><i class="fas fa-quote-left"></i> Endorsements</a>
         </nav>
 
-        <a href="resume.pdf" class="download-btn" download style="margin-top: 30px;">
-            <i class="fas fa-download"></i> Download CV
-        </a>
+        <!--<a href="resume.pdf" class="download-btn" download style="margin-top: 30px;">-->
+        <!--    <i class="fas fa-download"></i> Download CV-->
+        <!--</a>-->
+        <div class="theme-switch-wrapper">
+    <label class="theme-switch" for="checkbox">
+        <input type="checkbox" id="checkbox" onchange="toggleTheme(this)">
+        <div class="slider">
+            <i class="fas fa-sun icon-sun"></i>
+            <i class="fas fa-moon icon-moon"></i>
+        </div>
+    </label>
+</div>
+        
     </aside>
 
     <main class="main-content">
@@ -1193,6 +1453,39 @@
             chatBody.scrollTop = chatBody.scrollHeight;
         }, 500);
     }
+    
+    
+    // --- DARK MODE LOGIC ---
+    
+    // 1. Check for saved user preference on load
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+            document.getElementById('checkbox').checked = true;
+        }
+    } else {
+        // Optional: Check system preference (e.g. Mac OS Dark Mode)
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if(prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('checkbox').checked = true;
+        }
+    }
+
+    // 2. Toggle Function
+    function toggleTheme(e) {
+        if (e.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+    }
+    
+    
+    
 </script>
 </body>
 </html>
