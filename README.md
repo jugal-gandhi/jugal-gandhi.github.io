@@ -23,7 +23,7 @@
 
 <p align="center">
   I am a <b>Hardware Security Researcher</b> and <b>PhD Scholar</b> at <a href="https://www.ceeri.res.in/">CSIR-CEERI, Pilani</a>.<br>
-  My research bridges the gap between theoretical cryptography and practical hardware implementation. I specialize in designing <b>Logic Obfuscation</b> techniques and developing CAD frameworks to protect Intellectual Properties (IPs) against reverse engineering and piracy.
+  I specialize in designing <b>Logic Obfuscation</b> techniques and developing CAD frameworks to protect Intellectual Properties (IPs) against reverse engineering and piracy.
 </p>
 
 <p align="center">
@@ -36,11 +36,10 @@
 
 | **Key Projects** | **Description** |
 | :--- | :--- |
-| 🛡️ **KAVACH** | A CAD framework for zero-knowledge logic obfuscation integration and adversarial evaluation. |
-| 🔒 **SARTHI** | MeitY-sponsored project developing secure hardware accelerators using AES-256 and Logic Locking. |
-| 🔓 **ULTRONE** | A novel logic locking attack technique achieving 100% key recovery on specific benchmarks. |
-| ⚡ **DyLock** | Dynamic key-based locking technique resilient to SAT and structural attacks (Accepted at **ISCAS 2025**). |
-| 🧠 **SHAKTI** | Cascade Gated Multiplexer-based obfuscation scheme (Accepted at **VLSID 2025**). |
+| 🛡️ **KAVACH** | A CAD framework for zero-knowledge logic obfuscation integration and adversarial evaluation |
+| 🔓 **ULTRONE** | A novel logic locking attack technique achieving 100% key recovery benchmarks |
+| ⚡ **DyLock** | Dynamic key-based locking technique resilient to SAT and structural attacks  |
+| 🧠 **SHAKTI** | Cascade Gated Multiplexer-based obfuscation scheme |
 
 <br />
 
@@ -52,7 +51,7 @@
   <img src="https://img.shields.io/badge/Verilog-555555?style=for-the-badge&logo=statuspage&logoColor=white" />
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/TCL_Scripting-A8B9CC?style=for-the-badge&logo=terminal&logoColor=black" />
-  <img src="https://img.shields.io/badge/C%2FEmbedded_C-00599C?style=for-the-badge&logo=c&logoColor=white" />
+  <img src="https://img.shields.io/badge/C?style=for-the-badge&logo=c&logoColor=white" />
 
   <br/>
 
@@ -66,14 +65,6 @@
 <br />
 
 <h3 align="center">📈 GitHub Analytics</h3>
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=jugal-gandhi&layout=compact&theme=transparent&hide_border=true&title_color=0071e3&text_color=555555" height="150" alt="languages graph" />
-  
-  <img src="https://github-readme-stats.vercel.app/api?username=jugal-gandhi&show_icons=true&theme=transparent&hide_border=true&title_color=0071e3&text_color=555555&icon_color=0071e3&rank_icon=github" height="150" alt="stats graph" />
-</div>
-
-<br />
 
 <div align="center">
   <p style="color: #888; font-size: 12px;">Let's Connect & Collaborate!</p>
