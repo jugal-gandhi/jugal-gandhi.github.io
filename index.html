@@ -1,373 +1,458 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Your Name – PhD Scholar Portfolio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugal Gandhi | PhD Scholar & Researcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #fbfbfd; /* Apple-ish off-white */
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --accent: #0071e3; /* Apple Blue */
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            --blur-strength: 20px;
+        }
 
-  <!-- Optional: Google Font & Icons (can be removed for fully local setup) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-  <style>
-    :root {
-      --bg: #f4f5fb;
-      --bg-strong: #ffffff;
-      --accent: #2563eb;
-      --accent-soft: #e0edff;
-      --accent-soft-2: #eff6ff;
-      --text-main: #111827;
-      --text-soft: #6b7280;
-      --border-soft: #e5e7eb;
-      --radius-lg: 18px;
-      --radius-pill: 999px;
-      --transition-fast: 180ms ease-out;
+        /* --- BACKGROUND MESH FOR GLASS EFFECT --- */
+        /* This subtle gradient makes the glass effect visible on a white background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,113,227,0.03) 0%, rgba(251,251,253,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- LAYOUT STRUCTURE --- */
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR (Fixed) --- */
+        .sidebar {
+            width: 320px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border-right: 1px solid rgba(0,0,0,0.05);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .profile-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 4px solid white;
+        }
+
+        .sidebar h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
+        .sidebar h2 { font-size: 1rem; color: var(--text-muted); font-weight: 400; margin-bottom: 20px; }
+        
+        .social-links a {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        .social-links a:hover { color: var(--accent); }
+
+        .sidebar-bio {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            margin-top: auto;
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--text-main);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .download-btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,113,227,0.3);
+        }
+
+        /* --- MAIN CONTENT (Scrollable) --- */
+        .main-content {
+            margin-left: 320px; /* Width of sidebar */
+            flex: 1;
+            padding: 60px 80px;
+        }
+
+        section { margin-bottom: 80px; }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* --- GLASS CARDS (For Projects/Exp) --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            border-color: white;
+        }
+
+        /* Highlight bar on hover */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .glass-card:hover::before { opacity: 1; }
+
+        /* --- CONTENT TYPOGRAPHY --- */
+        .role-title { font-weight: 600; font-size: 1.1rem; }
+        .company-name { color: var(--accent); font-weight: 500; margin-bottom: 5px; }
+        .date { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; display: block; }
+        
+        /* --- SKILLS PILLS --- */
+        .skills-container { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-pill {
+            background: rgba(0,0,0,0.05);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .skill-pill:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- TESTIMONIALS --- */
+        .testimonial-container {
+            position: relative;
+            height: 200px; /* Adjust based on content */
+            overflow: hidden;
+        }
+        .testimonial-slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.6s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            pointer-events: none;
+        }
+        .testimonial-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+        .t-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .t-content p { font-style: italic; font-size: 1rem; margin-bottom: 10px; }
+        .t-content h4 { font-size: 0.95rem; font-weight: 700; }
+        .t-content span { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* --- CONNECT --- */
+        .connect-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .connect-btn {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            min-width: 150px;
+        }
+        .connect-btn i { font-size: 1.5rem; color: var(--accent); margin-bottom: 10px; display: block; }
+        .connect-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: relative; 
+                padding: 40px 20px;
+            }
+            .main-content { margin-left: 0; padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <aside class="sidebar">
+        <img src="https://via.placeholder.com/160" alt="Jugal Gandhi" class="profile-img">
+        
+        <h1>Jugal Gandhi</h1>
+        <h2>PhD Scholar | Hardware Security</h2>
+        
+        <div class="social-links">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="https://jugal-gandhi.github.io"><i class="fab fa-github"></i></a>
+            <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i></a>
+        </div>
+
+        <div class="sidebar-bio">
+            <p>Bridging the gap between hardware architectures and cryptographic security. Passionate about VHDL, FPGA design, and secure edge computing.</p>
+        </div>
+
+        <a href="resume.pdf" class="download-btn" download>
+            <i class="fas fa-download"></i> Download CV
+        </a>
+    </aside>
+
+    <main class="main-content">
+        
+        <section id="about">
+            <h3 class="section-title">About Me</h3>
+            <div class="glass-card">
+                <p>
+                    I am a Research Scholar specializing in Hardware Security and Embedded Systems. 
+                    My work focuses on securing hardware accelerators using logic obfuscation and optimizing cryptographic algorithms (AES) for FPGA deployments.
+                    Currently, I am exploring how machine learning can be optimized for hardware edge devices, bridging the gap between theoretical cryptography and practical implementation.
+                </p>
+            </div>
+        </section>
+
+        <section id="education">
+            <h3 class="section-title">Education</h3>
+            
+            <div class="glass-card">
+                <div class="role-title">PhD in Computer Engineering / Electronics</div>
+                <div class="company-name">Your University Name</div>
+                <span class="date">2023 - Present</span>
+                <p>Focus: Side-channel analysis, Logic Obfuscation, and Hardware Trojans.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="role-title">M.Tech / B.Tech in Electronics</div>
+                <div class="company-name">Previous University</div>
+                <span class="date">2019 - 2023</span>
+                <p>Graduated with Distinction. Major project on Embedded IoT Systems.</p>
+            </div>
+        </section>
+
+        <section id="experience">
+            <h3 class="section-title">Professional Experience</h3>
+            
+            <div class="glass-card">
+                <div class="role-title">Research Assistant (SARTHI Project)</div>
+                <div class="company-name">CSIR-CEERI / MeitY Sponsored</div>
+                <span class="date">2024 - Present</span>
+                <ul>
+                    <li>Worked on "Securing Accelerators using logic obfuscated hardware authentication" (SARTHI).</li>
+                    <li>Implemented AES-256 on FPGA boards for Military College of Telecommunication Engineering.</li>
+                    <li>Developed novel 4-bit S-box architectures to resist side-channel attacks.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h3 class="section-title">Skills & Expertise</h3>
+            <div class="glass-card">
+                <div class="skills-container">
+                    <span class="skill-pill">VHDL / Verilog</span>
+                    <span class="skill-pill">FPGA Design (Xilinx/Intel)</span>
+                    <span class="skill-pill">Cryptography (AES)</span>
+                    <span class="skill-pill">C / Embedded C</span>
+                    <span class="skill-pill">Python & Scripting</span>
+                    <span class="skill-pill">IoT Architectures</span>
+                    <span class="skill-pill">Machine Learning (CNNs)</span>
+                    <span class="skill-pill">MATLAB</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="leadership">
+            <h3 class="section-title">Leadership & Soft Skills</h3>
+            <div class="glass-card">
+                <p>
+                    Beyond technical research, I have led teams in hackathons and mentored undergraduate students in Digital Logic Design. 
+                    I excel in technical writing (Patents/Papers) and presenting complex hardware concepts to non-technical stakeholders.
+                </p>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h3 class="section-title">Featured Projects</h3>
+            
+            <div class="glass-card">
+                <div class="role-title">SARTHI: Hardware Security Module</div>
+                <div class="company-name">MeitY Sponsored Research</div>
+                <p>
+                    Designed a logic-obfuscated hardware authentication mechanism. The system utilizes a custom AES-256 core aimed at securing hardware IPs against reverse engineering. Delivered as a functional prototype to defense clients.
+                </p>
+            </div>
+
+            <div class="glass-card">
+                <div class="role-title">IoT Precision Agriculture System</div>
+                <div class="company-name">Rajasthan Region Implementation</div>
+                <p>
+                    Developed an end-to-end irrigation management system. Implemented ML models for rainfall prediction to optimize water usage. Designed the C-based edge computing node for sensor data acquisition and pump control.
+                </p>
+            </div>
+        </section>
+
+        <section id="achievements">
+            <h3 class="section-title">Achievements & Recognition</h3>
+            <div class="glass-card">
+                <ul>
+                    <li><strong>Patent Filed:</strong> "Unified Multi-layer Combinational Logic Obfuscation for Securing Hardware IPs" (Indian Patent).</li>
+                    <li><strong>Research Paper:</strong> Authored article on "Cryptanalysis of 4-bit S-boxes" (Under Review).</li>
+                    <li><strong>Gateway to Industry:</strong> Delivered project demonstration to Military College of Telecommunication Engineering.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <h3 class="section-title">Endorsements</h3>
+            <div class="glass-card">
+                <div class="testimonial-container">
+                    
+                    <div class="testimonial-slide active">
+                        <img src="https://via.placeholder.com/80" alt="Prof Name" class="t-photo">
+                        <div class="t-content">
+                            <p>"Jugal is an exceptional researcher with a rare ability to handle both high-level cryptographic theory and low-level hardware implementation."</p>
+                            <h4>Dr. Supervisor Name</h4>
+                            <span>Senior Scientist, CSIR-CEERI</span>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <img src="https://via.placeholder.com/80" alt="Colleague Name" class="t-photo">
+                        <div class="t-content">
+                            <p>"His work on the SARTHI project was pivotal in meeting our strict security benchmarks. Highly dedicated and technically sound."</p>
+                            <h4>Project Lead Name</h4>
+                            <span>Technical Director, MeitY Project</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="connect">
+            <h3 class="section-title">Let's Connect</h3>
+            <div class="connect-links">
+                <a href="mailto:your-email@example.com" class="connect-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Email Me
+                </a>
+                <a href="#" class="connect-btn">
+                    <i class="fab fa-linkedin-in"></i>
+                    LinkedIn
+                </a>
+                <a href="https://jugal-gandhi.github.io" class="connect-btn">
+                    <i class="fab fa-github"></i>
+                    GitHub
+                </a>
+            </div>
+        </section>
+
+        <footer style="margin-top: 50px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+            <p>&copy; 2025 Jugal Gandhi. Built with Custom Code.</p>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.testimonial-slide');
+    let currentSlide = 0;
+
+    function nextSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
     }
 
-    * {
-      box-sizing: border-box;
-      scroll-behavior: smooth;
-    }
+    // Change slide every 5 seconds
+    setInterval(nextSlide, 5000);
+</script>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top left, #e5f0ff 0, #f4f5fb 40%, #f9fafb 100%);
-      color: var(--text-main);
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .page {
-      display: flex;
-      min-height: 100vh;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 16px;
-      gap: 24px;
-    }
-
-    /* LEFT SIDEBAR */
-    .sidebar {
-      width: 280px;
-      flex-shrink: 0;
-      position: sticky;
-      top: 24px;
-      align-self: flex-start;
-      background: var(--bg-strong);
-      border-radius: 24px;
-      padding: 24px 20px 18px;
-      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
-      border: 1px solid #e3e5ef;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .avatar-wrap {
-      width: 120px;
-      height: 120px;
-      border-radius: 999px;
-      padding: 3px;
-      background: linear-gradient(135deg, #bfdbfe, #a5b4fc);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-
-    .avatar {
-      width: 100%;
-      height: 100%;
-      border-radius: 999px;
-      overflow: hidden;
-      background-color: #e5e7eb;
-      background-size: cover;
-      background-position: center;
-      /* replace with your real image */
-      background-image: url("avatar1.jpg");
-    }
-
-    .name {
-      font-size: 1.35rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      margin-bottom: 4px;
-    }
-
-    .role {
-      font-size: 0.9rem;
-      color: var(--text-soft);
-      margin-bottom: 12px;
-    }
-
-    .about-short {
-      font-size: 0.86rem;
-      color: var(--text-soft);
-      line-height: 1.5;
-      margin-bottom: 18px;
-    }
-
-    .pill-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      background: var(--accent-soft);
-      color: #1d4ed8;
-      font-size: 0.75rem;
-      margin-bottom: 12px;
-    }
-
-    .pill-status span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
-    }
-
-    .socials {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .socials a {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #f3f4ff;
-      color: #4b5563;
-      border: 1px solid #e5e7eb;
-      transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-    }
-
-    .socials a:hover {
-      background: #2563eb;
-      color: #ffffff;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
-    }
-
-    .side-nav {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      color: var(--text-soft);
-      cursor: pointer;
-      transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-      margin-bottom: 4px;
-    }
-
-    .nav-item i {
-      color: #9ca3af;
-      width: 18px;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-
-    .nav-item:hover {
-      background: #eff6ff;
-      color: var(--accent);
-      transform: translateX(2px);
-    }
-
-    .nav-item.active {
-      background: var(--accent);
-      color: #ffffff;
-    }
-
-    .nav-item.active i {
-      color: #bfdbfe;
-    }
-
-    .primary-btn {
-      margin-top: 14px;
-      width: 100%;
-      border-radius: var(--radius-pill);
-      padding: 9px 14px;
-      border: none;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: #ffffff;
-      font-size: 0.92rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 16px 40px rgba(37, 99, 235, 0.45);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
-    }
-
-    .primary-btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.05);
-      box-shadow: 0 18px 48px rgba(37, 99, 235, 0.55);
-    }
-
-    .side-footer {
-      font-size: 0.74rem;
-      color: #9ca3af;
-      margin-top: 14px;
-    }
-
-    /* MAIN CONTENT */
-    .content {
-      flex: 1;
-      padding: 8px 4px 24px;
-    }
-
-    section {
-      padding: 18px 18px 20px;
-      margin-bottom: 16px;
-      background: var(--bg-strong);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-soft);
-      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.04);
-    }
-
-    .section-heading {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: #9ca3af;
-      margin-bottom: 2px;
-    }
-
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .section-lead {
-      font-size: 0.86rem;
-      color: var(--text-soft);
-      margin-bottom: 10px;
-    }
-
-    .item {
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px dashed #e5e7eb;
-    }
-    .item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-      margin-bottom: 0;
-    }
-
-    .item-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 0.9rem;
-      margin-bottom: 2px;
-    }
-
-    .item-title {
-      font-weight: 500;
-    }
-
-    .item-meta {
-      font-size: 0.78rem;
-      color: #9ca3af;
-      white-space: nowrap;
-    }
-
-    .item-sub {
-      font-size: 0.84rem;
-      color: var(--text-soft);
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .tag {
-      font-size: 0.74rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #f3f4ff;
-      color: #4b5563;
-    }
-
-    .tag-primary {
-      background: #e0edff;
-      color: #1d4ed8;
-    }
-
-    /* Skills lists */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 6px 16px;
-      font-size: 0.85rem;
-      color: var(--text-soft);
-    }
-
-    .skills-grid span::before {
-      content: "• ";
-      color: #9ca3af;
-    }
-
-    /* Testimonials */
-    .testimonials-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .testimonial-card {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 12px;
-      border-radius: 14px;
-      background: var(--accent-soft-2);
-      border: 1px solid #d1d5e8;
-      min-height: 80px;
-    }
-
-    .testimonial-photo {
-      width: 52px;
-      height: 52px;
-      border-radius: 999px;
-      overflow: hidden;
-      background-color: #e5e7eb;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-    }
-
-    .t1 { background-image: url("t1.jpg"); }
-    .t2 { background-image: url("t2.jpg"); }
-    .t3 { background-image: url("t3.jpg"); }
-
-    .testimonial-text {
-      font
+</body>
+</html>
