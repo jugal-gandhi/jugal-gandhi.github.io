@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jugal Gandhi | PhD Scholar & Researcher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* --- CSS VARIABLES & RESET --- */
         :root {
-            --bg-color: #fbfbfd; /* Apple-ish off-white */
+            --bg-color: #f5f5f7; /* Apple light gray */
             --text-main: #1d1d1f;
             --text-muted: #86868b;
             --accent: #0071e3; /* Apple Blue */
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
-            --blur-strength: 20px;
+            --glass-bg: rgba(255, 255, 255, 0.75); /* More opaque for performance */
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            --blur-strength: 12px; /* Reduced slightly for smoother scroll */
         }
+
+        html { scroll-behavior: smooth; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -30,17 +32,17 @@
             overflow-x: hidden;
         }
 
-        /* --- BACKGROUND MESH FOR GLASS EFFECT --- */
-        /* This subtle gradient makes the glass effect visible on a white background */
+        /* --- PERFORMANCE OPTIMIZED BACKGROUND --- */
         body::before {
             content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0,113,227,0.03) 0%, rgba(251,251,253,0) 70%);
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 10% 20%, rgba(0,113,227,0.04) 0%, transparent 60%),
+                        radial-gradient(circle at 90% 80%, rgba(0,113,227,0.04) 0%, transparent 60%);
             z-index: -1;
+            /* Promoting to own layer for GPU acceleration to stop lag */
+            transform: translateZ(0);
             pointer-events: none;
         }
 
@@ -52,16 +54,16 @@
 
         /* --- SIDEBAR (Fixed) --- */
         .sidebar {
-            width: 320px;
+            width: 300px;
             height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
             border-right: 1px solid rgba(0,0,0,0.05);
-            padding: 40px 30px;
+            padding: 40px 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -70,194 +72,213 @@
         }
 
         .profile-img {
-            width: 160px;
-            height: 160px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             border: 4px solid white;
         }
 
-        .sidebar h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
-        .sidebar h2 { font-size: 1rem; color: var(--text-muted); font-weight: 400; margin-bottom: 20px; }
+        .sidebar h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; }
+        .sidebar h2 { font-size: 0.95rem; color: var(--text-muted); font-weight: 400; margin-bottom: 20px; }
         
         .social-links a {
             color: var(--text-main);
             font-size: 1.2rem;
-            margin: 0 10px;
+            margin: 0 8px;
             transition: color 0.3s ease;
         }
         .social-links a:hover { color: var(--accent); }
 
-        .sidebar-bio {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
+        /* Sidebar Navigation Menu */
+        .nav-menu {
+            margin-top: 25px;
+            width: 100%;
+            text-align: left;
         }
+        .nav-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            margin-bottom: 5px;
+        }
+        .nav-menu a:hover {
+            background: rgba(0,113,227,0.08);
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+        .nav-menu a i { width: 25px; text-align: center; margin-right: 5px; }
 
         .download-btn {
             margin-top: auto;
             display: inline-block;
-            padding: 12px 25px;
+            padding: 10px 25px;
             background: var(--text-main);
             color: white;
             text-decoration: none;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .download-btn:hover {
             background: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,113,227,0.3);
+            box-shadow: 0 4px 12px rgba(0,113,227,0.3);
         }
 
-        /* --- MAIN CONTENT (Scrollable) --- */
+        /* --- MAIN CONTENT --- */
         .main-content {
-            margin-left: 320px; /* Width of sidebar */
+            margin-left: 300px;
             flex: 1;
             padding: 60px 80px;
         }
 
-        section { margin-bottom: 80px; }
+        section { margin-bottom: 70px; scroll-margin-top: 80px; }
         
         .section-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 30px;
-            position: relative;
-            display: inline-block;
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-
-        /* --- GLASS CARDS (For Projects/Exp) --- */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: var(--glass-shadow);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px) scale(1.01);
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-            border-color: white;
-        }
-
-        /* Highlight bar on hover */
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .glass-card:hover::before { opacity: 1; }
-
-        /* --- CONTENT TYPOGRAPHY --- */
-        .role-title { font-weight: 600; font-size: 1.1rem; }
-        .company-name { color: var(--accent); font-weight: 500; margin-bottom: 5px; }
-        .date { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; display: block; }
-        
-        /* --- SKILLS PILLS --- */
-        .skills-container { display: flex; flex-wrap: wrap; gap: 10px; }
-        .skill-pill {
-            background: rgba(0,0,0,0.05);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .skill-pill:hover {
-            background: var(--accent);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* --- TESTIMONIALS --- */
-        .testimonial-container {
-            position: relative;
-            height: 200px; /* Adjust based on content */
-            overflow: hidden;
-        }
-        .testimonial-slide {
-            position: absolute;
-            top: 0; left: 0; width: 100%;
-            opacity: 0;
-            transform: translateX(20px);
-            transition: all 0.6s ease;
+            margin-bottom: 25px;
+            color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 20px;
-            pointer-events: none;
+            gap: 10px;
         }
-        .testimonial-slide.active {
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-        .t-photo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .t-content p { font-style: italic; font-size: 1rem; margin-bottom: 10px; }
-        .t-content h4 { font-size: 0.95rem; font-weight: 700; }
-        .t-content span { font-size: 0.85rem; color: var(--text-muted); }
 
-        /* --- CONNECT --- */
-        .connect-links { display: flex; gap: 20px; flex-wrap: wrap; }
-        .connect-btn {
-            flex: 1;
-            text-align: center;
-            padding: 20px;
+        /* --- GLASS CARDS --- */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            background: #ffffff;
+        }
+
+        /* --- EDUCATION WITH LOGO --- */
+        .edu-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .edu-logo {
+            width: 60px;
+            height: 60px;
             background: white;
             border-radius: 12px;
+            padding: 5px;
+            object-fit: contain;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .edu-details { flex: 1; }
+
+        /* --- LIQUID LINK EFFECT FOR PUBLICATIONS --- */
+        .liquid-link {
+            position: relative;
+            display: block;
             text-decoration: none;
             color: var(--text-main);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-radius: 12px;
             transition: 0.3s;
-            min-width: 150px;
         }
-        .connect-btn i { font-size: 1.5rem; color: var(--accent); margin-bottom: 10px; display: block; }
-        .connect-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        .liquid-link:hover {
+            color: var(--accent);
+        }
 
-        /* --- MOBILE RESPONSIVENESS --- */
+        /* The shiny swoosh effect */
+        .liquid-link::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: 0.5s;
+        }
+        
+        .liquid-link:hover::after {
+            left: 100%;
+        }
+
+        .pub-badge {
+            display: inline-block;
+            background: #eef2f5;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        /* --- ROTATING ENDORSEMENTS (Carousel of 3) --- */
+        .testimonials-wrapper {
+            overflow: hidden;
+            width: 100%;
+        }
+        .testimonials-track {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .testimonial-card {
+            min-width: calc(33.333% - 14px); /* Show 3 at a time */
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .t-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .t-photo-small { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+        .t-info h4 { font-size: 0.85rem; font-weight: 700; margin: 0; }
+        .t-info span { font-size: 0.75rem; color: var(--text-muted); }
+        .t-text { font-size: 0.85rem; font-style: italic; color: #555; line-height: 1.5; }
+
+        /* --- SKILLS & PROJECTS --- */
+        .role-title { font-weight: 600; font-size: 1.05rem; }
+        .company-name { color: var(--accent); font-weight: 500; font-size: 0.95rem; margin-bottom: 4px; }
+        .date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; display: block; }
+
+        .skill-pill {
+            display: inline-block;
+            background: #ffffff;
+            border: 1px solid #e1e1e1;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 0 5px 8px 0;
+            transition: 0.2s;
+        }
+        .skill-pill:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0,113,227,0.05);
+        }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .wrapper { flex-direction: column; }
-            .sidebar { 
-                width: 100%; 
-                height: auto; 
-                position: relative; 
-                padding: 40px 20px;
-            }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 30px; }
             .main-content { margin-left: 0; padding: 40px 20px; }
+            .testimonial-card { min-width: 100%; } /* Show 1 at a time on mobile */
+            .nav-menu { display: none; } /* Hide sidebar menu on mobile, maybe add hamburger later */
         }
     </style>
 </head>
@@ -265,7 +286,7 @@
 
 <div class="wrapper">
     <aside class="sidebar">
-        <img src="https://via.placeholder.com/160" alt="Jugal Gandhi" class="profile-img">
+        <img src="https://via.placeholder.com/150" alt="Jugal Gandhi" class="profile-img">
         
         <h1>Jugal Gandhi</h1>
         <h2>PhD Scholar | Hardware Security</h2>
@@ -276,11 +297,17 @@
             <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i></a>
         </div>
 
-        <div class="sidebar-bio">
-            <p>Bridging the gap between hardware architectures and cryptographic security. Passionate about VHDL, FPGA design, and secure edge computing.</p>
-        </div>
+        <nav class="nav-menu">
+            <a href="#about"><i class="fas fa-user"></i> About Me</a>
+            <a href="#education"><i class="fas fa-graduation-cap"></i> Education</a>
+            <a href="#experience"><i class="fas fa-briefcase"></i> Experience</a>
+            <a href="#skills"><i class="fas fa-code"></i> Skills</a>
+            <a href="#projects"><i class="fas fa-microchip"></i> Projects</a>
+            <a href="#achievements"><i class="fas fa-trophy"></i> Achievements</a>
+            <a href="#testimonials"><i class="fas fa-quote-left"></i> Endorsements</a>
+        </nav>
 
-        <a href="resume.pdf" class="download-btn" download>
+        <a href="resume.pdf" class="download-btn" download style="margin-top: 30px;">
             <i class="fas fa-download"></i> Download CV
         </a>
     </aside>
@@ -292,8 +319,7 @@
             <div class="glass-card">
                 <p>
                     I am a Research Scholar specializing in Hardware Security and Embedded Systems. 
-                    My work focuses on securing hardware accelerators using logic obfuscation and optimizing cryptographic algorithms (AES) for FPGA deployments.
-                    Currently, I am exploring how machine learning can be optimized for hardware edge devices, bridging the gap between theoretical cryptography and practical implementation.
+                    My work bridges the gap between hardware architectures and cryptographic security, with a focus on securing accelerators using logic obfuscation and optimizing AES algorithms for FPGA deployments.
                 </p>
             </div>
         </section>
@@ -302,17 +328,27 @@
             <h3 class="section-title">Education</h3>
             
             <div class="glass-card">
-                <div class="role-title">PhD in Computer Engineering / Electronics</div>
-                <div class="company-name">Your University Name</div>
-                <span class="date">2023 - Present</span>
-                <p>Focus: Side-channel analysis, Logic Obfuscation, and Hardware Trojans.</p>
+                <div class="edu-item">
+                    <img src="https://via.placeholder.com/60" alt="Uni Logo" class="edu-logo">
+                    <div class="edu-details">
+                        <div class="role-title">PhD in Computer Engineering</div>
+                        <div class="company-name">Your Current University</div>
+                        <span class="date">2023 - Present</span>
+                        <p>Focus: Side-channel analysis, Logic Obfuscation, and Hardware Trojans.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="glass-card">
-                <div class="role-title">M.Tech / B.Tech in Electronics</div>
-                <div class="company-name">Previous University</div>
-                <span class="date">2019 - 2023</span>
-                <p>Graduated with Distinction. Major project on Embedded IoT Systems.</p>
+                <div class="edu-item">
+                    <img src="https://via.placeholder.com/60" alt="Uni Logo" class="edu-logo">
+                    <div class="edu-details">
+                        <div class="role-title">M.Tech in Electronics</div>
+                        <div class="company-name">Previous University Name</div>
+                        <span class="date">2019 - 2023</span>
+                        <p>Graduated with Distinction. Major project on Embedded IoT Systems.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -324,8 +360,8 @@
                 <div class="company-name">CSIR-CEERI / MeitY Sponsored</div>
                 <span class="date">2024 - Present</span>
                 <ul>
-                    <li>Worked on "Securing Accelerators using logic obfuscated hardware authentication" (SARTHI).</li>
-                    <li>Implemented AES-256 on FPGA boards for Military College of Telecommunication Engineering.</li>
+                    <li>Spearheaded "Securing Accelerators using logic obfuscated hardware authentication" (SARTHI).</li>
+                    <li>Implemented AES-256 on FPGA boards for defense applications.</li>
                     <li>Developed novel 4-bit S-box architectures to resist side-channel attacks.</li>
                 </ul>
             </div>
@@ -334,26 +370,15 @@
         <section id="skills">
             <h3 class="section-title">Skills & Expertise</h3>
             <div class="glass-card">
-                <div class="skills-container">
-                    <span class="skill-pill">VHDL / Verilog</span>
-                    <span class="skill-pill">FPGA Design (Xilinx/Intel)</span>
-                    <span class="skill-pill">Cryptography (AES)</span>
-                    <span class="skill-pill">C / Embedded C</span>
-                    <span class="skill-pill">Python & Scripting</span>
-                    <span class="skill-pill">IoT Architectures</span>
-                    <span class="skill-pill">Machine Learning (CNNs)</span>
-                    <span class="skill-pill">MATLAB</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="leadership">
-            <h3 class="section-title">Leadership & Soft Skills</h3>
-            <div class="glass-card">
-                <p>
-                    Beyond technical research, I have led teams in hackathons and mentored undergraduate students in Digital Logic Design. 
-                    I excel in technical writing (Patents/Papers) and presenting complex hardware concepts to non-technical stakeholders.
-                </p>
+                <span class="skill-pill">VHDL / Verilog</span>
+                <span class="skill-pill">FPGA Design</span>
+                <span class="skill-pill">Cryptography (AES)</span>
+                <span class="skill-pill">Embedded C</span>
+                <span class="skill-pill">Python</span>
+                <span class="skill-pill">IoT Systems</span>
+                <span class="skill-pill">Machine Learning (CNN)</span>
+                <span class="skill-pill">MATLAB</span>
+                <span class="skill-pill">ModelSim / Vivado</span>
             </div>
         </section>
 
@@ -363,52 +388,93 @@
             <div class="glass-card">
                 <div class="role-title">SARTHI: Hardware Security Module</div>
                 <div class="company-name">MeitY Sponsored Research</div>
-                <p>
-                    Designed a logic-obfuscated hardware authentication mechanism. The system utilizes a custom AES-256 core aimed at securing hardware IPs against reverse engineering. Delivered as a functional prototype to defense clients.
-                </p>
+                <p>Designed a logic-obfuscated hardware authentication mechanism using a custom AES-256 core. Secured hardware IPs against reverse engineering and delivered a prototype to defense clients.</p>
             </div>
 
             <div class="glass-card">
                 <div class="role-title">IoT Precision Agriculture System</div>
                 <div class="company-name">Rajasthan Region Implementation</div>
-                <p>
-                    Developed an end-to-end irrigation management system. Implemented ML models for rainfall prediction to optimize water usage. Designed the C-based edge computing node for sensor data acquisition and pump control.
-                </p>
+                <p>Developed an end-to-end irrigation management system using ML for rainfall prediction. Designed the C-based edge computing node for real-time sensor data acquisition.</p>
             </div>
         </section>
 
         <section id="achievements">
-            <h3 class="section-title">Achievements & Recognition</h3>
-            <div class="glass-card">
-                <ul>
-                    <li><strong>Patent Filed:</strong> "Unified Multi-layer Combinational Logic Obfuscation for Securing Hardware IPs" (Indian Patent).</li>
-                    <li><strong>Research Paper:</strong> Authored article on "Cryptanalysis of 4-bit S-boxes" (Under Review).</li>
-                    <li><strong>Gateway to Industry:</strong> Delivered project demonstration to Military College of Telecommunication Engineering.</li>
-                </ul>
-            </div>
+            <h3 class="section-title">Achievements & Publications</h3>
+            
+            <a href="https://doi.org/your-paper-link" target="_blank" class="liquid-link glass-card">
+                <span class="pub-badge">Research Article</span>
+                <div class="role-title">Cryptanalysis of 4-bit S-boxes (Under Review)</div>
+                <div class="date">2025 | International Journal of Circuit Theory</div>
+                <p>Click to view paper <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 5px;"></i></p>
+            </a>
+
+            <a href="#" class="liquid-link glass-card">
+                <span class="pub-badge">Patent Filed</span>
+                <div class="role-title">Unified Multi-layer Combinational Logic Obfuscation</div>
+                <div class="date">2025 | Indian Patent Application</div>
+                <p>Click to view filing details <i class="fas fa-arrow-right" style="font-size: 0.8rem; margin-left: 5px;"></i></p>
+            </a>
         </section>
 
         <section id="testimonials">
             <h3 class="section-title">Endorsements</h3>
-            <div class="glass-card">
-                <div class="testimonial-container">
+            
+            <div class="testimonials-wrapper">
+                <div class="testimonials-track" id="track">
                     
-                    <div class="testimonial-slide active">
-                        <img src="https://via.placeholder.com/80" alt="Prof Name" class="t-photo">
-                        <div class="t-content">
-                            <p>"Jugal is an exceptional researcher with a rare ability to handle both high-level cryptographic theory and low-level hardware implementation."</p>
-                            <h4>Dr. Supervisor Name</h4>
-                            <span>Senior Scientist, CSIR-CEERI</span>
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Dr. Supervisor</h4>
+                                <span>Senior Scientist, CSIR</span>
+                            </div>
                         </div>
+                        <p class="t-text">"Jugal has a rare ability to handle high-level theory and low-level hardware implementation."</p>
                     </div>
 
-                    <div class="testimonial-slide">
-                        <img src="https://via.placeholder.com/80" alt="Colleague Name" class="t-photo">
-                        <div class="t-content">
-                            <p>"His work on the SARTHI project was pivotal in meeting our strict security benchmarks. Highly dedicated and technically sound."</p>
-                            <h4>Project Lead Name</h4>
-                            <span>Technical Director, MeitY Project</span>
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Project Lead</h4>
+                                <span>Technical Director</span>
+                            </div>
                         </div>
+                        <p class="t-text">"His work on SARTHI was pivotal in meeting our strict security benchmarks."</p>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Colleague Name</h4>
+                                <span>PhD Scholar</span>
+                            </div>
+                        </div>
+                        <p class="t-text">"An innovative thinker who is always ready to tackle complex FPGA challenges."</p>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Professor Name</h4>
+                                <span>Dept Head</span>
+                            </div>
+                        </div>
+                        <p class="t-text">"Jugal's dedication to hardware security research is truly commendable."</p>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Lab Partner</h4>
+                                <span>Researcher</span>
+                            </div>
+                        </div>
+                        <p class="t-text">"Great collaborator and excellent at debugging complex VHDL code."</p>
                     </div>
 
                 </div>
@@ -417,41 +483,41 @@
 
         <section id="connect">
             <h3 class="section-title">Let's Connect</h3>
-            <div class="connect-links">
-                <a href="mailto:your-email@example.com" class="connect-btn">
-                    <i class="fas fa-paper-plane"></i>
-                    Email Me
-                </a>
-                <a href="#" class="connect-btn">
-                    <i class="fab fa-linkedin-in"></i>
-                    LinkedIn
-                </a>
-                <a href="https://jugal-gandhi.github.io" class="connect-btn">
-                    <i class="fab fa-github"></i>
-                    GitHub
-                </a>
+            <div class="glass-card" style="text-align: center;">
+                <p style="margin-bottom: 20px;">Open to research collaborations and R&D opportunities.</p>
+                <a href="mailto:your-email@example.com" class="download-btn">Send Email</a>
             </div>
         </section>
 
         <footer style="margin-top: 50px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
-            <p>&copy; 2025 Jugal Gandhi. Built with Custom Code.</p>
+            <p>&copy; 2025 Jugal Gandhi. Hosted on GitHub Pages.</p>
         </footer>
 
     </main>
 </div>
 
 <script>
-    const slides = document.querySelectorAll('.testimonial-slide');
-    let currentSlide = 0;
+    const track = document.getElementById('track');
+    let offset = 0;
+    const cardWidth = 33.333; // Percentage width for desktop
 
-    function nextSlide() {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
+    function rotateTestimonials() {
+        // If on mobile, slide 100%, if desktop slide 33%
+        const isMobile = window.innerWidth <= 900;
+        const slideAmount = isMobile ? 100 : 33.333;
+        
+        offset += slideAmount;
+        
+        // Reset if we've scrolled past the end (rough estimation)
+        if (offset > (slideAmount * 2)) { 
+            offset = 0; 
+        }
+        
+        track.style.transform = `translateX(-${offset}%)`;
     }
 
-    // Change slide every 5 seconds
-    setInterval(nextSlide, 5000);
+    // Rotate every 4 seconds
+    setInterval(rotateTestimonials, 4000);
 </script>
 
 </body>
