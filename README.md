@@ -43,7 +43,7 @@
   <img src="https://img.shields.io/badge/TCL-A8B9CC?style=for-the-badge&logo=terminal&logoColor=black" />
   <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white" />
   
-  <br/><br/>
+  <br/>
 
   <b>ASIC & EDA Environments</b><br/>
   <img src="https://img.shields.io/badge/Design_Compiler-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
@@ -51,14 +51,14 @@
   <img src="https://img.shields.io/badge/StarRC-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
   <img src="https://img.shields.io/badge/PrimeTime--PX-5c2d91?style=for-the-badge&logo=synopsys&logoColor=white" />
 
-  <br/><br/>
+  <br/>
 
   <b>FPGA Tools</b><br/>
   <img src="https://img.shields.io/badge/Xilinx_Vivado-FF3E00?style=for-the-badge&logo=xilinx&logoColor=white" />
   <img src="https://img.shields.io/badge/Xilinx_ISE-FF3E00?style=for-the-badge&logo=xilinx&logoColor=white" />
   <img src="https://img.shields.io/badge/ModelSim-1e3799?style=for-the-badge&logo=intel&logoColor=white" />
   
-  <br/><br/>
+  <br/>
 
   <b>CMOS Technology Nodes</b><br/>
   <img src="https://img.shields.io/badge/TSMC_28nm-333333?style=for-the-badge&logo=tsmc&logoColor=white" />
@@ -66,8 +66,6 @@
   <img src="https://img.shields.io/badge/SCL_180nm-333333?style=for-the-badge&logo=microchip&logoColor=white" />
 
 </div>
-
-<br />
 
 <h3 align="center">📈 GitHub Analytics</h3>
 
