@@ -251,26 +251,78 @@
         .t-info span { font-size: 0.75rem; color: var(--text-muted); }
         .t-text { font-size: 0.85rem; font-style: italic; color: #555; line-height: 1.5; }
 
-        /* --- SKILLS & PROJECTS --- */
-        .role-title { font-weight: 600; font-size: 1.05rem; }
-        .company-name { color: var(--accent); font-weight: 500; font-size: 0.95rem; margin-bottom: 4px; }
-        .date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        /* --- UPDATED SKILL PILLS (Liquid + Star Reveal) --- */
+.skill-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    margin: 5px;
+    
+    /* Glass Effect */
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+    
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden; /* Keeps the liquid shine inside */
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
 
-        .skill-pill {
-            display: inline-block;
-            background: #ffffff;
-            border: 1px solid #e1e1e1;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin: 0 5px 8px 0;
-            transition: 0.2s;
-        }
-        .skill-pill:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: rgba(0,113,227,0.05);
-        }
+.skill-pill:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0,113,227,0.15); /* Blue glow on hover */
+    border-color: var(--accent);
+    padding-right: 15px; /* Adjust padding slightly for stars */
+}
+
+/* The Liquid Shine Animation */
+.skill-pill::after {
+    content: '';
+    position: absolute;
+    top: 0; 
+    left: -150%; /* Start far left */
+    width: 100%; 
+    height: 100%;
+    /* The shine gradient */
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+    transform: skewX(-20deg);
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.skill-pill:hover::after {
+    left: 150%; /* Move to far right */
+    transition: 0.7s ease-in-out;
+}
+
+/* Star Rating Logic */
+.star-rating {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-left: 0;
+    color: #f5c518; /* Gold Star Color */
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: all 0.4s ease;
+    display: inline-block;
+}
+
+.skill-pill:hover .star-rating {
+    max-width: 100px; /* Expands to show stars */
+    opacity: 1;
+    margin-left: 10px; /* Space between text and stars */
+}
 
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
@@ -367,20 +419,66 @@
             </div>
         </section>
 
-        <section id="skills">
-            <h3 class="section-title">Skills & Expertise</h3>
-            <div class="glass-card">
-                <span class="skill-pill">VHDL / Verilog</span>
-                <span class="skill-pill">FPGA Design</span>
-                <span class="skill-pill">Cryptography (AES)</span>
-                <span class="skill-pill">Embedded C</span>
-                <span class="skill-pill">Python</span>
-                <span class="skill-pill">IoT Systems</span>
-                <span class="skill-pill">Machine Learning (CNN)</span>
-                <span class="skill-pill">MATLAB</span>
-                <span class="skill-pill">ModelSim / Vivado</span>
-            </div>
-        </section>
+<section id="skills">
+    <h3 class="section-title">Skills & Expertise</h3>
+    <div class="glass-card">
+        <div class="skill-pill">
+            <span>VHDL / Verilog</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>FPGA Design</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>Cryptography (AES)</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>Embedded C</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>Python</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>IoT Systems</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>Machine Learning (CNN)</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+            </span>
+        </div>
+
+        <div class="skill-pill">
+            <span>MATLAB</span>
+            <span class="star-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+            </span>
+        </div>
+    </div>
+</section>
 
         <section id="projects">
             <h3 class="section-title">Featured Projects</h3>
