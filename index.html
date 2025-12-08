@@ -1011,6 +1011,69 @@ input:checked + .slider .icon-moon { opacity: 1; }
 [data-theme="dark"] .glass-card:hover .paper-summary {
     border-top-color: rgba(255,255,255,0.1);
 }
+
+
+/* --- VOLUNTARY SERVICE GRID --- */
+.service-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* Wraps to next line on mobile */
+    justify-content: space-between;
+}
+
+.service-card {
+    flex: 1;             /* All 3 cards take equal width */
+    min-width: 260px;    /* If screen is too small, they stack */
+    text-align: center;  /* Centers the logo */
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.service-logo {
+    height: 50px;        /* Fixed height for uniformity */
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 15px;
+    filter: grayscale(100%); /* Optional: Makes logos look classy/uniform */
+    transition: filter 0.3s ease;
+    opacity: 0.7;
+}
+
+.service-card:hover .service-logo {
+    filter: grayscale(0%); /* Color returns on hover */
+    opacity: 1;
+}
+
+/* The List Style */
+.service-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    text-align: left; /* Text stays left-aligned for readability */
+}
+
+.service-list li {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.4;
+}
+
+/* Custom Bullet Point */
+.service-list li::before {
+    content: "•";
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+
     </style>
 </head>
 <body>
@@ -1035,7 +1098,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
         <i class="fab fa-github"></i>
     </a>
     
-    <a href="mailto:your-email@example.com" title="Email Me">
+    <a href="mailto:jugal.gandhi@csir.res.in" title="Email Me">
         <i class="fas fa-envelope"></i>
     </a>
 
@@ -1312,6 +1375,11 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey
                 </div>
                 <div class="date">Filed: 2025 | Ref: 2025110XXXXX</div>
+                
+                
+                 <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
             </div>
         </div>
     </a>
@@ -1332,6 +1400,10 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     M. Santosh, and Jai Gopal Pandey
                 </div>
                 <div class="date">International Journal of Circuit Theory | 2025</div>
+                
+                 <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
             </div>
         </div>
     </a>
@@ -1352,6 +1424,10 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey
                 </div>
                 <div class="date">S&#257;dhan&#257; | 2024</div>
+                
+                 <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
             </div>
         </div>
     </a>
@@ -1373,6 +1449,10 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     <span style="color: #86868b; font-size: 0.85rem; margin-top: 4px; font-style: italic;">*Contributed Equally </span>
                 </div>
                 <div class="date">Journal of Real-time Image Processing | 2024</div>
+                
+                 <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
             </div>
         </div>
     </a>
@@ -1393,6 +1473,10 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey
                 </div>
                 <div class="date">Computers & Security Journal | 2024</div>
+                
+                 <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
             </div>
         </div>
     </a>
@@ -1419,11 +1503,12 @@ input:checked + .slider .icon-moon { opacity: 1; }
                 Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey
             </div>
 
-            <div class="paper-summary">
+            <div class="date" style="margin-top: 8px;">Memories-Materials, Devices, Circuits and Systems | 2023</div>
+            
+             <div class="paper-summary">
                 <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
             </div>
-
-            <div class="date" style="margin-top: 8px;">Memories-Materials, Devices, Circuits and Systems | 2023</div>
+            
         </div>
     </div>
 </a>
@@ -1444,6 +1529,10 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     Jai Gopal Pandey and Chandra Shekhar
                 </div>
                 <div class="date">International Conference on Next Generation Arithmetic (ConGA), St. Louis, Missouri, USA | 2023</div>
+                
+                 <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
             </div>
         </div>
     </a>
@@ -1455,7 +1544,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
 <section id="achievements">
     <h3 class="section-title">Achievements & Grants</h3>
 
-    <!-- <div class="glass-card">
+     <div class="glass-card">
         <div class="listing-item">
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
                 
@@ -1474,39 +1563,52 @@ input:checked + .slider .icon-moon { opacity: 1; }
         <div class="listing-item">
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
                 
-                <span class="status-badge" style="background: #fff3e0; color: #e65100; margin-bottom: 4px;">Best Paper</span>
+                <span class="status-badge" style="background: #fff3e0; color: #e65100; margin-bottom: 4px;">Travel Grants</span>
                 
                 <div class="role-title" style="margin-bottom: 2px;">Best Presentation Award</div>
                 
                 <div class="company-name" style="margin-bottom: 0;">IEEE International Conference 2024</div>
             </div>
         </div>
-    </div> -->
+    </div>
 </section>
 
 
 <section id="service">
     <h3 class="section-title">Voluntary Service</h3>
 
-    <!-- <div class="glass-card">
-        <div class="listing-item">
-            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                <div class="role-title">Technical Reviewer</div>
-                <div class="company-name">IEEE Transactions on VLSI Systems</div>
-                <p style="font-size: 0.9rem; margin-top: 5px;">Peer-reviewed 5+ articles on FPGA design and cryptography.</p>
-            </div>
+    <div class="service-grid">
+        
+        <div class="glass-card service-card">
+            <img src="images/ieee.png" alt="IEEE" class="service-logo">
+            <h4 style="margin-bottom: 10px; font-size: 1rem;">IEEE</h4>
+            <ul class="service-list">
+                <li><b>Reviewer:</b> ISCAS (20224-2026)</li>
+                <li><b>Reviewer:</b> MWSCAS 2025</li>
+                <li><b>Reviewer:</b> RASSE 2025</li>
+                <li><b>Reviewer:</b> ATS 2024</li>
+            </ul>
         </div>
-    </div>
 
-    <div class="glass-card">
-        <div class="listing-item">
-            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                <div class="role-title">Organizing Committee Member</div>
-                <div class="company-name">International Conference on Embedded Systems</div>
-                <p style="font-size: 0.9rem; margin-top: 5px;">Coordinated technical sessions and keynote tracks.</p>
-            </div>
+        <div class="glass-card service-card">
+            <img src="images/elsevier.png" alt="Elsevier" class="service-logo">
+            <h4 style="margin-bottom: 10px; font-size: 1rem;">Elsevier Journals</h4>
+            <ul class="service-list">
+                <li><b>Reviewer:</b> Journal of Information Security & Applications</li>
+                <li><b>Reviewer:</b> Microelectronics Journal</li>
+            </ul>
         </div>
-    </div> -->
+
+        <div class="glass-card service-card">
+            <img src="images/springer.png" alt="Springer" class="service-logo">
+            <h4 style="margin-bottom: 10px; font-size: 1rem;">Springer Journals</h4>
+            <ul class="service-list">
+                <li><b>Reviewer:</b> Journal of Supercomputing</li>
+                <li><b>Reviewer:</b> Scientific Reports</li>
+            </ul>
+        </div>
+
+    </div>
 </section>
 
         <!--<section id="achievements">-->
@@ -1595,8 +1697,8 @@ input:checked + .slider .icon-moon { opacity: 1; }
         <section id="connect">
             <h3 class="section-title">Let's Connect</h3>
             <div class="glass-card" style="text-align: center;">
-                <p style="margin-bottom: 20px;">Open to research collaborations and R&D opportunities.</p>
-                <a href="mailto:your-email@example.com" class="download-btn">Send Email</a>
+                <p style="margin-bottom: 20px;">Open to research collaborations and R&D opportunities</p>
+                <a href="mailto:jugal.gandhi@csir.res.in" class="download-btn">Send Email</a>
             </div>
         </section>
 
@@ -1671,7 +1773,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
         { q: "View Projects", a: "Check out <b>SARTHI</b> (Hardware Security) and my <b>IoT Precision Agriculture</b> system for rainfall prediction." },
         { q: "Education", a: "I am pursuing a <b>PhD in Computer Engineering</b> (Hardware Trojans). I hold an M.Tech in Electronics with Distinction." },
         { q: "Publications", a: "I have a patent on <i>'Logic Obfuscation'</i> and a paper on <i>'4-bit S-boxes'</i> under review." },
-        { q: "Contact Jugal", a: "Email me at <a href='mailto:your-email@example.com'>your-email@example.com</a> or use the contact form!" }
+        { q: "Contact Jugal", a: "Email me at <a href='mailto:jugal.gandhi@csir.res.in'>jugal.gandhi@csir.res.in</a> or use the contact form!" }
     ];
 
     // INITIALIZATION
@@ -1764,6 +1866,5 @@ input:checked + .slider .icon-moon { opacity: 1; }
 </script>
 </body>
 </html>
-
 
 
