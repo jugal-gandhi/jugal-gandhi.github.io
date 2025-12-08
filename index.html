@@ -975,6 +975,42 @@ input:checked + .slider .icon-moon { opacity: 1; }
 [data-theme="dark"] .skill-category {
     border-color: rgba(255,255,255,0.1);
 }
+
+
+        /* --- PAPER HOVER SUMMARY --- */
+.paper-summary {
+    /* Hidden State */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-10px); /* Starts slightly moved up */
+    
+    /* The Magic Animation (Spring Effect) */
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* Typography */
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 0;
+}
+
+/* --- TRIGGER STATE (When you hover the card) --- */
+.glass-card:hover .paper-summary {
+    max-height: 150px; /* Enough space for 2-3 lines */
+    opacity: 1;
+    transform: translateY(0); /* Slides into place */
+    
+    /* Add a subtle separator line when it opens */
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Dark Mode Fix for the separator line */
+[data-theme="dark"] .glass-card:hover .paper-summary {
+    border-top-color: rgba(255,255,255,0.1);
+}
     </style>
 </head>
 <body>
@@ -1363,24 +1399,34 @@ input:checked + .slider .icon-moon { opacity: 1; }
     
     
     <a href="https://www.sciencedirect.com/science/article/pii/S277306462300018X" target="_blank" class="glass-card liquid-link" style="display: block; text-decoration: none; color: inherit;">
-        <div class="listing-item">
-            <div class="listing-img-box">
-                <img src="https://via.placeholder.com/80" alt="Journal">
-            </div>
-            
-            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
-                <span class="status-badge">Research Article</span> 
-                <span class="status-badge" style="background: #e8f5e9; color: #198754; margin-left: 6px;">Q2 Journal</span>
-                <div class="role-title">A Time Domain 2D OaA-based Convolutional Neural Networks Accelerator</div>
-                <div 
-                    class="role-title"> Rudresh Pratap Singh, Shreyam Kumar,
-                    <span style="background: rgba(0, 113, 227, 0.1); font-weight: 600; padding: 2px 6px; border-radius: 3px;">Jugal Gandhi</span>, 
-                    Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey 
-                </div>
-                <div class="date">Memories-Materials, Devices, Circuits and Systems | 2023</div>
-            </div>
+    <div class="listing-item">
+        <div class="listing-img-box">
+            <img src="images/journal_logo.png" alt="Journal">
         </div>
-    </a>
+        
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+            
+            <div style="display: flex; gap: 8px; margin-bottom: 5px;">
+                <span class="status-badge">Research Article</span>
+                <span class="status-badge" style="background: #e8f5e9; color: #198754; margin: 0;">Q2 Journal</span>
+            </div>
+
+            <div class="role-title">A Time Domain 2D OaA-based Convolutional Neural Networks Accelerator</div>
+            
+            <div class="role-title" style="font-weight: 400; font-size: 0.9rem; margin-top: 4px; line-height: 1.4;">
+                Rudresh Pratap Singh, Shreyam Kumar,
+                <span style="background: rgba(0, 113, 227, 0.1); color: #0071e3; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Jugal Gandhi</span>, 
+                Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey
+            </div>
+
+            <div class="paper-summary">
+                <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption.
+            </div>
+
+            <div class="date" style="margin-top: 8px;">Memories-Materials, Devices, Circuits and Systems | 2023</div>
+        </div>
+    </div>
+</a>
     
     
     <a target="_blank" class="glass-card liquid-link" style="display: block; text-decoration: none; color: inherit;">
@@ -1718,5 +1764,6 @@ input:checked + .slider .icon-moon { opacity: 1; }
 </script>
 </body>
 </html>
+
 
 
