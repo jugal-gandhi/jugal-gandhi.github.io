@@ -65,9 +65,36 @@ body {
     color: var(--text-main);
 }
 
+/* --- FIXED & SCROLLABLE SIDEBAR --- */
 .sidebar {
-    background: var(--sidebar-bg) !important; /* Forces dark glass */
-    border-right: 1px solid var(--glass-border);
+    width: 280px;
+    height: 100vh;        /* Full viewport height */
+    position: fixed;      /* Sticks to the left */
+    top: 0;
+    left: 0;
+    
+    /* THE FIX: Allow scrolling if screen is too short */
+    overflow-y: auto;     
+    
+    background: var(--sidebar-bg);
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-right: 1px solid rgba(0,0,0,0.05);
+    z-index: 100;         /* Ensures it stays on top */
+    
+    /* Smooth Scroll Behavior */
+    scroll-behavior: smooth;
+    
+    /* Hide Scrollbar for Firefox */
+    scrollbar-width: none; 
+}
+
+/* Hide Scrollbar for Chrome, Safari and Opera */
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 
 /* 2. Fix Glass Cards */
