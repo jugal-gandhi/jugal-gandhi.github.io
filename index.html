@@ -594,6 +594,78 @@ input:checked + .slider .icon-moon { opacity: 1; }
     margin-left: 10px; /* Space between text and stars */
 }
 
+
+/* --- COMPACT MODE FOR LAPTOPS (Force Fit) --- */
+/* Triggers for screens wider than 900px but shorter than 900px height */
+@media screen and (min-width: 900px) and (max-height: 900px) {
+    
+    .sidebar {
+        height: 100vh;
+        overflow: hidden; /* No scrolling allowed */
+        padding: 10px 15px !important; /* Minimal padding */
+        
+        /* Force contents to pack tightly */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center everything vertically */
+        gap: 5px !important;     /* Override any large gaps */
+    }
+
+    /* 1. Shrink Profile Photo */
+    .profile-img {
+        width: 100px !important;
+        height: 100px !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* 2. Compact Text */
+    .sidebar h1 {
+        font-size: 1.4rem !important;
+        margin: 2px 0 !important;
+    }
+
+    .sidebar h2 {
+        font-size: 0.8rem !important; /* Smaller Bio */
+        margin-bottom: 5px !important;
+        line-height: 1.2;
+    }
+
+    /* 3. Squish Navigation Links */
+    .nav-links {
+        margin: 5px 0 !important;
+        width: 100%;
+    }
+
+    .nav-links a {
+        padding: 4px 15px !important; /* Very thin buttons */
+        font-size: 0.85rem !important; /* Smaller text */
+        margin-bottom: 2px !important;
+    }
+
+    /* 4. Compact Social Icons */
+    .social-links {
+        margin: 5px 0 !important;
+    }
+    .social-icon {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 1rem !important;
+        line-height: 35px !important;
+    }
+
+    /* 5. Shrink Theme Toggle */
+    .theme-switch-wrapper {
+        margin: 5px 0 !important;
+        transform: scale(0.8); /* Make the whole switch 80% size */
+    }
+
+    /* 6. Copyright Text */
+    .copyright {
+        font-size: 0.7rem !important;
+        margin-top: 5px !important;
+    }
+}
+
 /* --- INTELLIGENT FIT FOR LAPTOPS/DESKTOPS --- */
 @media screen and (min-width: 1024px) {
     .sidebar {
@@ -666,7 +738,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
         margin-top: 0;
     }
 }
-        
+
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .wrapper { flex-direction: column; }
@@ -2192,4 +2264,3 @@ input:checked + .slider .icon-moon { opacity: 1; }
 </script>
 </body>
 </html>
-
