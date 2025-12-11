@@ -594,6 +594,79 @@ input:checked + .slider .icon-moon { opacity: 1; }
     margin-left: 10px; /* Space between text and stars */
 }
 
+/* --- INTELLIGENT FIT FOR LAPTOPS/DESKTOPS --- */
+@media screen and (min-width: 1024px) {
+    .sidebar {
+        /* Force full height, no scrolling */
+        height: 100vh;
+        overflow: hidden; 
+        
+        /* Use Flexbox to distribute space vertically */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Pushes content to fill space evenly */
+        align-items: center;
+        
+        /* Dynamic Padding based on screen height (2% of height) */
+        padding: 2vh 30px; 
+    }
+
+    /* 1. Shrink Profile Photo based on Height */
+    .profile-img {
+        width: 16vh;  /* 16% of screen height */
+        height: 16vh;
+        min-width: 100px; /* Safety: Don't get too small */
+        min-height: 100px;
+        margin-bottom: 1vh;
+    }
+
+    /* 2. Adjust Text Sizes to Scale with Height */
+    .sidebar h1 {
+        font-size: 3vh; /* Name scales with height */
+        margin-bottom: 0.5vh;
+    }
+
+    .sidebar h2 {
+        font-size: 1.8vh; /* Bio text scales */
+        margin-bottom: 1vh;
+    }
+
+    /* 3. Compress Navigation Links */
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0; /* Remove fixed gap, use padding below */
+        width: 100%;
+        margin: 1vh 0;
+    }
+
+    .nav-links a {
+        padding: 1vh 15px; /* Vertical padding scales with height */
+        font-size: 1.8vh;  /* Font size scales */
+    }
+
+    /* 4. Adjust Social Icons */
+    .social-links {
+        margin: 1vh 0;
+    }
+    .social-icon {
+        font-size: 2.2vh; /* Icons scale */
+        width: 4.5vh;
+        height: 4.5vh;
+    }
+    
+    /* 5. Adjust Theme Switch Area */
+    .theme-switch-wrapper {
+        margin: 1vh 0;
+        transform: scale(0.9); /* Slightly shrink the toggle button */
+    }
+    
+    .copyright {
+        font-size: 1.2vh;
+        margin-top: 0;
+    }
+}
+        
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .wrapper { flex-direction: column; }
@@ -2119,3 +2192,4 @@ input:checked + .slider .icon-moon { opacity: 1; }
 </script>
 </body>
 </html>
+
