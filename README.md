@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Inter&weight=600&size=30&duration=3000&pause=1000&color=0071E3&center=true&vCenter=true&width=600&lines=Hi,+I'm+Jugal+Gandhi;PhD+Scholar+@+CSIR-CEERI" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Inter&weight=600&size=30&duration=3000&pause=1000&color=0071E3&center=true&vCenter=true&width=600&lines=Hi,+I'm+Jugal+Gandhi;PhD+Candidate+@+CSIR-CEERI" alt="Typing SVG" />
 </div>
 
 <div align="center">
