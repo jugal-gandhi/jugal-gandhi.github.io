@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Play:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- Early theme detection — runs before any paint so loader gets correct bg -->
+    <script>
+    (function() {
+        var saved = localStorage.getItem('theme');
+        if (saved) {
+            document.documentElement.setAttribute('data-theme', saved);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    })();
+    </script>
+
     <!-- PAGE LOADER — Scan Reveal + Chip Draws Itself + Lock Assembles -->
     <style>
     #page-loader {
@@ -19,6 +33,14 @@
         overflow: hidden;
         transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1),
                     visibility 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    /* Light mode loader: white → light blue gradient */
+    [data-theme="light"] #page-loader {
+        background: linear-gradient(145deg, #ffffff 0%, #e8f4ff 50%, #d0eaff 100%);
+    }
+    /* Dark mode loader: pure black */
+    [data-theme="dark"] #page-loader {
+        background: #03060d;
     }
     #page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
@@ -148,6 +170,29 @@
         text-align: center;
         width: 100%;
         animation: ldrStatusIn .35s cubic-bezier(.4,0,.2,1) forwards;
+    }
+
+    /* ── Light mode text colour overrides ── */
+    [data-theme="light"] .ldr-name   { color: #0a0a1a; border-right-color: #0071e3; }
+    [data-theme="light"] .ldr-title  { color: #0058b0; }
+    [data-theme="light"] .ldr-status { color: #0a7a55; }
+    [data-theme="light"] .ldr-bar-track { background: #c8dff5; }
+    [data-theme="light"] #page-loader::before {
+        background-image:
+            linear-gradient(rgba(0,80,180,.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,80,180,.04) 1px, transparent 1px);
+    }
+    [data-theme="light"] .ldr-br { border-color: rgba(0,80,200,.3); }
+
+    /* Light mode chip: invert dark fills → light, then shift hue to keep blues */
+    [data-theme="light"] .ldr-ghost svg,
+    [data-theme="light"] .ldr-bright svg {
+        filter: invert(1) hue-rotate(180deg) saturate(0.7) brightness(0.92);
+    }
+    /* Beam stays blue in light mode */
+    [data-theme="light"] .ldr-beam {
+        background: linear-gradient(90deg, transparent, #0058b0, #004090, #0058b0, transparent);
+        box-shadow: 0 0 10px 3px rgba(0,80,180,0.4);
     }
     </style>
 
@@ -2044,11 +2089,12 @@ img, svg { max-width: 100%; height: auto; }
 
         <!-- ghost (dim, always visible) -->
         <div class="ldr-ghost">
-            <svg width="220" height="220" viewBox="0 0 220 220">
+            <svg width="220" height="220" viewBox="0 0 220 220" style="overflow:hidden">
+                <defs><clipPath id="chipClip"><rect x="10" y="10" width="200" height="200" rx="6"/></clipPath></defs>
                 <rect x="10" y="10" width="200" height="200" rx="6" fill="none" stroke="#0d2040" stroke-width="1"/>
-                <rect x="18" y="18" width="86" height="60" rx="3" fill="#060c18" stroke="#0d1830" stroke-width=".5"/>
-                <rect x="116" y="18" width="86" height="60" rx="3" fill="#060818" stroke="#0d1228" stroke-width=".5"/>
-                <rect x="18" y="90" width="184" height="122" rx="3" fill="#050c14" stroke="#0d1828" stroke-width=".5"/>
+                <rect x="18" y="18" width="86" height="60" rx="3" fill="#060c18" stroke="#0d1830" stroke-width=".5" clip-path="url(#chipClip)"/>
+                <rect x="116" y="18" width="86" height="60" rx="3" fill="#060818" stroke="#0d1228" stroke-width=".5" clip-path="url(#chipClip)"/>
+                <rect x="18" y="90" width="184" height="108" rx="3" fill="#050c14" stroke="#0d1828" stroke-width=".5" clip-path="url(#chipClip)"/>
                 <rect x="30"  y="4"   width="5" height="6" rx="1" fill="#0a1828" opacity=".3"/>
                 <rect x="60"  y="4"   width="5" height="6" rx="1" fill="#0a1828" opacity=".3"/>
                 <rect x="90"  y="4"   width="5" height="6" rx="1" fill="#0a1828" opacity=".3"/>
@@ -2101,7 +2147,7 @@ img, svg { max-width: 100%; height: auto; }
                     style="animation:ldrFadeUp .3s 1.15s both;opacity:0">CRYPTO</text>
 
                 <!-- std cell block -->
-                <rect x="18" y="90" width="184" height="122" rx="3"
+                <rect x="18" y="90" width="184" height="108" rx="3"
                     fill="#06101e" stroke="#0d2a50" stroke-width="1"
                     style="animation:ldrBlockIn .4s cubic-bezier(.34,1.56,.64,1) 1.2s both"/>
 
