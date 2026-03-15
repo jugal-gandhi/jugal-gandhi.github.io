@@ -284,96 +284,105 @@ body, .sidebar, .glass-card, .skill-pill, .status-badge, .chat-window, .nav-menu
                 box-shadow 0.4s ease;
 }
 
-/* --- THE APPLE TOGGLE SWITCH CSS --- */
+/* ═══════════════════════════════
+   THEME TOGGLE — Clean & Formal
+   ═══════════════════════════════ */
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px 0;
+    gap: 10px;
 }
-
 .theme-switch {
     display: inline-block;
-    height: 34px;
+    height: 28px;
     position: relative;
-    width: 64px;
+    width: 56px;
+    flex-shrink: 0;
 }
+.theme-switch input { display: none; }
 
-.theme-switch input {
-    display: none;
-}
-
-/* --- UPDATED TRACK (Light to Dark Gradient) --- */
 .slider {
-    /* Gradient from Light Gray (Left) to Deep Dark (Right) */
-    background: linear-gradient(to right, #dcdcdc 0%, #2c2c2e 100%); 
-    
-    bottom: 0;
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
     cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-radius: 34px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); /* Inner shadow for depth */
-    border: 1px solid rgba(0,0,0,0.05);
+    background: #d1d5db;
+    border: 1.5px solid rgba(0,0,0,0.08);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
-
-/* --- UPDATED CHECKED STATE (Knob Movement Only) --- */
 input:checked + .slider {
-    /* We DO NOT change the background color here anymore. 
-       We keep the gradient visible so it looks like "sliding into the dark side" */
-    border-color: rgba(255,255,255,0.1);
+    background: #1e293b;
+    border-color: rgba(255,255,255,0.08);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
 }
 
-input:checked + .slider .knob {
-    /* Move to the right (Dark Side) */
-    transform: translateX(28px);
-    /* Optional: Make the knob slightly darker in dark mode for style */
-    background-color: #f0f0f0; 
-    box-shadow: -2px 2px 8px rgba(0,0,0,0.3); /* Shadow shifts to left */
-}
-
-/* The Sliding Circle */
-.slider:before {
-    background-color: white;
-    bottom: 4px;
-    content: "";
-    height: 26px;
-    left: 4px;
+/* Knob */
+.slider .knob {
     position: absolute;
-    transition: .4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bouncy Apple Effect */
-    width: 26px;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 2;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    transition: transform 0.38s cubic-bezier(0.68,-0.4,0.27,1.4);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+}
+input:checked + .slider .knob { transform: translateX(28px); }
+
+/* Sun icon */
+.icon-sun {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #f59e0b;
+    transition: opacity 0.25s ease, transform 0.35s ease;
+}
+input:checked + .slider .knob .icon-sun {
+    opacity: 0; transform: rotate(45deg) scale(0.5);
 }
 
-/* Icons inside the slider */
-.icon-sun, .icon-moon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    z-index: 1;
-    transition: opacity 0.3s;
+/* Moon icon */
+.icon-moon {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #6366f1;
+    opacity: 0;
+    transition: opacity 0.25s ease 0.1s, transform 0.35s ease;
+    transform: rotate(-45deg) scale(0.5);
+}
+input:checked + .slider .knob .icon-moon {
+    opacity: 1; transform: rotate(0deg) scale(1);
 }
 
-.icon-sun { left: 8px; color: #f39c12; opacity: 1; }
-.icon-moon { right: 8px; color: #f1c40f; opacity: 0; }
-
-/* CHECKED STATE (Dark Mode) */
-input:checked + .slider {
-    background-color: #303136; /* Dark Mode Track */
+/* ── Formal fade-through transition overlay ── */
+#theme-wipe {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
+#theme-particles { display: none; }
 
-input:checked + .slider:before {
-    transform: translateX(30px);
+/* ── Water ripple rings ── */
+.water-ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    animation: waterRipple 0.85s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
 }
-
-/* Toggle Icons visibility */
-input:checked + .slider .icon-sun { opacity: 0; }
-input:checked + .slider .icon-moon { opacity: 1; }
+@keyframes waterRipple {
+    0%   { transform: translate(-50%, -50%) scale(0);   opacity: 0.6; }
+    55%  { opacity: 0.2; }
+    100% { transform: translate(-50%, -50%) scale(1);   opacity: 0; }
+}
 
         html { scroll-behavior: smooth; }
 
@@ -505,15 +514,118 @@ input:checked + .slider .icon-moon { opacity: 1; }
             text-decoration: none;
             font-size: 0.95rem;
             border-radius: 8px;
-            transition: all 0.2s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
             margin-bottom: 5px;
+            position: relative;
+            overflow: hidden;
         }
+
+        /* ── Radial spotlight background (tracks cursor X) ── */
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: radial-gradient(circle at var(--nav-x, 50%) 50%,
+                rgba(0,113,227,0.18) 0%, transparent 75%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        [data-theme="dark"] .nav-menu a::before {
+            background: radial-gradient(circle at var(--nav-x, 50%) 50%,
+                rgba(77,166,255,0.22) 0%, transparent 75%);
+        }
+        .nav-menu a:hover::before { opacity: 1; }
+
+        /* ── Shimmer sweep across the whole row ── */
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            left: -70%;
+            width: 45%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            transform: skewX(-15deg);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+        }
+        .nav-menu a:hover::after {
+            animation: navRowShimmer 0.6s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        @keyframes navRowShimmer {
+            0%   { left: -70%; opacity: 0.8; }
+            100% { left: 130%; opacity: 0; }
+        }
+
         .nav-menu a:hover {
-            background: rgba(0,113,227,0.08);
-            color: var(--accent);
+            background: rgba(0,113,227,0.05);
             transform: translateX(5px);
         }
-        .nav-menu a i { width: 25px; text-align: center; margin-right: 5px; }
+
+        /* ── Icon ── */
+        .nav-menu a i {
+            width: 25px;
+            text-align: center;
+            margin-right: 5px;
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+        .nav-menu a:hover i { color: var(--accent); }
+
+        /* ── Nav label span — rotating gradient text on hover ── */
+        .nav-label {
+            position: relative;
+            z-index: 2;
+            display: inline;
+            /* default: inherit color */
+            color: inherit;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            -webkit-text-fill-color: unset;
+            transition: color 0.3s ease;
+        }
+        .nav-menu a:hover .nav-label {
+            /* Rotating gradient: angle animates via @property */
+            background: linear-gradient(
+                var(--grad-angle, 0deg),
+                #0071e3 0%,
+                #5eb0ff 25%,
+                #a78bfa 50%,
+                #38bdf8 75%,
+                #0071e3 100%
+            );
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: navGradRotate 2s linear infinite;
+        }
+        [data-theme="dark"] .nav-menu a:hover .nav-label {
+            background: linear-gradient(
+                var(--grad-angle, 0deg),
+                #4da6ff 0%,
+                #a78bfa 25%,
+                #38bdf8 50%,
+                #f0abfc 75%,
+                #4da6ff 100%
+            );
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: navGradRotate 2s linear infinite;
+        }
+
+        @keyframes navGradRotate {
+            0%   { background-position: 0% 50%;   filter: hue-rotate(0deg); }
+            50%  { background-position: 100% 50%; filter: hue-rotate(180deg); }
+            100% { background-position: 0% 50%;   filter: hue-rotate(360deg); }
+        }
 
         .download-btn {
             margin-top: auto;
@@ -574,6 +686,8 @@ input:checked + .slider .icon-moon { opacity: 1; }
             margin-bottom: 15px;
             box-shadow: var(--glass-shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .glass-card:hover {
             transform: translateY(-3px);
@@ -582,6 +696,35 @@ input:checked + .slider .icon-moon { opacity: 1; }
         }
         [data-theme="dark"] .glass-card:hover {
             box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+
+        /* Apple-style radial spotlight on cards */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,113,227,0.13) 0%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
+            opacity: 0;
+            left: var(--mouse-x, 50%);
+            top: var(--mouse-y, 50%);
+            z-index: 0;
+        }
+        .glass-card:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        [data-theme="dark"] .glass-card::after {
+            background: radial-gradient(circle, rgba(77,166,255,0.14) 0%, transparent 70%);
+        }
+        /* Ensure card content stays above the glow layer */
+        .glass-card > * {
+            position: relative;
+            z-index: 1;
         }
 
         /* --- EDUCATION WITH LOGO --- */
@@ -3213,17 +3356,103 @@ img, svg { max-width: 100%; height: auto; }
     }
     
     
-    // --- DARK MODE LOGIC ---
-    
-    function toggleTheme(e) {
-        if (e.checked) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
+    // --- THEME TOGGLE — clean cross-fade + water ripple ---
+    (function() {
+        const wipe = document.createElement('div');
+        wipe.id = 'theme-wipe';
+        document.body.appendChild(wipe);
+    })();
+
+    function spawnWaterRipple(cx, cy, toDark) {
+        const ringCount = 3;
+        const maxSize   = 110; // px — stays local around the toggle
+        const color     = toDark
+            ? 'rgba(77, 166, 255,'   // blue for dark
+            : 'rgba(0,  113, 227,';  // accent for light
+
+        for (let i = 0; i < ringCount; i++) {
+            setTimeout(() => {
+                const ring = document.createElement('div');
+                ring.className = 'water-ripple';
+                const size = maxSize * (0.55 + i * 0.225);
+                ring.style.cssText = `
+                    width:  ${size}px;
+                    height: ${size}px;
+                    left:   ${cx}px;
+                    top:    ${cy}px;
+                    border: 1.5px solid ${color}${0.55 - i * 0.15});
+                    animation-duration: ${0.75 + i * 0.12}s;
+                    animation-delay: ${i * 0.1}s;
+                `;
+                document.body.appendChild(ring);
+                ring.addEventListener('animationend', () => ring.remove(), { once: true });
+            }, i * 0);
         }
     }
+
+    function toggleTheme(e) {
+        const toDark = e.checked;
+        const wipe   = document.getElementById('theme-wipe');
+
+        // Get toggle centre coords
+        const toggle = document.querySelector('.theme-switch');
+        const rect   = toggle ? toggle.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+
+        // Water ripple
+        spawnWaterRipple(cx, cy, toDark);
+
+        // Page cross-fade
+        wipe.style.background = toDark ? '#0a0a0f' : '#f0f2f5';
+        wipe.style.transition = 'opacity 0.28s ease';
+        wipe.style.opacity    = '1';
+
+        setTimeout(() => {
+            document.documentElement.setAttribute('data-theme', toDark ? 'dark' : 'light');
+            localStorage.setItem('theme', toDark ? 'dark' : 'light');
+        }, 180);
+
+        setTimeout(() => {
+            wipe.style.transition = 'opacity 0.32s ease';
+            wipe.style.opacity    = '0';
+        }, 280);
+    }
+
+    // ── Wrap nav link text in .nav-label spans for gradient text effect ──
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        // Each link is like: <i class="..."></i> About Me
+        // We want to wrap the text node(s) in a span.nav-label
+        const nodes = Array.from(link.childNodes);
+        nodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                const span = document.createElement('span');
+                span.className = 'nav-label';
+                span.textContent = node.textContent;
+                link.replaceChild(span, node);
+            }
+        });
+    });
+
+    // ── Apple-style radial spotlight on glass cards ──
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', x + 'px');
+            card.style.setProperty('--mouse-y', y + 'px');
+        });
+    });
+
+    // ── Nav link spotlight — tracks cursor X ──
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('mousemove', function(e) {
+            const rect = link.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            link.style.setProperty('--nav-x', x + '%');
+        });
+    });
 
     function toggleMobileNav() {
         const nav = document.getElementById('navMenu');
