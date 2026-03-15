@@ -1625,9 +1625,136 @@ footer {
     box-shadow: 0 0 0 4px rgba(0,113,227,0.12), 0 10px 25px rgba(0,0,0,0.1) !important;
 }
 
-/* ─────────────────────────────────────────────────────────
-   SCROLL REVEAL
-───────────────────────────────────────────────────────── */
+/* ─── Contact Form ─── */
+.cf-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+@media (max-width: 600px) { .cf-row { grid-template-columns: 1fr; } }
+
+.cf-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+}
+.cf-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* ── Input wrapper for rotating border ── */
+.cf-input-wrap {
+    position: relative;
+    border-radius: 10px;
+}
+/* The rotating conic border layer */
+.cf-input-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: 11px;
+    background: conic-gradient(
+        from var(--cf-angle, 0deg),
+        #e040fb, #7c4dff, #2979ff, #00bcd4,
+        #00e5ff, #2979ff, #7c4dff, #e040fb
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 0;
+    animation: cfSpin 3s linear infinite paused;
+}
+.cf-input-wrap:focus-within::before {
+    opacity: 1;
+    animation-play-state: running;
+}
+@property --cf-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+@keyframes cfSpin { to { --cf-angle: 360deg; } }
+
+/* White/dark backing so conic shows only as border */
+.cf-input-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: 9px;
+    background: var(--glass-bg);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.cf-input {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.25s ease;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+}
+/* Hide plain border when conic is active */
+.cf-input-wrap:focus-within .cf-input {
+    border-color: transparent;
+    background: var(--glass-bg);
+}
+.cf-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+.cf-textarea { resize: vertical; min-height: 110px; }
+
+/* ── Magnetic submit button ── */
+.cf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 30px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: none;
+    transition: background 0.25s ease, opacity 0.2s ease;
+    will-change: transform;
+}
+.cf-btn:hover {
+    background: var(--accent-hover);
+    box-shadow: none;
+    opacity: 0.92;
+}
+.cf-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+/* Inner text span — this is what moves */
+.cf-btn .cf-btn-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+}
+
+.cf-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+}
+.cf-status.success { color: #1d9e75; }
+.cf-status.error   { color: #e74c3c; }
 .reveal {
     opacity: 0;
     transform: translateY(32px);
@@ -3180,9 +3307,50 @@ img, svg { max-width: 100%; height: auto; }
 
         <section id="connect">
             <h3 class="section-title">Let's Connect</h3>
-            <div class="glass-card" style="text-align: center;">
-                <p style="margin-bottom: 20px;">Open to research collaborations and R&D opportunities</p>
-                <a href="/cdn-cgi/l/email-protection#204a5547414c0e47414e44484960435349520e5245530e494e" class="download-btn">Send Email</a>
+            <div class="glass-card">
+                <p style="margin-bottom: 22px; color: var(--text-muted); font-size: 0.95rem;">Open to research collaborations, R&D opportunities, and academic discussions. Fill out the form below and I'll get back to you directly.</p>
+
+                <form id="contactForm" action="https://formspree.io/f/xwpbpqko" method="POST" novalidate>
+                    <input type="hidden" name="_subject" value="New message from jugalgandhi.com">
+
+                    <div class="cf-row">
+                        <div class="cf-group">
+                            <label class="cf-label" for="cf-name">Your Name</label>
+                            <div class="cf-input-wrap">
+                                <input class="cf-input" type="text" id="cf-name" name="name" placeholder="John Doe" required>
+                            </div>
+                        </div>
+                        <div class="cf-group">
+                            <label class="cf-label" for="cf-email">Email Address</label>
+                            <div class="cf-input-wrap">
+                                <input class="cf-input" type="email" id="cf-email" name="email" placeholder="john@example.com" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cf-group">
+                        <label class="cf-label" for="cf-subject">Subject</label>
+                        <div class="cf-input-wrap">
+                            <input class="cf-input" type="text" id="cf-subject" name="subject" placeholder="Research Collaboration / Opportunity / Other" required>
+                        </div>
+                    </div>
+
+                    <div class="cf-group">
+                        <label class="cf-label" for="cf-message">Message</label>
+                        <div class="cf-input-wrap">
+                            <textarea class="cf-input cf-textarea" id="cf-message" name="message" placeholder="Write your message here…" rows="5" required></textarea>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                        <button type="submit" class="cf-btn" id="cf-submit">
+                            <span class="cf-btn-text">
+                                <i class="fas fa-paper-plane"></i>Send Message
+                            </span>
+                        </button>
+                        <span class="cf-status" id="cf-status"></span>
+                    </div>
+                </form>
             </div>
         </section>
 
@@ -3555,10 +3723,8 @@ img, svg { max-width: 100%; height: auto; }
     document.querySelectorAll('.glass-card').forEach(card => {
         card.addEventListener('mousemove', function(e) {
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.setProperty('--mouse-x', x + 'px');
-            card.style.setProperty('--mouse-y', y + 'px');
+            card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+            card.style.setProperty('--mouse-y', (e.clientY - rect.top)  + 'px');
         });
     });
 
@@ -3570,6 +3736,64 @@ img, svg { max-width: 100%; height: auto; }
             link.style.setProperty('--nav-x', x + '%');
         });
     });
+
+    // --- CONTACT FORM (Formspree) ---
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn    = document.getElementById('cf-submit');
+            const status = document.getElementById('cf-status');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:7px;"></i>Sending…';
+            status.textContent = '';
+            status.className = 'cf-status';
+
+            try {
+                const res = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: new FormData(contactForm),
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.ok) {
+                    status.textContent = '✓ Message sent! I\'ll get back to you soon.';
+                    status.className = 'cf-status success';
+                    contactForm.reset();
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch {
+                status.textContent = '✗ Something went wrong. Try emailing directly.';
+                status.className = 'cf-status error';
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right:7px;"></i>Send Message';
+        });
+    }
+
+    // --- MAGNETIC SUBMIT BUTTON ---
+    const cfBtn = document.getElementById('cf-submit');
+    if (cfBtn) {
+        const btnText = cfBtn.querySelector('.cf-btn-text');
+        cfBtn.addEventListener('mousemove', function(e) {
+            const rect  = cfBtn.getBoundingClientRect();
+            const cx    = rect.left + rect.width  / 2;
+            const cy    = rect.top  + rect.height / 2;
+            // -1 to +1 normalised from centre
+            const dx    = (e.clientX - cx) / (rect.width  / 2);
+            const dy    = (e.clientY - cy) / (rect.height / 2);
+            // Full corner-to-corner: half the padding space each side
+            const moveX = dx * 18;
+            const moveY = dy * 10;
+            if (btnText) btnText.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+        cfBtn.addEventListener('mouseleave', function() {
+            if (btnText) btnText.style.transform = 'translate(0,0)';
+        });
+    }
 
     function toggleMobileNav() {
         const nav = document.getElementById('navMenu');
