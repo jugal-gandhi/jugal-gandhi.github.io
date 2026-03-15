@@ -442,6 +442,7 @@ input:checked + .slider .knob .icon-moon {
             z-index: 100;
         }
 
+        /* ── Profile entrance animations ── */
         .profile-img {
             width: 140px;
             height: 140px;
@@ -450,6 +451,83 @@ input:checked + .slider .knob .icon-moon {
             margin-bottom: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             border: 4px solid white;
+            opacity: 0;
+            transform: scale(0.55);
+            filter: blur(6px);
+        }
+        .profile-img.profile-entered {
+            animation: profileLogoIn 0.72s cubic-bezier(0.34, 1.45, 0.64, 1) forwards;
+        }
+        @keyframes profileLogoIn {
+            0%   { opacity: 0; transform: scale(0.55); filter: blur(6px); }
+            60%  { opacity: 1; filter: blur(0px); }
+            75%  { transform: scale(1.07); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+        }
+
+        /* Ring water wave ripple */
+        .profile-ring {
+            position: absolute;
+            width: 148px; height: 148px;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent);
+            opacity: 0;
+            pointer-events: none;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .profile-ring.ring-pulse {
+            animation: waterWave1 1.8s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
+        }
+        @keyframes waterWave1 {
+            0%   { opacity: 0.7; transform: translate(-50%, -50%) scale(1);    }
+            100% { opacity: 0;   transform: translate(-50%, -50%) scale(1.65); }
+        }
+
+        /* extra rings injected by JS */
+        .wave-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            opacity: 0;
+            pointer-events: none;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            animation: waterWaveRing 1.8s cubic-bezier(0.15, 0.6, 0.35, 1) forwards;
+        }
+        @keyframes waterWaveRing {
+            0%   { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0;   transform: translate(-50%, -50%) scale(2.2); }
+        }
+
+        /* h1 typewriter */
+        .sidebar h1 {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--accent);
+            width: 0;
+            opacity: 0;
+        }
+        .sidebar h1.name-typing {
+            animation:
+                sidebarTypeIn  0.55s steps(12, end) forwards,
+                sidebarBlink   0.6s step-end 0.55s 4,
+                sidebarCursorOff 0.01s ease 2.95s forwards;
+        }
+        @keyframes sidebarTypeIn    { from { width: 0; opacity: 1; } to { width: 8.5em; opacity: 1; } }
+        @keyframes sidebarBlink     { 50% { border-color: transparent; } }
+        @keyframes sidebarCursorOff { to  { border-color: transparent; } }
+
+        /* h2 fade-up */
+        .sidebar h2 {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        .sidebar h2.sub-entered {
+            animation: subFadeUp 0.45s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        @keyframes subFadeUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .sidebar h1 { 
@@ -1622,9 +1700,9 @@ footer {
         padding: 16px 20px; gap: 14px;
         border-right: none; border-bottom: 1px solid var(--glass-border);
     }
-    .sidebar .profile-img { width: 68px !important; height: 68px !important; margin-bottom: 0 !important; }
-    .sidebar h1 { font-size: 1.15rem; margin-bottom: 2px; }
-    .sidebar h2 { font-size: 0.78rem; margin-bottom: 0; }
+    .sidebar .profile-img { width: 88px !important; height: 88px !important; margin-bottom: 0 !important; }
+    .sidebar h1 { font-size: 1.25rem; margin-bottom: 2px; }
+    .sidebar h2 { font-size: 0.85rem; margin-bottom: 0; }
     .social-links { margin: 0; }
     .theme-switch-wrapper { margin: 0; }
     .nav-menu { width: 100%; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 0; }
@@ -1645,9 +1723,9 @@ footer {
         padding: 18px 20px;
         border-right: none; border-bottom: 1px solid var(--glass-border);
     }
-    .sidebar .profile-img { width: 76px !important; height: 76px !important; margin-bottom: 8px !important; }
-    .sidebar h1 { font-size: 1.1rem; }
-    .sidebar h2 { font-size: 0.78rem; }
+    .sidebar .profile-img { width: 96px !important; height: 96px !important; margin-bottom: 10px !important; }
+    .sidebar h1 { font-size: 1.2rem; }
+    .sidebar h2 { font-size: 0.83rem; }
     .nav-menu { display: none; }
     .main-content { margin-left: 0; padding: 22px 20px; }
     .section-title { font-size: 1.15rem; }
@@ -1666,9 +1744,9 @@ footer {
         padding: 16px;
         border-right: none; border-bottom: 1px solid var(--glass-border);
     }
-    .sidebar .profile-img { width: 68px !important; height: 68px !important; margin-bottom: 8px !important; }
-    .sidebar h1 { font-size: 1.05rem; }
-    .sidebar h2 { font-size: 0.76rem; }
+    .sidebar .profile-img { width: 88px !important; height: 88px !important; margin-bottom: 10px !important; }
+    .sidebar h1 { font-size: 1.15rem; }
+    .sidebar h2 { font-size: 0.8rem; }
     .nav-menu { display: none; }
     .main-content { margin-left: 0; padding: 18px 15px; }
     .section-title { font-size: 1.1rem; }
@@ -1690,9 +1768,9 @@ footer {
         padding: 14px 13px;
         border-right: none; border-bottom: 1px solid var(--glass-border);
     }
-    .sidebar .profile-img { width: 62px !important; height: 62px !important; margin-bottom: 6px !important; }
-    .sidebar h1 { font-size: 1rem; }
-    .sidebar h2 { font-size: 0.74rem; }
+    .sidebar .profile-img { width: 84px !important; height: 84px !important; margin-bottom: 8px !important; }
+    .sidebar h1 { font-size: 1.1rem; }
+    .sidebar h2 { font-size: 0.78rem; }
     .nav-menu { display: none; }
     .theme-switch-wrapper { transform: scale(0.82); transform-origin: center; margin: 4px 0; }
     .main-content { margin-left: 0; padding: 15px 12px; }
@@ -1721,7 +1799,7 @@ footer {
     .main-content { padding: 12px 10px; }
     .glass-card { padding: 10px; }
     .section-title { font-size: 0.98rem; }
-    .sidebar h1 { font-size: 0.92rem; }
+    .sidebar h1 { font-size: 1rem; }
     .chat-window { width: calc(100vw - 12px) !important; right: 6px !important; left: 6px !important; }
 }
 
@@ -1948,10 +2026,12 @@ img, svg { max-width: 100%; height: auto; }
 
 <div class="wrapper">
     <aside class="sidebar">
-        <img src="images/Jugal.png" alt="Jugal Gandhi" class="profile-img">
-        
-        <h1>Jugal Gandhi</h1>
-        <h2>PhD Candidate | Hardware Security</h2>
+        <div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:15px;">
+            <div class="profile-ring" id="profileRing"></div>
+            <img src="images/Jugal.png" alt="Jugal Gandhi" class="profile-img" id="profileImg" style="margin-bottom:0;">
+        </div>
+        <h1 id="sidebarName">Jugal Gandhi</h1>
+        <h2 id="sidebarSub">PhD Candidate | Hardware Security</h2>
         
       <div class="social-links">
     <a href="https://www.linkedin.com/in/jugal-gandhi-2278b9131/" target="_blank" title="LinkedIn">
@@ -3264,6 +3344,49 @@ img, svg { max-width: 100%; height: auto; }
             const loader = document.getElementById('page-loader');
             if (loader) loader.classList.add('hidden');
         }, 3000);
+
+        // ── 3b. Profile entrance sequence (after loader hides) ──
+        setTimeout(() => {
+            // Step 1: photo pops in with logo bounce
+            const img       = document.getElementById('profileImg');
+            const ringWrap  = img ? img.closest('div[style]') : null;
+            if (img) img.classList.add('profile-entered');
+
+            // Step 2: water wave rings after photo lands
+            setTimeout(() => {
+                if (!ringWrap) return;
+                // fire 4 rings, each staggered & slightly smaller border opacity
+                for (let i = 0; i < 4; i++) {
+                    setTimeout(() => {
+                        const ring = document.createElement('div');
+                        ring.className = 'wave-ring';
+                        // size the base ring to match photo
+                        const base = img ? img.offsetWidth : 140;
+                        ring.style.cssText = `
+                            width: ${base + 8}px;
+                            height: ${base + 8}px;
+                            animation-duration: ${1.4 + i * 0.25}s;
+                            border-width: ${1.5 - i * 0.25}px;
+                            opacity: ${0.55 - i * 0.1};
+                        `;
+                        ringWrap.appendChild(ring);
+                        ring.addEventListener('animationend', () => ring.remove(), { once: true });
+                    }, i * 160);
+                }
+            }, 520);
+
+            // Step 3: name typewriter
+            setTimeout(() => {
+                const h1 = document.getElementById('sidebarName');
+                if (h1) h1.classList.add('name-typing');
+            }, 700);
+
+            // Step 4: subtitle fades up
+            setTimeout(() => {
+                const h2 = document.getElementById('sidebarSub');
+                if (h2) h2.classList.add('sub-entered');
+            }, 1350);
+        }, 3150);
 
         // ── 4. Chatbot buttons ──
         const optionsContainer = document.getElementById('chat-options');
