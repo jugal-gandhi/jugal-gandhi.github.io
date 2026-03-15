@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jugal Gandhi | PhD Candidate </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Play:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- PAGE LOADER — Scan Reveal + Chip Draws Itself + Lock Assembles -->
     <style>
@@ -96,54 +96,57 @@
     @keyframes ldrKhIn      { from { opacity:0; transform:scale(0); } to { opacity:1; transform:scale(1); } }
 
     /* bottom name + bar */
-    @keyframes ldrTypeN  { from { width:0; } to { width: min(260px, 70vw); } }
+    @keyframes ldrTypeN  { from { width:0; } to { width: min(240px, 60vw); } }
     @keyframes ldrBlink  { 50% { border-color:transparent; } }
-    @keyframes ldrTitleIn{ from { opacity:0; letter-spacing:7px; } to { opacity:1; letter-spacing: clamp(2px, 0.4vw, 4px); } }
-    @keyframes ldrBarFill{ 0%{width:0} 55%{width:72%} 80%{width:90%} 100%{width:100%} }
+    @keyframes ldrTitleIn{ from { opacity:0; letter-spacing:4px; } to { opacity:1; letter-spacing: clamp(1px, 0.5vw, 3px); } }
+    @keyframes ldrBarFill{ 0%{width:0} 40%{width:80%} 70%{width:95%} 100%{width:100%} }
     @keyframes ldrShimmer{ 0%{left:-50px} 100%{left:110%} }
     @keyframes ldrStatusIn{ from{opacity:0;transform:translateY(3px)} to{opacity:1;transform:translateY(0)} }
 
     /* name */
     .ldr-name {
-        font-family: 'Courier New', monospace;
-        font-size: clamp(16px, 3.5vw, 24px);
+        font-family: 'Play', sans-serif;
+        font-size: clamp(18px, 4vw, 26px);
         font-weight: 700; color: #e8eaf0; letter-spacing: .5px;
         white-space: nowrap; overflow: hidden; width: 0;
-        max-width: 90vw;
+        max-width: 80vw;
         border-right: 2px solid #0071e3;
         animation: ldrTypeN .65s steps(13,end) .05s forwards,
                    ldrBlink .55s step-end .7s 5;
     }
     .ldr-title {
-        font-family: 'Courier New', monospace;
-        font-size: clamp(9px, 1.4vw, 13px);
+        font-family: 'Play', sans-serif;
+        font-size: clamp(6.5px, 2.2vw, 11px);
         color: #378add;
-        letter-spacing: clamp(2px, 0.4vw, 4px);
+        letter-spacing: clamp(1px, 0.4vw, 3px);
         text-transform: uppercase;
         white-space: nowrap;
         text-align: center;
+        width: 100%;
         opacity: 0; animation: ldrTitleIn .6s cubic-bezier(.16,1,.3,1) .75s forwards;
     }
     .ldr-bar-track {
-        width: min(280px, 75vw); height: 1.5px; background: #0d1f38;
+        width: min(280px, 78vw); height: 1.5px; background: #0d1f38;
         border-radius: 2px; position: relative; overflow: hidden; margin-top: 4px;
     }
     .ldr-bar-fill {
         height: 100%; background: #0071e3; width: 0;
         border-radius: 2px; position: relative;
-        animation: ldrBarFill 2.7s cubic-bezier(.4,0,.2,1) .15s forwards;
+        /* bar completes in 1.8s — done well before chip finishes at 2.8s */
+        animation: ldrBarFill 1.8s cubic-bezier(.4,0,.2,1) .1s forwards;
     }
     .ldr-bar-fill::after {
         content: ''; position: absolute; top: 0; bottom: 0; width: 50px;
         background: linear-gradient(90deg, transparent, rgba(77,166,255,.7), transparent);
-        animation: ldrShimmer 1.1s ease-in-out .15s infinite;
+        animation: ldrShimmer 0.8s ease-in-out .1s infinite;
     }
     .ldr-status {
-        font-family: 'Courier New', monospace;
-        font-size: clamp(9px, 1.3vw, 12px);
-        color: #1d9e75; letter-spacing: clamp(1px, 0.3vw, 2px); text-transform: uppercase;
+        font-family: 'Play', sans-serif;
+        font-size: clamp(8px, 1.6vw, 11px);
+        color: #1d9e75; letter-spacing: clamp(1px, 0.3vw, 1.5px); text-transform: uppercase;
         white-space: nowrap;
         text-align: center;
+        width: 100%;
         animation: ldrStatusIn .35s cubic-bezier(.4,0,.2,1) forwards;
     }
     </style>
@@ -392,6 +395,64 @@ input:checked + .slider .knob .icon-moon {
     0%   { transform: translate(-50%, -50%) scale(0);   opacity: 0.6; }
     55%  { opacity: 0.2; }
     100% { transform: translate(-50%, -50%) scale(1);   opacity: 0; }
+}
+
+/* ── Scroll progress bar ── */
+#scroll-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    z-index: 99997;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        #0071e3 0%,
+        #4da6ff 40%,
+        #a78bfa 70%,
+        #38bdf8 100%
+    );
+    background-size: 200% 100%;
+    animation: barGradShift 3s linear infinite;
+    transition: width 0.1s linear;
+    will-change: width;
+}
+@keyframes barGradShift {
+    0%   { background-position: 0%   0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* The liquid spill tip */
+#scroll-bar::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: -3px;
+    width: 12px;
+    height: 9px;
+    border-radius: 50% 50% 60% 60% / 40% 40% 60% 60%;
+    background: inherit;
+    filter: blur(1.5px);
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
+}
+/* Drip drop that falls from tip when scrolling */
+#scroll-bar .drip {
+    position: absolute;
+    right: -2px;
+    top: 3px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50% 50% 60% 60%;
+    background: #4da6ff;
+    opacity: 0;
+    pointer-events: none;
+    animation: dripFall 0.6s cubic-bezier(0.4, 0, 0.8, 1) forwards;
+}
+@keyframes dripFall {
+    0%   { transform: translateY(0)   scaleY(1);   opacity: 0.8; }
+    60%  { transform: translateY(8px) scaleY(1.3); opacity: 0.5; }
+    100% { transform: translateY(14px) scaleY(0.6); opacity: 0; }
 }
 
         html { scroll-behavior: smooth; }
@@ -1970,6 +2031,8 @@ img, svg { max-width: 100%; height: auto; }
 </head>
 <body>
 
+<div id="scroll-bar"><span class="drip" id="scroll-drip" style="display:none"></span></div>
+
 <!-- PAGE LOADER — Scan Reveal + Chip Draws Itself + Lock Assembles -->
 <div id="page-loader">
 
@@ -2144,9 +2207,9 @@ img, svg { max-width: 100%; height: auto; }
     </div>
 
     <!-- name + bar -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:9px;position:relative;z-index:2;width:90vw;max-width:340px;text-align:center;overflow:hidden;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:9px;position:relative;z-index:2;width:90vw;max-width:600px;text-align:center;">
         <div class="ldr-name">Jugal Gandhi</div>
-        <div class="ldr-title">PhD Candidate &middot; Hardware Security &middot; CSIR-CEERI</div>
+        <div class="ldr-title">PhD Candidate &nbsp;&middot;&nbsp; Hardware Security &nbsp;&middot;&nbsp; CSIR-CEERI</div>
         <div class="ldr-bar-track">
             <div class="ldr-bar-fill"></div>
         </div>
@@ -3494,7 +3557,7 @@ img, svg { max-width: 100%; height: auto; }
             'Synthesising netlist…',
             '— Ready —'
         ];
-        const statusDelays = [0, 240, 460, 660, 860, 1060, 1380];
+        const statusDelays = [0, 160, 320, 480, 640, 900, 1400];
         const statusEl = document.getElementById('ldr-status');
         statusDelays.forEach((delay, i) => {
             setTimeout(() => {
@@ -3512,11 +3575,11 @@ img, svg { max-width: 100%; height: auto; }
             }, delay);
         });
 
-        // ── 3. Hide loader after 1.8 seconds ──
+        // ── 3. Hide loader after chip animation completes (2.9s) ──
         setTimeout(() => {
             const loader = document.getElementById('page-loader');
             if (loader) loader.classList.add('hidden');
-        }, 1800);
+        }, 2900);
 
         // ── 3b. Profile entrance sequence ──
         setTimeout(() => {
@@ -3558,7 +3621,7 @@ img, svg { max-width: 100%; height: auto; }
                 const h2 = document.getElementById('sidebarSub');
                 if (h2) h2.classList.add('sub-entered');
             }, 1180);
-        }, 1900);
+        }, 3050);
 
         // ── 4. Chatbot buttons ──
         const optionsContainer = document.getElementById('chat-options');
@@ -3580,7 +3643,7 @@ img, svg { max-width: 100%; height: auto; }
                 greeting.classList.add('show');
                 setTimeout(() => { greeting.classList.remove('show'); }, 5000);
             }
-        }, 2500);
+        }, 3800);
 
         // ── 6. Scroll reveal — delayed until AFTER loader hides ──
         setTimeout(() => {
@@ -3601,7 +3664,7 @@ img, svg { max-width: 100%; height: auto; }
             }, { threshold: 0.06, rootMargin: '0px 0px -20px 0px' });
 
             revealEls.forEach(el => revealObserver.observe(el));
-        }, 2000); // 200ms after loader hides
+        }, 3100); // 200ms after loader hides
 
         // ── 7. Dark mode on load ──
         const currentTheme = localStorage.getItem('theme');
@@ -3804,6 +3867,49 @@ img, svg { max-width: 100%; height: auto; }
             if (btnText) btnText.style.transform = 'translate(0,0)';
         });
     }
+
+    // --- SCROLL PROGRESS BAR with liquid drip ---
+    (function() {
+        const bar  = document.getElementById('scroll-bar');
+        if (!bar) return;
+        let lastPct = 0;
+        let dripTimer = null;
+
+        function updateBar() {
+            const doc    = document.documentElement;
+            const scrolled = doc.scrollTop || document.body.scrollTop;
+            const total  = doc.scrollHeight - doc.clientHeight;
+            const pct    = total > 0 ? (scrolled / total) * 100 : 0;
+            bar.style.width = pct + '%';
+
+            // Trigger drip when progress increases
+            if (pct > lastPct + 0.8) {
+                spawnDrip();
+                lastPct = pct;
+            }
+            if (pct < lastPct - 0.5) lastPct = pct; // scrolling up reset
+        }
+
+        function spawnDrip() {
+            clearTimeout(dripTimer);
+            dripTimer = setTimeout(() => {
+                const d = document.createElement('span');
+                d.style.cssText = `
+                    position:absolute; right:-2px; top:3px;
+                    width:4px; height:5px;
+                    border-radius:50% 50% 60% 60%;
+                    background:#4da6ff;
+                    opacity:0; pointer-events:none;
+                    animation:dripFall 0.55s cubic-bezier(0.4,0,0.8,1) forwards;
+                `;
+                bar.appendChild(d);
+                d.addEventListener('animationend', () => d.remove(), { once: true });
+            }, 40);
+        }
+
+        window.addEventListener('scroll', updateBar, { passive: true });
+        updateBar();
+    })();
 
     function toggleMobileNav() {
         const nav = document.getElementById('navMenu');
