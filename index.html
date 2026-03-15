@@ -5,8 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jugal Gandhi | PhD Scholar & Researcher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+    <!-- PAGE LOADER -->
+    <style>
+    #page-loader {
+        position: fixed; inset: 0;
+        background: #f5f5f7;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    [data-theme="dark"] #page-loader { background: #000; }
+    #page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .loader-circuit {
+        width: 80px; height: 80px;
+        position: relative; margin-bottom: 24px;
+    }
+    .loader-circuit svg { width: 100%; height: 100%; }
+    .loader-track { fill: none; stroke: #e0e0e0; stroke-width: 3; }
+    .loader-fill {
+        fill: none; stroke: #0071e3; stroke-width: 3;
+        stroke-linecap: round;
+        stroke-dasharray: 188;
+        stroke-dashoffset: 188;
+        animation: circuit-draw 1.6s cubic-bezier(0.4,0,0.2,1) infinite;
+        transform-origin: center;
+    }
+    .loader-dot {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 12px; height: 12px;
+        background: #0071e3; border-radius: 50%;
+        animation: dot-pulse 1.6s ease-in-out infinite;
+    }
+    .loader-text {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.85rem; font-weight: 500;
+        color: #86868b; letter-spacing: 2px;
+        text-transform: uppercase;
+        animation: text-fade 1.6s ease-in-out infinite;
+    }
+    @keyframes circuit-draw {
+        0%   { stroke-dashoffset: 188; opacity: 1; }
+        80%  { stroke-dashoffset: 0; opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+    @keyframes dot-pulse {
+        0%, 100% { transform: translate(-50%,-50%) scale(0.8); opacity: 0.5; }
+        50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; }
+    }
+    @keyframes text-fade {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
+    }
+    </style>
+
     <style>
         /* --- CSS VARIABLES & RESET --- */
         /* --- THEME VARIABLES & TRANSITIONS --- */
@@ -14,46 +70,48 @@
 /* --- THEME VARIABLES (Updated with Blue Hover) --- */
 :root {
     /* LIGHT MODE COLORS */
-    --bg-color: #f5f5f7;
-    --text-main: #1d1d1f;
-    --text-muted: #86868b;
+    --bg-color: #f0f2f5;
+    --text-main: #1a1a2e;
+    --text-muted: #6b7280;
     --accent: #0071e3;
-    
+    --accent-hover: #0058b0;
+    --blur-strength: 20px;
+    --glass-shadow: 0 4px 20px rgba(0,0,0,0.07);
+
     /* Backgrounds */
-    --sidebar-bg: rgba(255, 255, 255, 0.85);
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.8);
+    --sidebar-bg: rgba(255, 255, 255, 0.92);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(200, 210, 230, 0.55);
     
-    /* HERE IS THE CHANGE: Very Light Blue instead of White */
     --card-hover: rgba(0, 113, 227, 0.04); 
     
     /* Chatbot Specifics (Light) */
-    --chat-bg: rgba(255, 255, 255, 0.65);
-    --chat-header-bg: rgba(255, 255, 255, 0.8);
-    --bot-msg-bg: rgba(255, 255, 255, 0.9);
-    --bot-msg-text: #333;
+    --chat-bg: rgba(255, 255, 255, 0.75);
+    --chat-header-bg: rgba(255, 255, 255, 0.88);
+    --bot-msg-bg: rgba(255, 255, 255, 0.95);
+    --bot-msg-text: #1a1a2e;
 }
 
 /* DARK MODE COLORS */
 [data-theme="dark"] {
-    --bg-color: #000000;
-    --text-main: #f5f5f7;
-    --text-muted: #a1a1a6;
-    --accent: #2997ff;
+    --bg-color: #0a0a0f;
+    --text-main: #e8eaf0;
+    --text-muted: #8892a4;
+    --accent: #4da6ff;
+    --accent-hover: #2997ff;
     
     /* Backgrounds */
-    --sidebar-bg: rgba(28, 28, 30, 0.85);
-    --glass-bg: rgba(28, 28, 30, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.15);
+    --sidebar-bg: rgba(16, 18, 28, 0.95);
+    --glass-bg: rgba(20, 22, 36, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
     
-    /* Dark Mode Hover: Dark Blue tint instead of Grey */
-    --card-hover: rgba(41, 151, 255, 0.1); 
+    --card-hover: rgba(77, 166, 255, 0.08); 
     
     /* Chatbot Specifics (Dark) */
-    --chat-bg: rgba(28, 28, 30, 0.75);
-    --chat-header-bg: rgba(44, 44, 46, 0.9);
-    --bot-msg-bg: rgba(44, 44, 46, 1);
-    --bot-msg-text: #f5f5f7;
+    --chat-bg: rgba(20, 22, 36, 0.85);
+    --chat-header-bg: rgba(28, 30, 48, 0.95);
+    --bot-msg-bg: rgba(30, 33, 55, 1);
+    --bot-msg-text: #e8eaf0;
 }
 
 
@@ -141,11 +199,7 @@ body {
     color: white; /* Always white on hover */
 }
 
-/* 4. Fix Radial Background Gradient in Dark Mode */
-[data-theme="dark"] body::before {
-    /* Dim the background gradient so it doesn't look washed out */
-    opacity: 0.3; 
-}
+/* 4. Fix Radial Background Gradient in Dark Mode - handled in body::before above */
 
 /* SMOOTH TRANSITION FOR EVERYTHING */
 body, .sidebar, .glass-card, .skill-pill, .status-badge, .chat-window, .nav-menu a {
@@ -251,7 +305,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
@@ -264,12 +318,19 @@ input:checked + .slider .icon-moon { opacity: 1; }
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: radial-gradient(circle at 10% 20%, rgba(0,113,227,0.04) 0%, transparent 60%),
-                        radial-gradient(circle at 90% 80%, rgba(0,113,227,0.04) 0%, transparent 60%);
+            background: 
+                radial-gradient(ellipse at 15% 15%, rgba(0,113,227,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 85%, rgba(0,80,180,0.05) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%, rgba(100,149,237,0.03) 0%, transparent 70%);
             z-index: -1;
-            /* Promoting to own layer for GPU acceleration to stop lag */
             transform: translateZ(0);
             pointer-events: none;
+        }
+        [data-theme="dark"] body::before {
+            background:
+                radial-gradient(ellipse at 15% 15%, rgba(77,166,255,0.06) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 85%, rgba(41,151,255,0.04) 0%, transparent 55%);
+            opacity: 1;
         }
 
         /* --- LAYOUT STRUCTURE --- */
@@ -285,10 +346,10 @@ input:checked + .slider .icon-moon { opacity: 1; }
             position: fixed;
             left: 0;
             top: 0;
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--sidebar-bg);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
-            border-right: 1px solid rgba(0,0,0,0.05);
+            border-right: 1px solid var(--glass-border);
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
@@ -369,18 +430,19 @@ input:checked + .slider .icon-moon { opacity: 1; }
             margin-top: auto;
             display: inline-block;
             padding: 10px 25px;
-            background: var(--text-main);
+            background: var(--accent);
             color: white;
             text-decoration: none;
             border-radius: 30px;
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
+            border: none;
         }
         .download-btn:hover {
-            background: var(--accent);
+            background: var(--accent-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,113,227,0.3);
+            box-shadow: 0 6px 16px rgba(0,113,227,0.35);
         }
 
         /* --- MAIN CONTENT --- */
@@ -393,29 +455,41 @@ input:checked + .slider .icon-moon { opacity: 1; }
         section { margin-bottom: 40px; scroll-margin-top: 80px; }
         
         .section-title {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            margin-bottom: 15px;
+            font-family: 'DM Serif Display', Georgia, serif;
+            margin-bottom: 18px;
             color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.3px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+            margin-left: 8px;
         }
 
         /* --- GLASS CARDS --- */
         .glass-card {
             background: var(--glass-bg);
-            border: 1px solid white;
+            border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 15px;
             box-shadow: var(--glass-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
         }
         .glass-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-            background: #ffffff;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.09);
+            background: var(--card-hover);
+        }
+        [data-theme="dark"] .glass-card:hover {
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
         }
 
         /* --- EDUCATION WITH LOGO --- */
@@ -537,7 +611,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 30px;
     
-    color: var(--text-main);
+    color: #1a1a2e;
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
@@ -547,12 +621,27 @@ input:checked + .slider .icon-moon { opacity: 1; }
     box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
+/* Dark mode: darker pill bg, light text */
+[data-theme="dark"] .skill-pill {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e8eaf0;
+}
+
 .skill-pill:hover {
     transform: translateY(-2px) scale(1.02);
     background: #ffffff;
+    color: #1a1a2e;
     box-shadow: 0 8px 20px rgba(0,113,227,0.15); /* Blue glow on hover */
     border-color: var(--accent);
     padding-right: 15px; /* Adjust padding slightly for stars */
+}
+
+[data-theme="dark"] .skill-pill:hover {
+    background: rgba(77, 166, 255, 0.15);
+    color: #e8eaf0;
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(77,166,255,0.2);
 }
 
 /* The Liquid Shine Animation */
@@ -905,22 +994,53 @@ input:checked + .slider .icon-moon { opacity: 1; }
 /* Compact Badge Style */
 .status-badge {
     display: inline-block;
-    width: fit-content;    /* <--- THE MAGIC FIX: Forces it to shrink to text size */
+    width: fit-content;
     background: #eef2f5;
+    color: #444;
     padding: 4px 10px;
     border-radius: 6px;
     
     font-size: 0.7rem;
-    color: #555;
     font-weight: 600;
     letter-spacing: 0.3px;
     text-transform: uppercase;
     
-    white-space: normal;   /* Allows text to wrap if it hits max-width */
-    max-width: 100%;       /* Prevents it from overflowing the card */
+    white-space: normal;
+    max-width: 100%;
     line-height: 1.2;
     text-align: left;
-    margin: 0;             /* Reset margins to handle spacing via parent gap */
+    margin: 0;
+}
+
+[data-theme="dark"] .status-badge {
+    background: rgba(255,255,255,0.08);
+    color: var(--text-muted);
+}
+/* Keep colored badges readable in dark mode */
+[data-theme="dark"] .status-badge[style*="background: #198754"],
+[data-theme="dark"] .status-badge[style*="background:#198754"] {
+    background: rgba(25, 135, 84, 0.3) !important;
+    color: #5dd69c !important;
+}
+[data-theme="dark"] .status-badge[style*="background: #e8f5e9"] {
+    background: rgba(25, 135, 84, 0.15) !important;
+    color: #5dd69c !important;
+}
+[data-theme="dark"] .status-badge[style*="background: #e3f2fd"] {
+    background: rgba(25, 118, 210, 0.2) !important;
+    color: #82b4ff !important;
+}
+[data-theme="dark"] .status-badge[style*="background: #e0f7fa"] {
+    background: rgba(0, 188, 212, 0.15) !important;
+    color: #67e8f9 !important;
+}
+[data-theme="dark"] .status-badge[style*="background: #f3e5f5"] {
+    background: rgba(156, 39, 176, 0.15) !important;
+    color: #d8a4f8 !important;
+}
+[data-theme="dark"] .status-badge[style*="background: #DCFAF6"] {
+    background: rgba(0, 188, 212, 0.15) !important;
+    color: #67e8f9 !important;
 }
 
 /* NEW CLASS: Use this for text-only sections to kill all gaps */
@@ -1080,7 +1200,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
     max-width: 85%;
     line-height: 1.5;
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    border: 1px solid white;
+    border: 1px solid var(--glass-border);
 }
 
 .user-msg {
@@ -1287,13 +1407,23 @@ input:checked + .slider .icon-moon { opacity: 1; }
     opacity: 1;
 }
 
-/* The List Style */
+/* Education & Experience degree badges */
+.role-badge {
+    background: var(--glass-bg);
+    color: var(--text-main);
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    display: inline-block;
+}
+
 .service-list {
     list-style: none;
     padding: 0;
     margin: 0;
     width: 100%;
-    text-align: left; /* Text stays left-aligned for readability */
+    text-align: left;
 }
 
 .service-list li {
@@ -1314,10 +1444,112 @@ input:checked + .slider .icon-moon { opacity: 1; }
     font-weight: bold;
 }
 
+/* --- DATE / MUTED TEXT FIX FOR DARK MODE --- */
+.date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: block;
+}
+[data-theme="dark"] .date[style*="color: #666"] {
+    color: var(--text-muted) !important;
+}
+[data-theme="dark"] [style*="color: #666"] {
+    color: var(--text-muted) !important;
+}
+[data-theme="dark"] [style*="color: #ccc"] {
+    color: rgba(255,255,255,0.2) !important;
+}
+
+/* --- PUB TITLES IN DARK MODE --- */
+[data-theme="dark"] .role-title[style*="color: #000"],
+[data-theme="dark"] .role-title[style*="color:#000"] {
+    color: var(--text-main) !important;
+}
+[data-theme="dark"] [style*="color: #000000"] {
+    color: var(--text-main) !important;
+}
+
+/* --- COMPANY NAME / ROLE TITLE --- */
+.company-name {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+.role-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+/* --- TESTIMONIAL CARD DARK MODE FIX --- */
+.testimonial-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+}
+.t-info h4 { color: var(--text-main); }
+.t-info span { color: var(--text-muted); }
+
+/* --- SCROLL REVEAL ANIMATION --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1),
+                transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- FOOTER FIX --- */
+footer {
+    color: var(--text-muted) !important;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 24px !important;
+}
+
+/* --- GREETING BUBBLE DARK MODE --- */
+[data-theme="dark"] .chat-greeting {
+    background: rgba(28, 30, 48, 0.95);
+    color: var(--text-main);
+    border-color: var(--glass-border);
+}
+
+/* --- LIQUID LINK DARK MODE SHINE FIX --- */
+[data-theme="dark"] .liquid-link::after {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+}
+
+/* --- PROFILE IMAGE RING --- */
+.profile-img {
+    border: 3px solid var(--accent) !important;
+    box-shadow: 0 0 0 4px rgba(0,113,227,0.12), 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* --- SIDEBAR NAME STYLING --- */
+.sidebar h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    letter-spacing: -0.3px;
+}
 
     </style>
 </head>
 <body>
+
+<!-- PAGE LOADER -->
+<div id="page-loader">
+    <div class="loader-circuit">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle class="loader-track" cx="40" cy="40" r="30"/>
+            <circle class="loader-fill" cx="40" cy="40" r="30" transform="rotate(-90 40 40)"/>
+        </svg>
+        <div class="loader-dot"></div>
+    </div>
+    <div class="loader-text">Loading</div>
+</div>
 
 <div class="wrapper">
     <aside class="sidebar">
@@ -1339,7 +1571,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
         <i class="fab fa-github"></i>
     </a>
     
-    <a href="mailto:jugal.gandhi@csir.res.in" title="Email Me">
+    <a href="/cdn-cgi/l/email-protection#62081705030e4c05030c060a0b2201110b104c1007114c0b0c" title="Email Me">
         <i class="fas fa-envelope"></i>
     </a>
 
@@ -1399,7 +1631,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             </div>
             
             <div class="edu-details">
-                <div class="role-title"><span style="background: #eceff1; color: #000000; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid #cfd8dc;">
+                <div class="role-title"><span style="background: var(--glass-bg); color: var(--text-main); font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--glass-border);">
         PhD in Engineering Sciences
     </span> </div>
                 <div class="company-name">Academy of Scientific and Innovative Research (AcSIR)</div>
@@ -1418,7 +1650,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             </div>
             
             <div class="edu-details">
-                <div class="role-title"> <span style="background: #eceff1; color: #000000; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid #cfd8dc;"> MTech in Advance Electronics Engineering </span> </div>
+                <div class="role-title"> <span style="background: var(--glass-bg); color: var(--text-main); font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--glass-border);"> MTech in Advance Electronics Engineering </span> </div>
                 <div class="company-name">Academy of Scientific and Innovative Research (AcSIR)</div>
                 <div class="company-name"> CSIR-CEERI, Pilani (Gov. of India)</div>
                 <span class="date">2020 - 2021</span>
@@ -1435,7 +1667,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             </div>
             
             <div class="edu-details">
-                <div class="role-title"> <span style="background: #eceff1; color: #000000; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid #cfd8dc;">  B.Tech in Electrical Engineering  </span> </div>
+                <div class="role-title"> <span style="background: var(--glass-bg); color: var(--text-main); font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--glass-border);">  B.Tech in Electrical Engineering  </span> </div>
                 <div class="company-name">CHARUSAT University</div>
                 <span class="date">2015 - 2019</span>
                 <!--<p>Graduated with Distinction. Major project on Advanced Power Systems.</p>-->
@@ -1448,7 +1680,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             <h3 class="section-title">Professional Experience</h3>
             
             <div class="glass-card">
-                <div class="role-title">  <span style="background: #eceff1; color: #000000; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid #cfd8dc;"> Senior Research Fellow (GATE) </span> </div>
+                <div class="role-title">  <span style="background: var(--glass-bg); color: var(--text-main); font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--glass-border);"> Senior Research Fellow (GATE) </span> </div>
                 <div class="company-name">CSIR-CEERI/CSIR-HRDG (Gov. of India) Sponsored</div>
                 <span class="date">2022 - 2025</span>
                 <ul>
@@ -1461,7 +1693,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             
             
             <div class="glass-card">
-                <div class="role-title">  <span style="background: #eceff1; color: #000000; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid #cfd8dc;"> Junior Research Fellow (GATE) </span> </div>
+                <div class="role-title">  <span style="background: var(--glass-bg); color: var(--text-main); font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--glass-border);"> Junior Research Fellow (GATE) </span> </div>
                 <div class="company-name">CSIR-CEERI/CSIR-HRDG (Gov. of India) Sponsored</div>
                 <span class="date">2020 - 2022</span>
                 <ul>
@@ -1474,7 +1706,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             
             
             <div class="glass-card">
-                <div class="role-title">  <span style="background: #eceff1; color: #000000; font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid #cfd8dc;"> Graduate Apprentice Trainee </span> </div>
+                <div class="role-title">  <span style="background: var(--glass-bg); color: var(--text-main); font-weight: 700; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--glass-border);"> Graduate Apprentice Trainee </span> </div>
                 <div class="company-name">Space Application Centre (SAC)-ISRO</div>
                 <span class="date">2019 - 2020</span>
                 <ul>
@@ -1622,9 +1854,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
                     <span style="background: rgba(0, 113, 227, 0.1); font-weight: 600; padding: 2px 6px; border-radius: 3px;">Jugal Gandhi</span>, 
                     Diksha Shekhawat, M. Santosh, and Jai Gopal Pandey
                 </div>
-                <div class="date" <span >Filed: 2025</span> <span style="font-style: normal; color: #ccc; margin: 0 8px;">|  Ref: 202501xxxx</span>
-              
-              </div>
+                <div class="date"><span>Filed: 2025</span> <span style="font-style: normal; color: #ccc; margin: 0 8px;">|  Ref: 202501xxxx</span></div>
                 
                 <!-- <div class="paper-summary"> -->
                 <!-- <b>Abstract:</b> Proposed a novel energy-efficient hardware accelerator for CNNs using Time-Domain processing and 2D Operand-as-Address (OaA) architecture to optimize memory access and reduce power consumption. -->
@@ -1643,7 +1873,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             
             <div style="display: flex; gap: 8px; margin-bottom: 5px;">
                 <span class="status-badge">Research Article</span>
-                <span class="status-badge" style="background: #198754; color: white; margin-left: 6px;">SCI Q1 Journal
+                <span class="status-badge" style="background: #198754; color: white; margin-left: 6px;">SCI Q1 Journal</span>
             </div>
             
                 <div class="role-title">Energy and Performance Efficient NAND Flash Translation Layer Architecture for Low-latency Edge Applications.</div>
@@ -1747,7 +1977,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             
             <div style="display: flex; gap: 8px; margin-bottom: 5px;">
                 <span class="status-badge">Research Article</span>
-                <span class="status-badge" style="background: #198754; color: white; margin-left: 6px;">SCI Q1 Journal
+                <span class="status-badge" style="background: #198754; color: white; margin-left: 6px;">SCI Q1 Journal</span>
             </div>
             
                 <div class="role-title">Logic Locking for IP Security: A Comprehensive Analysis on Challenges, Techniques, and Trends</div>
@@ -2277,7 +2507,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
     <div class="listing-item">
         <div class="tight-text-col">
             
-            <span class="status-badge" style="background: #f3e5f5; color: #000000; margin-bottom: 4px;">
+            <span class="status-badge" style="background: #f3e5f5; color: #6a1b9a; margin-bottom: 4px;">
                 University Rank Holder
             </span>
             
@@ -2478,40 +2708,18 @@ input:checked + .slider .icon-moon { opacity: 1; }
             <h3 class="section-title">Let's Connect</h3>
             <div class="glass-card" style="text-align: center;">
                 <p style="margin-bottom: 20px;">Open to research collaborations and R&D opportunities</p>
-                <a href="mailto:jugal.gandhi@csir.res.in" class="download-btn">Send Email</a>
+                <a href="/cdn-cgi/l/email-protection#204a5547414c0e47414e44484960435349520e5245530e494e" class="download-btn">Send Email</a>
             </div>
         </section>
 
-        <footer style="margin-top: 50px; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
-            <p>&copy; 2025 Jugal Gandhi. Hosted on GitHub Pages.</p>
+        <footer style="margin-top: 50px; text-align: center; font-size: 0.8rem;">
+            <p>&copy; 2026 Jugal Gandhi. Hosted on GitHub Pages.</p>
         </footer>
 
     </main>
 </div>
 
-<script>
-    const track = document.getElementById('track');
-    let offset = 0;
-    const cardWidth = 33.333; // Percentage width for desktop
-
-    function rotateTestimonials() {
-        // If on mobile, slide 100%, if desktop slide 33%
-        const isMobile = window.innerWidth <= 900;
-        const slideAmount = isMobile ? 100 : 33.333;
-        
-        offset += slideAmount;
-        
-        // Reset if we've scrolled past the end (rough estimation)
-        if (offset > (slideAmount * 2)) { 
-            offset = 0; 
-        }
-        
-        track.style.transform = `translateX(-${offset}%)`;
-    }
-
-    // Rotate every 4 seconds
-    setInterval(rotateTestimonials, 4000);
-</script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><!-- Carousel handled by universal startCarousel below -->
 
 <script>
     // --- UNIVERSAL CAROUSEL ROTATOR ---
@@ -2594,8 +2802,14 @@ input:checked + .slider .icon-moon { opacity: 1; }
     ];
 
     // INITIALIZATION
-    window.onload = function() {
-        // 1. Load Buttons
+    window.addEventListener('load', function() {
+        // 1. Hide the page loader
+        setTimeout(() => {
+            const loader = document.getElementById('page-loader');
+            if (loader) loader.classList.add('hidden');
+        }, 900);
+
+        // 2. Load Chatbot Buttons
         const optionsContainer = document.getElementById('chat-options');
         if(optionsContainer) {
             optionsContainer.innerHTML = "";
@@ -2608,16 +2822,52 @@ input:checked + .slider .icon-moon { opacity: 1; }
             });
         }
 
-        // 2. Trigger Greeting Animation (1.5s delay)
+        // 3. Trigger Greeting Animation (1.5s delay)
         setTimeout(() => {
             const greeting = document.getElementById('chat-greeting');
             if(greeting) {
                 greeting.classList.add('show');
-                // Hide after 5 seconds
                 setTimeout(() => { greeting.classList.remove('show'); }, 5000);
             }
         }, 1500);
-    };
+
+        // 4. Scroll Reveal: observe all glass-cards and sections
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), i * 60);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.glass-card, .section-title, .service-card').forEach(el => {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        });
+
+        // 5. Apply dark mode on load (before theme toggle script below)
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+                const cb = document.getElementById('checkbox');
+                if (cb) cb.checked = true;
+            }
+        } else {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if(prefersDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const cb = document.getElementById('checkbox');
+                if (cb) cb.checked = true;
+            }
+        }
+        // Update loader bg if dark
+        const loader2 = document.getElementById('page-loader');
+        if (loader2 && document.documentElement.getAttribute('data-theme') === 'dark') {
+            loader2.style.background = '#0a0a0f';
+        }
+    });
 
     function toggleChat() {
         const chatWindow = document.getElementById('chat-window');
@@ -2651,23 +2901,6 @@ input:checked + .slider .icon-moon { opacity: 1; }
     
     // --- DARK MODE LOGIC ---
     
-    // 1. Check for saved user preference on load
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme) {
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') {
-            document.getElementById('checkbox').checked = true;
-        }
-    } else {
-        // Optional: Check system preference (e.g. Mac OS Dark Mode)
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if(prefersDark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('checkbox').checked = true;
-        }
-    }
-
-    // 2. Toggle Function
     function toggleTheme(e) {
         if (e.checked) {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -2677,9 +2910,7 @@ input:checked + .slider .icon-moon { opacity: 1; }
             localStorage.setItem('theme', 'light');
         }
     }
-    
-    
-    
 </script>
+
 </body>
 </html>
