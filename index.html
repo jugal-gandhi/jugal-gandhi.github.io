@@ -334,12 +334,12 @@ body {
 
 /* 4. Fix Radial Background Gradient in Dark Mode - handled in body::before above */
 
-/* SMOOTH TRANSITION FOR EVERYTHING */
-body, .sidebar, .glass-card, .skill-pill, .status-badge, .chat-window, .nav-menu a {
-    transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
-                border-color 0.4s ease,
-                box-shadow 0.4s ease;
+/* SMOOTH TRANSITION FOR THEME CHANGES — explicit props only, no skill-pill (has its own) */
+body, .sidebar, .glass-card, .status-badge, .chat-window, .nav-menu a {
+    transition: background-color 0.35s ease,
+                color 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
 }
 
 /* ═══════════════════════════════
@@ -817,9 +817,9 @@ input:checked + .slider .knob .icon-moon {
         }
 
         @keyframes navGradRotate {
-            0%   { background-position: 0% 50%;   filter: hue-rotate(0deg); }
-            50%  { background-position: 100% 50%; filter: hue-rotate(180deg); }
-            100% { background-position: 0% 50%;   filter: hue-rotate(360deg); }
+            0%   { background-position: 0%   50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0%   50%; }
         }
 
         .download-btn {
@@ -832,7 +832,7 @@ input:checked + .slider .knob .icon-moon {
             border-radius: 30px;
             font-size: 0.85rem;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
             border: none;
         }
         .download-btn:hover {
@@ -893,18 +893,20 @@ input:checked + .slider .knob .icon-moon {
             box-shadow: 0 12px 35px rgba(0,0,0,0.3);
         }
 
-        /* Apple-style radial spotlight on cards */
+        /* Apple-style radial spotlight — only on cards that aren't in long lists */
         .glass-card::after {
             content: '';
             position: absolute;
-            width: 340px;
-            height: 340px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,113,227,0.13) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0,113,227,0.10) 0%, transparent 70%);
             pointer-events: none;
             transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
+            /* visibility:hidden when not hovered = no compositor layer at rest */
             opacity: 0;
+            visibility: hidden;
+            transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0.35s;
             left: var(--mouse-x, 50%);
             top: var(--mouse-y, 50%);
             z-index: 0;
@@ -912,10 +914,16 @@ input:checked + .slider .knob .icon-moon {
         .glass-card:hover::after {
             transform: translate(-50%, -50%) scale(1);
             opacity: 1;
+            visibility: visible;
+            transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0s;
         }
         [data-theme="dark"] .glass-card::after {
-            background: radial-gradient(circle, rgba(77,166,255,0.14) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(77,166,255,0.12) 0%, transparent 70%);
         }
+        /* Disable spotlight on publication cards (too many — compositor overload) */
+        #publications .glass-card::after,
+        #achievements .glass-card::after { display: none; }
+
         /* Ensure card content stays above the glow layer */
         .glass-card > * {
             position: relative;
@@ -1033,84 +1041,84 @@ input:checked + .slider .knob .icon-moon {
     justify-content: center;
     padding: 10px 20px;
     margin: 5px;
-    
-    /* Glass Effect */
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+
+    /* Solid bg — no backdrop-filter (50+ blurring layers = guaranteed lag) */
+    background: rgba(248, 250, 255, 0.92);
+    border: 1px solid rgba(200, 215, 240, 0.6);
     border-radius: 30px;
-    
+
     color: #1a1a2e;
     font-size: 0.9rem;
     font-weight: 500;
-    text-decoration: none;
     cursor: pointer;
-    overflow: hidden; /* Keeps the liquid shine inside */
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    overflow: hidden;
+
+    /* Only compositor-safe props — never transition:all */
+    transition: transform 0.28s cubic-bezier(0.34, 1.3, 0.64, 1),
+                background-color 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    contain: layout style;   /* scopes each pill — prevents layout thrash across 50+ pills */
 }
 
-/* Dark mode: darker pill bg, light text */
+/* Dark mode */
 [data-theme="dark"] .skill-pill {
     background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.11);
     color: #e8eaf0;
 }
 
 .skill-pill:hover {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-2px) scale(1.03);
     background: #ffffff;
     color: #1a1a2e;
-    box-shadow: 0 8px 20px rgba(0,113,227,0.15); /* Blue glow on hover */
     border-color: var(--accent);
-    padding-right: 15px; /* Adjust padding slightly for stars */
+    box-shadow: 0 4px 14px rgba(0,113,227,0.13);
 }
 
 [data-theme="dark"] .skill-pill:hover {
-    background: rgba(77, 166, 255, 0.15);
+    background: rgba(77, 166, 255, 0.13);
     color: #e8eaf0;
     border-color: var(--accent);
-    box-shadow: 0 8px 20px rgba(77,166,255,0.2);
+    box-shadow: 0 4px 14px rgba(77,166,255,0.18);
 }
 
-/* The Liquid Shine Animation */
+/* Shine — use transform:translateX (compositor) not left (layout) */
 .skill-pill::after {
     content: '';
     position: absolute;
-    top: 0; 
-    left: -150%; /* Start far left */
-    width: 100%; 
+    top: 0;
+    left: 0;
+    width: 60%;
     height: 100%;
-    /* The shine gradient */
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-    transform: skewX(-20deg);
-    transition: 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    transform: translateX(-180%) skewX(-20deg);
+    transition: transform 0.55s ease;
     pointer-events: none;
 }
-
 .skill-pill:hover::after {
-    left: 150%; /* Move to far right */
-    transition: 0.7s ease-in-out;
+    transform: translateX(280%) skewX(-20deg);
 }
 
-/* Star Rating Logic */
+/* Star Rating — explicit props only */
 .star-rating {
     max-width: 0;
     opacity: 0;
     overflow: hidden;
     margin-left: 0;
-    color: #f5c518; /* Gold Star Color */
+    color: #f5c518;
     font-size: 0.85rem;
     white-space: nowrap;
-    transition: all 0.4s ease;
+    transition: max-width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
     display: inline-block;
 }
 
 .skill-pill:hover .star-rating {
-    max-width: 100px; /* Expands to show stars */
+    max-width: 100px;
     opacity: 1;
-    margin-left: 10px; /* Space between text and stars */
+    margin-left: 8px;
 }
 
 /* responsive handled by new system above */
@@ -1411,7 +1419,7 @@ input:checked + .slider .knob .icon-moon {
     font-size: 1.6rem;
     cursor: pointer;
     box-shadow: 0 10px 25px rgba(0, 113, 227, 0.4);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     z-index: 1000;
     /* Infinite Pulse Animation */
     animation: pulse-blue 2s infinite;
@@ -1445,7 +1453,7 @@ input:checked + .slider .knob .icon-moon {
     pointer-events: none;
     opacity: 0;
     transform: translateX(10px);
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: opacity 0.4s cubic-bezier(0.68,-0.55,0.27,1.55), transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
     z-index: 999;
 }
 .chat-greeting.show { opacity: 1; transform: translateX(0); }
@@ -1476,7 +1484,7 @@ input:checked + .slider .knob .icon-moon {
     pointer-events: none;
     transform: translateY(20px) scale(0.95);
     transform-origin: bottom right;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: opacity 0.4s cubic-bezier(0.68,-0.55,0.27,1.55), transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
 }
 
 .chat-window.active {
@@ -1650,7 +1658,8 @@ input:checked + .slider .knob .icon-moon {
 
 /* --- SKILL CATEGORY HEADINGS --- */
 .skill-group {
-    margin-bottom: 25px; /* Space between groups */
+    margin-bottom: 25px;
+    contain: layout style; /* prevents one group's layout thrash affecting others */
 }
 
 /* Removes space from the last group so card doesn't look empty at bottom */
@@ -1685,7 +1694,7 @@ input:checked + .slider .knob .icon-moon {
     transform: translateY(-10px); /* Starts slightly moved up */
     
     /* The Magic Animation (Spring Effect) */
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: max-height 0.45s cubic-bezier(0.25,0.8,0.25,1), opacity 0.4s ease, transform 0.4s ease, margin-top 0.4s ease, padding-top 0.4s ease, border-color 0.4s ease;
     
     /* Typography */
     font-size: 0.85rem;
@@ -3491,7 +3500,6 @@ img, svg { max-width: 100%; height: auto; }
 
         <!-- ══ 3D CYLINDER CAROUSEL — Academic Mentors ══ -->
         <!-- ══ ENDORSEMENTS — Infinite Flat Carousel ══ -->
-        <!--These are examples and maiin ones will be added later--> 
         <section id="testimonials">
             <h3 class="section-title">Endorsements from Academic Mentors</h3>
             <div class="cr-scene" id="cr-mentors" tabindex="0">
@@ -3502,7 +3510,7 @@ img, svg { max-width: 100%; height: auto; }
                         <div class="cr-name">Dr. Jai Gopal Pandey</div>
                         <div class="cr-role">Sr. Principal Scientist · CSIR-CEERI, Pilani</div>
                         <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Jugal has demonstrated exceptional depth in hardware security research. His work on the KAVACH framework and IEEE flagship conference contributions reflect a researcher who independently drives ideas from formulation to validation."</p>
+                        <p class="cr-quote">"Jugal has demonstrated exceptional depth in hardware security research. His work on the KAVACH framework and IEEE flagship conference contributions reflect a researcher who independently drives ideas from formulation to silicon-level validation."</p>
                     </div>
                     <div class="cr-card" data-idx="1">
                         <div class="cr-av">JD</div>
@@ -3810,20 +3818,17 @@ img, svg { max-width: 100%; height: auto; }
                     });
                 }
 
-                /* ── 4. Centre a given allCards index without animation ── */
+                /* ── 4. Centre card at allIdx — use real offsetLeft, not computed math ── */
                 function setOffset(allIdx, animate) {
-                    const sw    = stepW();
-                    const wrapW = scene.offsetWidth;
-                    const cw    = cardW();
-                    /* offset so allCards[allIdx] is centred in wrap */
-                    const cardCentre = allIdx * sw + cw / 2;
-                    const offset     = cardCentre - wrapW / 2;
-                    if (animate) {
-                        track.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1)';
-                    } else {
-                        track.style.transition = 'none';
-                    }
-                    track.style.transform = `translate3d(${-offset}px,0,0)`;
+                    const card   = allCards[allIdx];
+                    const cw     = card.offsetWidth;
+                    const wrapW  = scene.offsetWidth;
+                    /* card.offsetLeft is relative to track; we want card centre at scene centre */
+                    const offset = card.offsetLeft + cw / 2 - wrapW / 2;
+                    track.style.transition = animate
+                        ? 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)'
+                        : 'none';
+                    track.style.transform  = `translate3d(${-offset}px,0,0)`;
                 }
 
                 /* ── 5. Update active card highlight ── */
@@ -3838,72 +3843,56 @@ img, svg { max-width: 100%; height: auto; }
                     }
                 }
 
-                /* ── 6. Navigate ── */
+                const DUR = 590; /* slightly > transition duration (550ms) */
+
+                /* ── 6. Navigate to a real card index ── */
                 function goTo(targetCur, fromClick) {
                     if (animating && !fromClick) return;
                     animating = true;
-
-                    const allIdx = targetCur + 1; /* +1 because clone is at index 0 */
-                    setOffset(allIdx, true);
                     cur = targetCur;
+                    setOffset(cur + 1, true);
                     markActive();
-
-                    /* after transition ends, check if we're on a clone */
-                    setTimeout(() => {
-                        animating = false;
-                        /* if we advanced past last real card → jump to first */
-                        if (cur >= N) {
-                            cur = 0;
-                            setOffset(1, false);
-                            markActive();
-                        }
-                        /* if we went before first real card → jump to last */
-                        if (cur < 0) {
-                            cur = N - 1;
-                            setOffset(N, false);
-                            markActive();
-                        }
-                    }, 520); /* slightly longer than transition duration */
+                    setTimeout(() => { animating = false; }, DUR);
                 }
 
+                /* ── 7. Next — slides to next, wraps via clone ── */
                 function next() {
-                    /* Animate to clone-after (index N+1), then instantly jump */
                     if (animating) return;
                     animating = true;
-                    const allIdx = cur + 2; /* cur+1 is current real, +2 is next */
-                    setOffset(allIdx, true);
                     cur = cur + 1;
+                    /* animate to real or clone-after */
+                    const allIdx = cur >= N ? N + 1 : cur + 1;
+                    setOffset(allIdx, true);
                     markActive();
-
                     setTimeout(() => {
                         animating = false;
                         if (cur >= N) {
                             cur = 0;
-                            setOffset(1, false);
+                            setOffset(1, false); /* instant jump to real first */
                             markActive();
                         }
-                    }, 520);
+                    }, DUR);
                 }
 
+                /* ── 8. Prev — slides to prev, wraps via clone ── */
                 function prev() {
                     if (animating) return;
                     animating = true;
-                    const allIdx = cur; /* cur+1-1 = cur = prev */
-                    setOffset(allIdx, true);
                     cur = cur - 1;
+                    const allIdx = cur < 0 ? 0 : cur + 1;
+                    setOffset(allIdx, true);
                     markActive();
-
                     setTimeout(() => {
                         animating = false;
                         if (cur < 0) {
                             cur = N - 1;
-                            setOffset(N, false);
+                            setOffset(N, false); /* instant jump to real last */
                             markActive();
                         }
-                    }, 520);
+                    }, DUR);
                 }
 
-                /* ── 7. Auto-advance ── */
+                /* ── Auto-advance ── */
                 function startAuto() {
                     autoTimer = setInterval(next, autoMs || 4800);
                 }
@@ -3918,7 +3907,7 @@ img, svg { max-width: 100%; height: auto; }
                     if (e.key === 'ArrowLeft')  { stopAuto(); prev(); startAuto(); }
                 });
 
-                /* click side cards */
+                /* click side cards → jump directly */
                 allCards.forEach((c, i) => {
                     c.addEventListener('click', () => {
                         const realIdx = i - 1;
@@ -3928,7 +3917,7 @@ img, svg { max-width: 100%; height: auto; }
                     });
                 });
 
-                /* ── 8. Touch swipe ── */
+                /* touch swipe */
                 let tx0 = 0;
                 scene.addEventListener('touchstart', e => {
                     tx0 = e.touches[0].clientX;
@@ -3942,20 +3931,21 @@ img, svg { max-width: 100%; height: auto; }
                     }
                 });
 
-                /* ── 9. Re-centre on resize (debounced) ── */
+                /* re-centre on resize */
                 let resizeTimer;
                 window.addEventListener('resize', () => {
                     clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(() => {
-                        setOffset(cur + 1, false);
-                    }, 120);
+                    resizeTimer = setTimeout(() => setOffset(cur + 1, false), 120);
                 }, { passive: true });
 
-                /* ── 10. Init ── */
+                /* init — wait for layout then position */
                 requestAnimationFrame(() => {
-                    setOffset(1, false); /* start at first real card, no animation */
-                    markActive();
-                    startAuto();
+                    /* double rAF ensures offsetLeft is measured after flex layout */
+                    requestAnimationFrame(() => {
+                        setOffset(1, false);
+                        markActive();
+                        startAuto();
+                    });
                 });
             }
 
@@ -4481,6 +4471,123 @@ img, svg { max-width: 100%; height: auto; }
             if (btn) btn.innerHTML = '<i class="fas fa-bars"></i> Menu';
         }
     });
+</script>
+
+<!-- ── CURSOR — single rAF loop, transform3d only, zero layout cost ── -->
+<style>
+#jg-cur-ring {
+    position: fixed;
+    top: 0; left: 0;
+    width: 32px; height: 32px;
+    border: 1.5px solid rgba(0, 113, 227, 0.65);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999999;
+    will-change: transform;
+    transform: translate3d(-200px, -200px, 0);
+    /* size + border transitions are cheap — only fire on hover/click class changes */
+    transition: width 0.2s ease, height 0.2s ease,
+                border-color 0.2s ease, opacity 0.3s ease;
+}
+#jg-cur-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 5px; height: 5px;
+    background: var(--accent, #0071e3);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999999;
+    will-change: transform;
+    transform: translate3d(-200px, -200px, 0);
+}
+[data-theme="dark"] #jg-cur-ring {
+    border-color: rgba(77, 166, 255, 0.7);
+}
+[data-theme="dark"] #jg-cur-dot {
+    background: #4da6ff;
+}
+/* Expand ring on hoverable elements */
+#jg-cur-ring.on-link {
+    width: 46px; height: 46px;
+    border-color: rgba(0, 113, 227, 0.9);
+}
+[data-theme="dark"] #jg-cur-ring.on-link {
+    border-color: rgba(77, 166, 255, 1);
+}
+/* Shrink on click */
+#jg-cur-ring.clicking { width: 20px; height: 20px; }
+/* Hide on touch devices */
+@media (pointer: coarse) {
+    #jg-cur-ring, #jg-cur-dot { display: none !important; }
+}
+</style>
+
+<script>
+(function () {
+    /* Only activate on fine-pointer (mouse) devices */
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    /* Respect reduced-motion */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ring = document.createElement('div'); ring.id = 'jg-cur-ring';
+    const dot  = document.createElement('div'); dot.id  = 'jg-cur-dot';
+    document.body.appendChild(ring);
+    document.body.appendChild(dot);
+
+    /* Target mouse position */
+    let mx = -200, my = -200;
+    /* Current ring position (lerped) */
+    let rx = -200, ry = -200;
+    /* rAF handle — only one loop running at a time */
+    let rafId = null;
+
+    const LERP = 0.14; /* lower = more lag/smoothness; 0.14 = natural feel */
+
+    function tick() {
+        /* Lerp ring toward mouse */
+        rx += (mx - rx) * LERP;
+        ry += (my - ry) * LERP;
+
+        /* translate3d — compositor only, zero layout/paint */
+        ring.style.transform = `translate3d(${rx - 16}px, ${ry - 16}px, 0)`;
+        dot.style.transform  = `translate3d(${mx - 2.5}px, ${my - 2.5}px, 0)`;
+
+        /* Keep running while ring hasn't settled */
+        if (Math.abs(rx - mx) > 0.15 || Math.abs(ry - my) > 0.15) {
+            rafId = requestAnimationFrame(tick);
+        } else {
+            rafId = null;
+        }
+    }
+
+    document.addEventListener('mousemove', function (e) {
+        mx = e.clientX;
+        my = e.clientY;
+        /* Start the loop only if not already running */
+        if (!rafId) rafId = requestAnimationFrame(tick);
+    }, { passive: true });
+
+    /* Hide when pointer leaves the window */
+    document.addEventListener('mouseleave', function () {
+        ring.style.opacity = '0';
+        dot.style.opacity  = '0';
+    });
+    document.addEventListener('mouseenter', function () {
+        ring.style.opacity = '1';
+        dot.style.opacity  = '1';
+    });
+
+    /* Click feedback */
+    document.addEventListener('mousedown', function () { ring.classList.add('clicking'); });
+    document.addEventListener('mouseup',   function () { ring.classList.remove('clicking'); });
+
+    /* Expand on interactive elements */
+    const hoverSel = 'a, button, .skill-pill, .glass-card, .cr-card, .chat-btn, .nav-menu a, label';
+    document.querySelectorAll(hoverSel).forEach(function (el) {
+        el.addEventListener('mouseenter', function () { ring.classList.add('on-link'); },    { passive: true });
+        el.addEventListener('mouseleave', function () { ring.classList.remove('on-link'); }, { passive: true });
+    });
+})();
 </script>
 
 </body>
