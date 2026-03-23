@@ -208,7 +208,7 @@
     --text-muted: #6b7280;
     --accent: #0071e3;
     --accent-hover: #0058b0;
-    --blur-strength: 20px;
+    --blur-strength: 12px;
     --glass-shadow: 0 4px 20px rgba(0,0,0,0.07);
 
     /* Backgrounds */
@@ -300,7 +300,8 @@ body {
 /* 3. Fix Chatbot Window */
 .chat-window {
     background: var(--chat-bg) !important;
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
 }
 
@@ -334,12 +335,12 @@ body {
 
 /* 4. Fix Radial Background Gradient in Dark Mode - handled in body::before above */
 
-/* SMOOTH TRANSITION FOR THEME CHANGES — explicit props only, no skill-pill (has its own) */
-body, .sidebar, .glass-card, .status-badge, .chat-window, .nav-menu a {
-    transition: background-color 0.35s ease,
-                color 0.35s ease,
-                border-color 0.35s ease,
-                box-shadow 0.35s ease;
+/* SMOOTH TRANSITION FOR EVERYTHING */
+body, .sidebar, .glass-card, .skill-pill, .status-badge, .chat-window, .nav-menu a {
+    transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                border-color 0.4s ease,
+                box-shadow 0.4s ease;
 }
 
 /* ═══════════════════════════════
@@ -477,8 +478,7 @@ input:checked + .slider .knob .icon-moon {
     height: 9px;
     border-radius: 50% 50% 60% 60% / 40% 40% 60% 60%;
     background: inherit;
-    filter: blur(1.5px);
-    opacity: 0.85;
+    opacity: 0.7;
     transition: opacity 0.15s ease;
 }
 /* Drip drop that falls from tip when scrolling */
@@ -537,6 +537,13 @@ input:checked + .slider .knob .icon-moon {
         .wrapper {
             display: flex;
             min-height: 100vh;
+        }
+
+        /* content-visibility: auto skips paint/layout for offscreen sections — huge win on long pages */
+        /* Applied only to sections that are NOT immediately visible (handled via JS below) */
+        section.jg-cv-auto {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 400px;
         }
 
         /* --- SIDEBAR (Fixed) --- */
@@ -656,11 +663,19 @@ input:checked + .slider .knob .icon-moon {
             font-family: 'DM Sans', sans-serif;
             margin-bottom: 20px;
             line-height: 1.4;
+            /* Start visible — animation handles the entrance, inline style handles permanence */
             opacity: 0;
             transform: translateY(6px);
+            transition: none;
         }
         .sidebar h2.sub-entered {
             animation: subFadeUp 0.4s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        /* After typing completes, this class locks the subtitle permanently visible */
+        .sidebar h2.sub-locked {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            animation: none !important;
         }
         @keyframes subFadeUp { to { opacity: 1; transform: translateY(0); } }
         
@@ -817,9 +832,9 @@ input:checked + .slider .knob .icon-moon {
         }
 
         @keyframes navGradRotate {
-            0%   { background-position: 0%   50%; }
+            0%   { background-position: 0% 50%; }
             50%  { background-position: 100% 50%; }
-            100% { background-position: 0%   50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .download-btn {
@@ -880,9 +895,10 @@ input:checked + .slider .knob .icon-moon {
             padding: 20px;
             margin-bottom: 15px;
             box-shadow: var(--glass-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             position: relative;
             overflow: hidden;
+            contain: layout style;   /* prevents card internals from triggering full-page reflow */
         }
         .glass-card:hover {
             transform: translateY(-3px);
@@ -893,20 +909,18 @@ input:checked + .slider .knob .icon-moon {
             box-shadow: 0 12px 35px rgba(0,0,0,0.3);
         }
 
-        /* Apple-style radial spotlight — only on cards that aren't in long lists */
+        /* Apple-style radial spotlight on cards */
         .glass-card::after {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 340px;
+            height: 340px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,113,227,0.10) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0,113,227,0.13) 0%, transparent 70%);
             pointer-events: none;
             transform: translate(-50%, -50%) scale(0);
-            /* visibility:hidden when not hovered = no compositor layer at rest */
+            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
             opacity: 0;
-            visibility: hidden;
-            transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0.35s;
             left: var(--mouse-x, 50%);
             top: var(--mouse-y, 50%);
             z-index: 0;
@@ -914,16 +928,10 @@ input:checked + .slider .knob .icon-moon {
         .glass-card:hover::after {
             transform: translate(-50%, -50%) scale(1);
             opacity: 1;
-            visibility: visible;
-            transition: transform 0.35s ease, opacity 0.35s ease, visibility 0s 0s;
         }
         [data-theme="dark"] .glass-card::after {
-            background: radial-gradient(circle, rgba(77,166,255,0.12) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(77,166,255,0.14) 0%, transparent 70%);
         }
-        /* Disable spotlight on publication cards (too many — compositor overload) */
-        #publications .glass-card::after,
-        #achievements .glass-card::after { display: none; }
-
         /* Ensure card content stays above the glow layer */
         .glass-card > * {
             position: relative;
@@ -1041,84 +1049,86 @@ input:checked + .slider .knob .icon-moon {
     justify-content: center;
     padding: 10px 20px;
     margin: 5px;
-
-    /* Solid bg — no backdrop-filter (50+ blurring layers = guaranteed lag) */
-    background: rgba(248, 250, 255, 0.92);
-    border: 1px solid rgba(200, 215, 240, 0.6);
+    
+    /* Glass Effect — no backdrop-filter on animating elements (perf) */
+    background: rgba(245, 248, 255, 0.88);
+    border: 1px solid rgba(200, 215, 240, 0.65);
     border-radius: 30px;
-
+    
     color: #1a1a2e;
     font-size: 0.9rem;
     font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
     overflow: hidden;
-
-    /* Only compositor-safe props — never transition:all */
-    transition: transform 0.28s cubic-bezier(0.34, 1.3, 0.64, 1),
-                background-color 0.25s ease,
-                border-color 0.25s ease,
-                box-shadow 0.25s ease;
-
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    contain: layout style;   /* scopes each pill — prevents layout thrash across 50+ pills */
+    /* Only transition cheap compositor properties — never 'all' */
+    transition: transform 0.3s cubic-bezier(0.34,1.35,0.64,1),
+                box-shadow 0.3s ease,
+                background-color 0.3s ease,
+                border-color 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-/* Dark mode */
+/* Dark mode: darker pill bg, light text */
 [data-theme="dark"] .skill-pill {
     background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.11);
+    border-color: rgba(255, 255, 255, 0.12);
     color: #e8eaf0;
 }
 
 .skill-pill:hover {
-    transform: translateY(-2px) scale(1.03);
+    transform: translateY(-2px) scale(1.02);
     background: #ffffff;
     color: #1a1a2e;
+    box-shadow: 0 8px 20px rgba(0,113,227,0.15); /* Blue glow on hover */
     border-color: var(--accent);
-    box-shadow: 0 4px 14px rgba(0,113,227,0.13);
+    padding-right: 15px; /* Adjust padding slightly for stars */
 }
 
 [data-theme="dark"] .skill-pill:hover {
-    background: rgba(77, 166, 255, 0.13);
+    background: rgba(77, 166, 255, 0.15);
     color: #e8eaf0;
     border-color: var(--accent);
-    box-shadow: 0 4px 14px rgba(77,166,255,0.18);
+    box-shadow: 0 8px 20px rgba(77,166,255,0.2);
 }
 
-/* Shine — use transform:translateX (compositor) not left (layout) */
+/* The Liquid Shine Animation */
 .skill-pill::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 60%;
+    top: 0; 
+    left: -150%; /* Start far left */
+    width: 100%; 
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
-    transform: translateX(-180%) skewX(-20deg);
-    transition: transform 0.55s ease;
+    /* The shine gradient */
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+    transform: skewX(-20deg);
+    transition: 0.5s;
     pointer-events: none;
 }
+
 .skill-pill:hover::after {
-    transform: translateX(280%) skewX(-20deg);
+    left: 150%; /* Move to far right */
+    transition: 0.7s ease-in-out;
 }
 
-/* Star Rating — explicit props only */
+/* Star Rating Logic */
 .star-rating {
     max-width: 0;
     opacity: 0;
     overflow: hidden;
     margin-left: 0;
-    color: #f5c518;
+    color: #f5c518; /* Gold Star Color */
     font-size: 0.85rem;
     white-space: nowrap;
-    transition: max-width 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+    transition: max-width 0.35s ease, opacity 0.35s ease, margin-left 0.35s ease;
     display: inline-block;
 }
 
 .skill-pill:hover .star-rating {
-    max-width: 100px;
+    max-width: 100px; /* Expands to show stars */
     opacity: 1;
-    margin-left: 8px;
+    margin-left: 10px; /* Space between text and stars */
 }
 
 /* responsive handled by new system above */
@@ -1419,7 +1429,7 @@ input:checked + .slider .knob .icon-moon {
     font-size: 1.6rem;
     cursor: pointer;
     box-shadow: 0 10px 25px rgba(0, 113, 227, 0.4);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s cubic-bezier(0.25,0.8,0.25,1), box-shadow 0.25s ease;
     z-index: 1000;
     /* Infinite Pulse Animation */
     animation: pulse-blue 2s infinite;
@@ -1453,7 +1463,7 @@ input:checked + .slider .knob .icon-moon {
     pointer-events: none;
     opacity: 0;
     transform: translateX(10px);
-    transition: opacity 0.4s cubic-bezier(0.68,-0.55,0.27,1.55), transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
+    transition: opacity 0.45s cubic-bezier(0.68,-0.55,0.27,1.55), transform 0.45s cubic-bezier(0.68,-0.55,0.27,1.55);
     z-index: 999;
 }
 .chat-greeting.show { opacity: 1; transform: translateX(0); }
@@ -1463,28 +1473,29 @@ input:checked + .slider .knob .icon-moon {
     position: fixed;
     bottom: 100px;
     right: 30px;
-    width: 350px; /* Slightly wider */
-    height: 480px; /* Taller */
-    
-    /* ULTRA GLASS EFFECT */
-    background: rgba(255, 255, 255, 0.65); /* Very transparent */
-    backdrop-filter: blur(25px) saturate(180%); /* Strong blur + vivid colors */
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    width: 350px;
+    height: 480px;
+
+    /* Glass Effect — reduced blur for perf */
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 24px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.1);
     z-index: 1000;
-    
+
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    
-    /* Spring Animation */
+
+    /* Spring Animation — explicit props only, never transition:all */
     opacity: 0;
     pointer-events: none;
     transform: translateY(20px) scale(0.95);
     transform-origin: bottom right;
-    transition: opacity 0.4s cubic-bezier(0.68,-0.55,0.27,1.55), transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
+    transition: opacity 0.42s cubic-bezier(0.68,-0.55,0.27,1.55),
+                transform 0.42s cubic-bezier(0.68,-0.55,0.27,1.55);
 }
 
 .chat-window.active {
@@ -1658,8 +1669,7 @@ input:checked + .slider .knob .icon-moon {
 
 /* --- SKILL CATEGORY HEADINGS --- */
 .skill-group {
-    margin-bottom: 25px;
-    contain: layout style; /* prevents one group's layout thrash affecting others */
+    margin-bottom: 25px; /* Space between groups */
 }
 
 /* Removes space from the last group so card doesn't look empty at bottom */
@@ -1693,8 +1703,9 @@ input:checked + .slider .knob .icon-moon {
     overflow: hidden;
     transform: translateY(-10px); /* Starts slightly moved up */
     
-    /* The Magic Animation (Spring Effect) */
-    transition: max-height 0.45s cubic-bezier(0.25,0.8,0.25,1), opacity 0.4s ease, transform 0.4s ease, margin-top 0.4s ease, padding-top 0.4s ease, border-color 0.4s ease;
+    transition: max-height 0.45s cubic-bezier(0.25,0.8,0.25,1),
+                opacity 0.4s ease,
+                transform 0.4s cubic-bezier(0.25,0.8,0.25,1);
     
     /* Typography */
     font-size: 0.85rem;
@@ -2006,18 +2017,13 @@ footer {
 }
 .cf-status.success { color: #1d9e75; }
 .cf-status.error   { color: #e74c3c; }
-.reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.section-title.reveal { transform: translateY(16px); }
-.section-title.reveal.visible { transform: translateY(0); }
-.service-card.reveal { transform: translateY(28px) scale(0.975); }
-.service-card.reveal.visible { transform: translateY(0) scale(1); }
+/* Old reveal system — neutralised; new jg-reveal handles everything */
+.reveal { opacity: 1 !important; transform: none !important; transition: none !important; will-change: auto !important; }
+.reveal.visible { opacity: 1; transform: none; }
+.section-title.reveal { transform: none; }
+.section-title.reveal.visible { transform: none; }
+.service-card.reveal { transform: none; }
+.service-card.reveal.visible { transform: none; }
 @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
@@ -2471,7 +2477,7 @@ img, svg { max-width: 100%; height: auto; }
             <h3 class="section-title">About Me</h3>
             <div class="glass-card">
                 <p>
-                    Hardware security researcher with 5+ years of experience in secure RTL design, root-of-trust, and obfuscation-based IP protection. Proven contributions in algorithmic and structural attack-resilient hardware IPs, CAD framework (KAVACH), cryptographic architectures, and security-driven ASIC/FPGA flows. Skilled in attack surface evaluation and reduction using formal and simulation-based methods. Development of a security-aware RTL-to-GDSII flow with optimized PPA-security tradeoffs, supported by contributions in flagship international conferences. Citations: 60 | H-index: 4
+                    Hardware security researcher with 5+ years of experience in secure RTL design, root-of-trust, and obfuscation-based IP protection. Proven contributions in algorithmic and structural attack-resilient hardware IPs, CAD framework (KAVACH), cryptographic architectures, and security-driven ASIC/FPGA flows. Skilled in attack surface evaluation and reduction using formal and simulation-based methods. Development of a security-aware RTL-to-GDSII flow with optimized PPA-security tradeoffs, supported by contributions in flagship international conferences.
                 </p>
             </div>
         </section>
@@ -2568,80 +2574,134 @@ img, svg { max-width: 100%; height: auto; }
 
 <section id="skills">
     <h3 class="section-title">Skills & Expertise</h3>
-    
+
     <div class="glass-card">
-        
+
+        <!-- HDL -->
         <div class="skill-group">
-            <span class="skill-category">Hardware Descriptive Languages</span>
+            <span class="skill-category"><i class="fas fa-code" style="margin-right:6px;color:var(--accent);"></i>Hardware Description Languages</span>
             <div>
-                <div class="skill-pill">
-                    <span>VHDL</span>
-                    <span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
-                </div>
-                <div class="skill-pill">
-                    <span>Verilog</span>
-                    <span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
-                </div>
+                <div class="skill-pill"><span>VHDL</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></div>
+                <div class="skill-pill"><span>Verilog</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></div>
+                <!--<div class="skill-pill"><span>SystemVerilog</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>-->
             </div>
         </div>
 
+        <!-- Scripting -->
         <div class="skill-group">
-            <span class="skill-category">Scripting & High-Level Languages</span>
+            <span class="skill-category"><i class="fas fa-terminal" style="margin-right:6px;color:var(--accent);"></i>Scripting & Programming Languages</span>
             <div>
-                <div class="skill-pill">
-                    <span>Python</span>
-                    <span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
-                </div>
-                <div class="skill-pill">
-                    <span>TCL</span>
-                    <span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span>
-                </div>
-                <div class="skill-pill">
-                    <span>C / Embedded C</span>
-                    <span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span>
-                </div>
+                <div class="skill-pill"><span>Python</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></div>
+                <div class="skill-pill"><span>TCL Scripting</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>
+                <div class="skill-pill"><span>C / Embedded C</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>
+                <div class="skill-pill"><span>MATLAB</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span></div>
+                <div class="skill-pill"><span>Bash / Shell</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span></div>
             </div>
         </div>
 
+        <!-- Research Domain -->
         <div class="skill-group">
-            <span class="skill-category">Synopsys EDA Tools</span>
+            <span class="skill-category"><i class="fas fa-shield-alt" style="margin-right:6px;color:var(--accent);"></i>Research Domains</span>
+            <div>
+                <div class="skill-pill"><span>Hardware Security</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></div>
+                <div class="skill-pill"><span>Logic Locking / Obfuscation</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></div>
+                <div class="skill-pill"><span>Post-Quantum Cryptography</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>
+                <!--<div class="skill-pill"><span>Hardware Trojans</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>-->
+                <div class="skill-pill"><span>Cryptographic Hardware</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>
+                <div class="skill-pill"><span>IP Protection</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></span></div>
+                <div class="skill-pill"><span>Boolean SAT / UNSAT Attack</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span></div>
+                <div class="skill-pill"><span>Side-Channel Analysis</span><span class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></span></div>
+            </div>
+        </div>
+
+        <!-- Synopsys EDA -->
+        <div class="skill-group">
+            <span class="skill-category"><i class="fas fa-drafting-compass" style="margin-right:6px;color:var(--accent);"></i>Synopsys EDA Tools</span>
             <div>
                 <div class="skill-pill"><span>Design Compiler</span></div>
                 <div class="skill-pill"><span>IC Compiler II</span></div>
                 <div class="skill-pill"><span>StarRC</span></div>
                 <div class="skill-pill"><span>PrimeTime-PX</span></div>
+                <!--<div class="skill-pill"><span>Synopsys VCS</span></div>-->
+                <!--<div class="skill-pill"><span>Formality</span></div>-->
             </div>
         </div>
 
+        <!-- FPGA & Sim Tools -->
         <div class="skill-group">
-            <span class="skill-category">FPGA & Simulation Tools</span>
+            <span class="skill-category"><i class="fas fa-microchip" style="margin-right:6px;color:var(--accent);"></i>FPGA & Simulation Tools</span>
             <div>
                 <div class="skill-pill"><span>Xilinx Vivado</span></div>
                 <div class="skill-pill"><span>Xilinx ISE</span></div>
+                <!--<div class="skill-pill"><span>Intel Quartus Prime</span></div>-->
                 <div class="skill-pill"><span>ModelSim</span></div>
-                <div class="skill-pill"><span>MATLAB</span></div>
+                <div class="skill-pill"><span>QuestaSim</span></div>
                 <div class="skill-pill"><span>ABC Compiler</span></div>
+                <div class="skill-pill"><span>Yosys</span></div>
+                <!--<div class="skill-pill"><span>GTKWave</span></div>-->
             </div>
         </div>
 
+        <!-- FPGA Boards -->
         <div class="skill-group">
-            <span class="skill-category">FPGA Prototyping Boards</span>
+            <span class="skill-category"><i class="fas fa-server" style="margin-right:6px;color:var(--accent);"></i>FPGA Prototyping Platforms</span>
             <div>
-                <div class="skill-pill"><span>Zynq Ultrascale+</span></div>
+                <div class="skill-pill"><span>Zynq UltraScale+</span></div>
                 <div class="skill-pill"><span>Virtex-7</span></div>
                 <div class="skill-pill"><span>Virtex-5</span></div>
-                <div class="skill-pill"><span>Zybo</span></div>
+                <!--<div class="skill-pill"><span>Zybo Z7</span></div>-->
                 <div class="skill-pill"><span>Boolean Board</span></div>
+                <!--<div class="skill-pill"><span>Artix-7</span></div>-->
             </div>
         </div>
 
+        <!-- IC Design Flow -->
         <div class="skill-group">
-            <span class="skill-category">Technologies & Misc</span>
+            <span class="skill-category"><i class="fas fa-project-diagram" style="margin-right:6px;color:var(--accent);"></i>VLSI / IC Design Flow</span>
+            <div>
+                <div class="skill-pill"><span>RTL Design</span></div>
+                <div class="skill-pill"><span>Logic Synthesis</span></div>
+                <div class="skill-pill"><span>STA (Static Timing Analysis)</span></div>
+                <div class="skill-pill"><span>Place & Route</span></div>
+                <!--<div class="skill-pill"><span>DRC / LVS</span></div>-->
+                <div class="skill-pill"><span>Power Analysis</span></div>
+                <div class="skill-pill"><span>Netlist Analysis</span></div>
+                <div class="skill-pill"><span>Functional Verification</span></div>
+            </div>
+        </div>
+
+        <!-- PDKs / Process Nodes -->
+        <div class="skill-group">
+            <span class="skill-category"><i class="fas fa-atom" style="margin-right:6px;color:var(--accent);"></i>Process Technologies</span>
             <div>
                 <div class="skill-pill"><span>TSMC 28nm</span></div>
-                <div class="skill-pill"><span>UMC 65nm</span></div>
+                <div class="skill-pill"><span>UMC 28nm</span></div>
+                <div class="skill-pill"><span>SCL 180nm</span></div>
+                <div class="skill-pill"><span>FreePDK 45nm</span></div>
+                <!--<div class="skill-pill"><span>Sky130 PDK</span></div>-->
+            </div>
+        </div>
+
+        <!-- AI/ML -->
+        <div class="skill-group">
+            <span class="skill-category"><i class="fas fa-brain" style="margin-right:6px;color:var(--accent);"></i>AI / ML & LLM Integration</span>
+            <div>
+                <div class="skill-pill"><span>ML for Hardware Security</span></div>
+                <div class="skill-pill"><span>Neural Network Accelerators</span></div>
+                <div class="skill-pill"><span>LLM-driven Design</span></div>
+                <div class="skill-pill"><span>Scikit-learn</span></div>
+                <div class="skill-pill"><span>TensorFlow (basic)</span></div>
+            </div>
+        </div>
+
+        <!-- Academic & Doc -->
+        <div class="skill-group">
+            <span class="skill-category"><i class="fas fa-pen-nib" style="margin-right:6px;color:var(--accent);"></i>Academic & Documentation</span>
+            <div>
                 <div class="skill-pill"><span>LaTeX Typesetting</span></div>
-                <div class="skill-pill"><span>Academic Writing</span></div>
+                <div class="skill-pill"><span>Academic Research Writing</span></div>
+                <div class="skill-pill"><span>Patent Writing</span></div>
+                <div class="skill-pill"><span>Peer Review</span></div>
             </div>
         </div>
 
@@ -3498,463 +3558,126 @@ img, svg { max-width: 100%; height: auto; }
         <!--    </a>-->
         <!--</section>-->
 
-        <!-- ══ 3D CYLINDER CAROUSEL — Academic Mentors ══ -->
-        <!-- ══ ENDORSEMENTS — Infinite Flat Carousel ══ -->
         <section id="testimonials">
             <h3 class="section-title">Endorsements from Academic Mentors</h3>
-            <div class="cr-scene" id="cr-mentors" tabindex="0">
-                <div class="cr-track" id="crt-mentors">
-                    <!-- cards duplicated at start/end for seamless infinite loop via JS cloning -->
-                    <div class="cr-card" data-idx="0">
-                        <div class="cr-av">JGP</div>
-                        <div class="cr-name">Dr. Jai Gopal Pandey</div>
-                        <div class="cr-role">Sr. Principal Scientist · CSIR-CEERI, Pilani</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Jugal has demonstrated exceptional depth in hardware security research. His work on the KAVACH framework and IEEE flagship conference contributions reflect a researcher who independently drives ideas from formulation to silicon-level validation."</p>
+            
+            <div class="testimonials-wrapper">
+                <div class="testimonials-track" id="track">
+                    
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Dr. Jai Gopal Pandey</h4>
+                                <span>Sr. Principal Scientist, CSIR-CEERI</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"Jugal has a rare ability to handle high-level theory and low-level hardware implementation."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="1">
-                        <div class="cr-av">JD</div>
-                        <div class="cr-name">Dr. Jaya Dofe</div>
-                        <div class="cr-role">Professor · Cal State Fullerton, USA</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"His ability to engage with international research problems, present at IEEE ISCAS London, and co-author across institutions speaks to both his technical maturity and collaborative nature. He will be a strong asset to any research group."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Dr. Jaya Dofe</h4>
+                                <span>Prof, CUSF, USA</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"His work on SARTHI was pivotal in meeting our strict security benchmarks."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="2">
-                        <div class="cr-av">MS</div>
-                        <div class="cr-name">Mr. M. Santosh</div>
-                        <div class="cr-role">Sr. Principal Scientist · CSIR-CEERI, Pilani</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Working alongside Jugal over several years, his meticulous approach to RTL design and understanding of security vulnerabilities at the netlist level has directly strengthened our group's research output. He takes ownership of problems and sees them through."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Mr. M. Santosh</h4>
+                                <span>Sr. Principal Scientist, CSIR-CEERI</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"An innovative thinker who is always ready to tackle complex FPGA challenges."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="3">
-                        <div class="cr-av">NP</div>
-                        <div class="cr-name">Prof. (Dr.) Nilay Patel</div>
-                        <div class="cr-role">Head, Dept. of EE · CHARUSAT University</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Jugal was among the most driven students I have mentored at CHARUSAT. Securing 3rd University Rank across multiple semesters while showing genuine curiosity in hardware design — his PhD trajectory has fully validated that potential."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Prof. (Dr.) Nilay Patel</h4>
+                                <span>Dept Head (EE), CHARUSAT University</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"Jugal's dedication to hardware security research is truly commendable."</p> -->
                     </div>
+                    
+
                 </div>
-                <div class="cr-dots" id="crd-mentors"></div>
             </div>
         </section>
-
+        
         <section id="testimonials_Mentees">
             <h3 class="section-title">Testimonials from Mentees and Fellow Researchers</h3>
-            <div class="cr-scene" id="cr-peers" tabindex="0">
-                <div class="cr-track" id="crt-peers">
-                    <div class="cr-card" data-idx="0">
-                        <div class="cr-av">DS</div>
-                        <div class="cr-name">Diksha Shekhawat</div>
-                        <div class="cr-role">Senior Researcher · AcSIR, CSIR-CEERI</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Jugal brings clarity and structure to complex research problems. He has a rare ability to translate advanced security concepts into concrete hardware implementations, and is genuinely generous in guiding junior researchers. Collaborating with him has significantly shaped my own research approach."</p>
+            
+            <div class="testimonials-wrapper">
+                <div class="testimonials-track" id="track-mentees">
+                    
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Diksha Shekhawat</h4>
+                                <span>Senior Researcher, AcSIR, CSIR-CEERI</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"Jugal has a rare ability to handle high-level theory and low-level hardware implementation."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="1">
-                        <div class="cr-av">NH</div>
-                        <div class="cr-name">Nikhil Handa</div>
-                        <div class="cr-role">Engineer · Nvidia Inc.</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Working with Jugal on logic locking research gave me a strong foundation in hardware security. His systematic approach to evaluating attacks and defenses shaped how I now approach problems in industry. His mentorship was formative."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Nikhil Handa</h4>
+                                <span>Nvidia Inc.</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"His work on SARTHI was pivotal in meeting our strict security benchmarks."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="2">
-                        <div class="cr-av">AN</div>
-                        <div class="cr-name">Abhay Nayak</div>
-                        <div class="cr-role">Engineer · AMD Inc.</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Jugal's deep knowledge of FPGA flows and RTL security made our collaboration on SHAKTI both rigorous and insightful. He has an exceptional ability to explain complex ideas with clarity and precision."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Abhay Nayak</h4>
+                                <span>AMD Inc.</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"An innovative thinker who is always ready to tackle complex FPGA challenges."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="3">
-                        <div class="cr-av">RA</div>
-                        <div class="cr-name">Rishi Agrawal</div>
-                        <div class="cr-role">Engineer · Apple Inc.</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Jugal's mentorship during our research collaboration was invaluable. His attention to correctness in both theory and implementation, and his patient guidance through difficult problems, is something I carry into my work every day."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Rishi Agrawal</h4>
+                                <span>Apple Inc.</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"Jugal's dedication to hardware security research is truly commendable."</p> -->
                     </div>
-                    <div class="cr-card" data-idx="4">
-                        <div class="cr-av">AM</div>
-                        <div class="cr-name">Anil Mall</div>
-                        <div class="cr-role">Researcher · Auburn University, USA</div>
-                        <div class="cr-stars"><span></span><span></span><span></span><span></span><span></span></div>
-                        <p class="cr-quote">"Collaborating with Jugal on SAT attack analysis was a genuinely enriching experience. His command over logic locking literature and ability to bridge theory with experimental results is remarkable."</p>
+
+                    <div class="testimonial-card">
+                        <div class="t-header">
+                            <img src="https://via.placeholder.com/45" class="t-photo-small">
+                            <div class="t-info">
+                                <h4>Anil Mall</h4>
+                                <span>Researcher at Auburn University</span>
+                            </div>
+                        </div>
+                        <!-- <p class="t-text">"Great collaborator and excellent at debugging complex VHDL code."</p> -->
                     </div>
+
                 </div>
-                <div class="cr-dots" id="crd-peers"></div>
             </div>
         </section>
-
-        <style>
-        /* ─────────────────────────────────────────────
-           INFINITE CAROUSEL — GPU-safe, responsive
-           Only uses opacity + transform (compositor)
-           No filter, no backdrop-filter, no box-shadows
-           on moving elements
-        ───────────────────────────────────────────── */
-
-        .cr-scene {
-            position: relative;
-            /* edge fade — cheap CSS mask, no GPU layer */
-            -webkit-mask-image: linear-gradient(
-                to right,
-                transparent 0%,
-                #000 16%,
-                #000 84%,
-                transparent 100%
-            );
-            mask-image: linear-gradient(
-                to right,
-                transparent 0%,
-                #000 16%,
-                #000 84%,
-                transparent 100%
-            );
-            overflow: hidden;
-            padding: 8px 0 4px;
-            outline: none;
-        }
-
-        /* track: flex row, no transition — JS uses requestAnimationFrame */
-        .cr-track {
-            display: flex;
-            align-items: flex-start; /* cards align at top, height = tallest visible */
-            gap: clamp(10px, 2vw, 20px);
-            /* transition handled by JS rAF for smooth infinite wrap */
-            will-change: transform;
-        }
-
-        /* ── card sizing — fully responsive via clamp ── */
-        .cr-card {
-            flex: 0 0 clamp(180px, 32vw, 300px);
-            min-height: 0; /* natural height from content */
-
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: clamp(14px, 2.5vw, 22px);
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: clamp(5px, 1vw, 8px);
-
-            /* side cards: dim + scale — compositor-only props */
-            opacity: 0.35;
-            transform: scale(0.87);
-            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34,1.1,0.64,1);
-            cursor: pointer;
-
-            /* prevent layout thrash from content changes */
-            contain: layout style;
-        }
-
-        .cr-card.cr-active {
-            opacity: 1;
-            transform: scale(1);
-            /* border only on active — no box-shadow (GPU-expensive on moving track) */
-            border-color: rgba(77,166,255,0.42);
-            cursor: default;
-        }
-        [data-theme="dark"] .cr-card.cr-active {
-            border-color: rgba(77,166,255,0.5);
-        }
-
-        /* ── avatar ── */
-        .cr-av {
-            width: clamp(36px, 5vw, 48px);
-            height: clamp(36px, 5vw, 48px);
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
-            color: #fff;
-            font-size: clamp(0.65rem, 1.1vw, 0.82rem);
-            font-weight: 700;
-            font-family: 'DM Sans', sans-serif;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .cr-name {
-            font-size: clamp(0.78rem, 1.2vw, 0.9rem);
-            font-weight: 700;
-            color: var(--text-main);
-            line-height: 1.25;
-        }
-        .cr-role {
-            font-size: clamp(0.6rem, 0.9vw, 0.68rem);
-            color: var(--accent);
-            font-weight: 500;
-            line-height: 1.4;
-        }
-        .cr-quote {
-            font-size: clamp(0.68rem, 1vw, 0.75rem);
-            color: var(--text-muted);
-            font-style: italic;
-            line-height: 1.62;
-            margin: 0;
-            text-align: center;
-        }
-
-        /* ── animated 5 stars ── */
-        .cr-stars {
-            display: flex;
-            justify-content: center;
-            gap: 3px;
-            margin-bottom: 2px;
-        }
-        .cr-stars span {
-            font-size: clamp(11px, 1.5vw, 14px);
-            line-height: 1;
-            opacity: 0;
-            transform: scale(0.3) translateY(5px);
-            transition: opacity 0.3s ease,
-                        transform 0.35s cubic-bezier(0.34,1.5,0.64,1);
-        }
-        .cr-stars span::before { content: '★'; color: #f59e0b; }
-        .cr-stars span:nth-child(1) { transition-delay: 0.00s; }
-        .cr-stars span:nth-child(2) { transition-delay: 0.06s; }
-        .cr-stars span:nth-child(3) { transition-delay: 0.12s; }
-        .cr-stars span:nth-child(4) { transition-delay: 0.18s; }
-        .cr-stars span:nth-child(5) { transition-delay: 0.24s; }
-        .cr-card.cr-active .cr-stars span {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-        .cr-card:not(.cr-active) .cr-stars span {
-            transition-delay: 0s !important;
-        }
-        @keyframes starWave {
-            0%,100% { color: #f59e0b; }
-            50%      { color: #fcd34d; text-shadow: 0 0 5px rgba(245,158,11,0.45); }
-        }
-        .cr-card.cr-active .cr-stars span::before {
-            animation: starWave 2.2s ease-in-out infinite;
-        }
-        .cr-card.cr-active .cr-stars span:nth-child(1)::before { animation-delay: 0.00s; }
-        .cr-card.cr-active .cr-stars span:nth-child(2)::before { animation-delay: 0.18s; }
-        .cr-card.cr-active .cr-stars span:nth-child(3)::before { animation-delay: 0.36s; }
-        .cr-card.cr-active .cr-stars span:nth-child(4)::before { animation-delay: 0.54s; }
-        .cr-card.cr-active .cr-stars span:nth-child(5)::before { animation-delay: 0.72s; }
-
-        /* ── dots ── */
-        .cr-dots {
-            display: flex;
-            justify-content: center;
-            gap: 7px;
-            padding: 14px 0 4px;
-        }
-        .cr-dot {
-            height: 5px;
-            border-radius: 3px;
-            background: var(--glass-border);
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            transition: width 0.28s ease, background 0.28s ease;
-            width: 5px;
-        }
-        .cr-dot.on { width: 20px; background: var(--accent); }
-
-        @media (max-width: 600px) {
-            .cr-card { flex: 0 0 clamp(160px, 72vw, 230px); }
-        }
-        </style>
-
-        <script>
-        (function () {
-            'use strict';
-
-            /*
-              Infinite carousel algorithm:
-              - Clone first and last N cards and prepend/append them
-              - On reaching a clone, instantly (no animation) jump to the real card
-              - This gives the illusion of infinite scroll with no jitter
-              - Track moves via CSS transition on transform (compositor-only)
-              - rAF only used for the instant-jump (single frame, no loop)
-            */
-
-            function buildCarousel(trackId, dotsId, autoMs) {
-                const track = document.getElementById(trackId);
-                const scene = track && track.closest('.cr-scene');
-                const dotsEl = document.getElementById(dotsId);
-                if (!track || !scene) return;
-
-                const origCards = Array.from(track.querySelectorAll('.cr-card'));
-                const N = origCards.length;
-                if (N < 2) return;
-
-                /* ── 1. Clone first + last card for infinite wrap ── */
-                const cloneBefore = origCards[N - 1].cloneNode(true);
-                const cloneAfter  = origCards[0].cloneNode(true);
-                cloneBefore.setAttribute('aria-hidden', 'true');
-                cloneAfter.setAttribute('aria-hidden', 'true');
-                track.insertBefore(cloneBefore, origCards[0]);
-                track.appendChild(cloneAfter);
-
-                /* All cards (including clones) */
-                const allCards = Array.from(track.querySelectorAll('.cr-card'));
-                /* real cards start at index 1 (clone occupies index 0) */
-
-                /* ── 2. Card & gap width helpers ── */
-                function cardW()  { return allCards[1].offsetWidth; }
-                function gapW()   {
-                    const style = window.getComputedStyle(track);
-                    return parseInt(style.gap || style.columnGap || '16', 10);
-                }
-                function stepW()  { return cardW() + gapW(); }
-
-                /* current = index into origCards (0-based) */
-                let cur = 0;
-                let animating = false;
-                let autoTimer;
-
-                /* ── 3. Dots ── */
-                if (dotsEl) {
-                    dotsEl.innerHTML = '';
-                    origCards.forEach((_, i) => {
-                        const d = document.createElement('button');
-                        d.className = 'cr-dot';
-                        d.setAttribute('aria-label', 'Card ' + (i + 1));
-                        d.addEventListener('click', () => goTo(i));
-                        dotsEl.appendChild(d);
-                    });
-                }
-
-                /* ── 4. Centre card at allIdx — use real offsetLeft, not computed math ── */
-                function setOffset(allIdx, animate) {
-                    const card   = allCards[allIdx];
-                    const cw     = card.offsetWidth;
-                    const wrapW  = scene.offsetWidth;
-                    /* card.offsetLeft is relative to track; we want card centre at scene centre */
-                    const offset = card.offsetLeft + cw / 2 - wrapW / 2;
-                    track.style.transition = animate
-                        ? 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)'
-                        : 'none';
-                    track.style.transform  = `translate3d(${-offset}px,0,0)`;
-                }
-
-                /* ── 5. Update active card highlight ── */
-                function markActive() {
-                    /* real cards: allCards[1] … allCards[N] */
-                    allCards.forEach((c, i) => {
-                        c.classList.toggle('cr-active', i === cur + 1);
-                    });
-                    if (dotsEl) {
-                        dotsEl.querySelectorAll('.cr-dot').forEach((d, i) =>
-                            d.classList.toggle('on', i === cur));
-                    }
-                }
-
-                const DUR = 590; /* slightly > transition duration (550ms) */
-
-                /* ── 6. Navigate to a real card index ── */
-                function goTo(targetCur, fromClick) {
-                    if (animating && !fromClick) return;
-                    animating = true;
-                    cur = targetCur;
-                    setOffset(cur + 1, true);
-                    markActive();
-                    setTimeout(() => { animating = false; }, DUR);
-                }
-
-                /* ── 7. Next — slides to next, wraps via clone ── */
-                function next() {
-                    if (animating) return;
-                    animating = true;
-                    cur = cur + 1;
-                    /* animate to real or clone-after */
-                    const allIdx = cur >= N ? N + 1 : cur + 1;
-                    setOffset(allIdx, true);
-                    markActive();
-                    setTimeout(() => {
-                        animating = false;
-                        if (cur >= N) {
-                            cur = 0;
-                            setOffset(1, false); /* instant jump to real first */
-                            markActive();
-                        }
-                    }, DUR);
-                }
-
-                /* ── 8. Prev — slides to prev, wraps via clone ── */
-                function prev() {
-                    if (animating) return;
-                    animating = true;
-                    cur = cur - 1;
-                    const allIdx = cur < 0 ? 0 : cur + 1;
-                    setOffset(allIdx, true);
-                    markActive();
-                    setTimeout(() => {
-                        animating = false;
-                        if (cur < 0) {
-                            cur = N - 1;
-                            setOffset(N, false); /* instant jump to real last */
-                            markActive();
-                        }
-                    }, DUR);
-                }
-
-                /* ── Auto-advance ── */
-                function startAuto() {
-                    autoTimer = setInterval(next, autoMs || 4800);
-                }
-                function stopAuto() { clearInterval(autoTimer); }
-
-                scene.addEventListener('mouseenter', stopAuto);
-                scene.addEventListener('mouseleave', startAuto);
-                scene.addEventListener('focusin',    stopAuto);
-                scene.addEventListener('focusout',   startAuto);
-                scene.addEventListener('keydown', e => {
-                    if (e.key === 'ArrowRight') { stopAuto(); next(); startAuto(); }
-                    if (e.key === 'ArrowLeft')  { stopAuto(); prev(); startAuto(); }
-                });
-
-                /* click side cards → jump directly */
-                allCards.forEach((c, i) => {
-                    c.addEventListener('click', () => {
-                        const realIdx = i - 1;
-                        if (realIdx >= 0 && realIdx < N && realIdx !== cur) {
-                            stopAuto(); goTo(realIdx, true); startAuto();
-                        }
-                    });
-                });
-
-                /* touch swipe */
-                let tx0 = 0;
-                scene.addEventListener('touchstart', e => {
-                    tx0 = e.touches[0].clientX;
-                }, { passive: true });
-                scene.addEventListener('touchend', e => {
-                    const dx = e.changedTouches[0].clientX - tx0;
-                    if (Math.abs(dx) > 36) {
-                        stopAuto();
-                        dx < 0 ? next() : prev();
-                        startAuto();
-                    }
-                });
-
-                /* re-centre on resize */
-                let resizeTimer;
-                window.addEventListener('resize', () => {
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(() => setOffset(cur + 1, false), 120);
-                }, { passive: true });
-
-                /* init — wait for layout then position */
-                requestAnimationFrame(() => {
-                    /* double rAF ensures offsetLeft is measured after flex layout */
-                    requestAnimationFrame(() => {
-                        setOffset(1, false);
-                        markActive();
-                        startAuto();
-                    });
-                });
-            }
-
-            window.addEventListener('load', function () {
-                buildCarousel('crt-mentors', 'crd-mentors', 5200);
-                buildCarousel('crt-peers',   'crd-peers',   4600);
-            });
-        })();
-        </script>
+        
 
         <section id="connect">
             <h3 class="section-title">Let's Connect</h3>
@@ -4012,8 +3735,44 @@ img, svg { max-width: 100%; height: auto; }
     </main>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><!-- Carousel handled by universal startCarousel below -->
 
+<script>
+    // --- UNIVERSAL CAROUSEL ROTATOR ---
+    
+    // We define a function so we can reuse it for multiple sliders
+    function startCarousel(trackId) {
+        const track = document.getElementById(trackId);
+        
+        // Safety check: if the ID doesn't exist, stop here
+        if (!track) return;
+
+        let offset = 0;
+
+        function rotate() {
+            // If on mobile, slide 100%, if desktop slide 33%
+            const isMobile = window.innerWidth <= 900;
+            const slideAmount = isMobile ? 100 : 33.333;
+            
+            offset += slideAmount;
+            
+            // Reset if we've scrolled past the end
+            // (Assuming roughly 3 "pages" of content based on your logic)
+            if (offset > (slideAmount * 2)) { 
+                offset = 0; 
+            }
+            
+            track.style.transform = `translateX(-${offset}%)`;
+        }
+
+        // Set the interval for THIS specific track
+        setInterval(rotate, 4000);
+    }
+
+    // --- START BOTH SLIDERS ---
+    startCarousel('track');          // The Mentors Section
+    startCarousel('track-mentees');  // The Mentees Section (New ID)
+</script>
 
 <div id="chat-greeting" class="chat-greeting">
     Hi! I am Jugal's Assistant 👋
@@ -4473,120 +4232,504 @@ img, svg { max-width: 100%; height: auto; }
     });
 </script>
 
-<!-- ── CURSOR — single rAF loop, transform3d only, zero layout cost ── -->
+<!-- ═══════════════════════════════════════════════════════════════
+     PERF-FIRST ANIMATION LAYER
+     — Only opacity + transform (compositor-only, zero reflow)
+     — No backdrop-filter on animating elements
+     — No filter:blur on animating elements
+     — No mix-blend-mode on cursor (causes compositing layer explosion)
+     — Cursor uses transform:translate3d (single compositing layer)
+     — Scroll handler throttled via rAF
+     — IntersectionObserver for ALL scroll effects (no scroll events for reveals)
+     — Tilt uses CSS vars, not inline transform string per frame
+     — Parallax disabled on low-end (navigator.hardwareConcurrency <= 4)
+     ═══════════════════════════════════════════════════════════════ -->
 <style>
-#jg-cur-ring {
+/* ── 1. CUSTOM CURSOR — compositor-only, no mix-blend-mode ── */
+#jg-cursor {
     position: fixed;
     top: 0; left: 0;
-    width: 32px; height: 32px;
-    border: 1.5px solid rgba(0, 113, 227, 0.65);
+    width: 28px; height: 28px;
+    border: 1.5px solid rgba(77,166,255,0.7);
     border-radius: 50%;
     pointer-events: none;
-    z-index: 999999;
+    z-index: 99999;
     will-change: transform;
-    transform: translate3d(-200px, -200px, 0);
-    /* size + border transitions are cheap — only fire on hover/click class changes */
-    transition: width 0.2s ease, height 0.2s ease,
-                border-color 0.2s ease, opacity 0.3s ease;
+    transform: translate3d(-100px,-100px,0);
+    transition: width 0.22s ease, height 0.22s ease, border-color 0.22s ease, opacity 0.3s ease;
+    contain: strict;
 }
-#jg-cur-dot {
+#jg-cursor.hovered { width: 44px; height: 44px; border-color: rgba(77,166,255,1); }
+#jg-cursor.clicked { width: 18px; height: 18px; }
+#jg-dot {
     position: fixed;
     top: 0; left: 0;
     width: 5px; height: 5px;
-    background: var(--accent, #0071e3);
+    background: #4da6ff;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 999999;
+    z-index: 99999;
     will-change: transform;
-    transform: translate3d(-200px, -200px, 0);
+    transform: translate3d(-100px,-100px,0);
+    contain: strict;
 }
-[data-theme="dark"] #jg-cur-ring {
-    border-color: rgba(77, 166, 255, 0.7);
+@media (pointer: coarse) { #jg-cursor, #jg-dot { display: none !important; } }
+
+/* ── 2. SCROLL REVEAL — opacity + translateY ONLY ── */
+.jg-reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1),
+                transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    will-change: opacity, transform;
 }
-[data-theme="dark"] #jg-cur-dot {
-    background: #4da6ff;
+.jg-reveal.jg-in {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: auto;   /* release layer after animation done */
 }
-/* Expand ring on hoverable elements */
-#jg-cur-ring.on-link {
-    width: 46px; height: 46px;
-    border-color: rgba(0, 113, 227, 0.9);
+.jg-reveal-left {
+    opacity: 0;
+    transform: translateX(-22px);
+    transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                transform 0.55s cubic-bezier(0.16,1,0.3,1);
+    will-change: opacity, transform;
 }
-[data-theme="dark"] #jg-cur-ring.on-link {
-    border-color: rgba(77, 166, 255, 1);
+.jg-reveal-left.jg-in {
+    opacity: 1;
+    transform: translateX(0);
+    will-change: auto;
 }
-/* Shrink on click */
-#jg-cur-ring.clicking { width: 20px; height: 20px; }
-/* Hide on touch devices */
-@media (pointer: coarse) {
-    #jg-cur-ring, #jg-cur-dot { display: none !important; }
+.jg-reveal-scale {
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1),
+                transform 0.5s cubic-bezier(0.34,1.35,0.64,1);
+    will-change: opacity, transform;
+}
+.jg-reveal-scale.jg-in {
+    opacity: 1;
+    transform: scale(1);
+    will-change: auto;
+}
+
+/* ── 3. SECTION TITLE REVEAL — opacity+translate, works in all environments ── */
+.section-title.jg-clip {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                transform 0.55s cubic-bezier(0.16,1,0.3,1);
+}
+.section-title.jg-in {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* ── 4. SKILL PILL POP-IN ── */
+.skill-pill {
+    opacity: 0;
+    transform: scale(0.85) translateY(4px);
+    transition: opacity 0.38s ease, transform 0.38s cubic-bezier(0.34,1.35,0.64,1);
+    will-change: opacity, transform;
+}
+.skill-pill.jg-in {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    will-change: auto;
+}
+/* Hover: compositor-only transform, no box-shadow change mid-animation */
+.skill-pill:hover {
+    transform: translateY(-3px) scale(1.07) !important;
+}
+
+/* ── 5. GLASS CARD HOVER — lift + shadow only, no tilt (tilt uses rAF vars) ── */
+.glass-card {
+    transition: transform 0.3s cubic-bezier(0.34,1.3,0.64,1),
+                box-shadow 0.3s ease !important;
+    transform: translateY(0);
+}
+.glass-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.12) !important;
+}
+
+/* ── 6. NAV ACTIVE ── */
+.nav-menu a {
+    transition: background 0.25s ease, color 0.25s ease !important;
+}
+.nav-menu a.jg-active {
+    background: rgba(77,166,255,0.1);
+    border-radius: 8px;
+    color: var(--accent) !important;
+}
+.nav-menu a.jg-active .nav-label {
+    background: linear-gradient(90deg, var(--accent), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ── 7. SOCIAL ICONS ── */
+.social-links a {
+    display: inline-flex;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease !important;
+    will-change: transform;
+}
+.social-links a:hover { transform: translateY(-5px) scale(1.18) !important; }
+
+/* ── 8. LIQUID LINK OVERLAY — cheap opacity only ── */
+.liquid-link { position: relative; overflow: hidden; }
+.liquid-link::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(77,166,255,0.045);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    border-radius: inherit;
+    pointer-events: none;
+}
+.liquid-link:hover::after { opacity: 1; }
+
+/* ── 9. SIDEBAR + MAIN ENTRANCE ── */
+.sidebar {
+    animation: jgSlideLeft 0.65s cubic-bezier(0.16,1,0.3,1) 3s both;
+}
+@keyframes jgSlideLeft {
+    from { opacity:0; transform:translateX(-20px); }
+    to   { opacity:1; transform:translateX(0); }
+}
+.main-content {
+    animation: jgSlideRight 0.65s cubic-bezier(0.16,1,0.3,1) 3.05s both;
+}
+@keyframes jgSlideRight {
+    from { opacity:0; transform:translateX(16px); }
+    to   { opacity:1; transform:translateX(0); }
+}
+
+/* ── 10. SECTION DIVIDER LINE ── */
+.jg-divider {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(77,166,255,0.2), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+}
+.jg-divider.jg-in { transform: scaleX(1); }
+section { position: relative; }
+
+/* ── 11. TYPING CARET ── */
+@keyframes jgBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── 12. LOW-END: disable heavy animations via reduced-motion or low CPU hint ── */
+@media (prefers-reduced-motion: reduce) {
+    .jg-reveal, .jg-reveal-left, .jg-reveal-scale, .skill-pill,
+    .section-title, .sidebar, .main-content {
+        transition: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        clip-path: none !important;
+    }
 }
 </style>
 
 <script>
 (function () {
-    /* Only activate on fine-pointer (mouse) devices */
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    /* Respect reduced-motion */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    'use strict';
 
-    const ring = document.createElement('div'); ring.id = 'jg-cur-ring';
-    const dot  = document.createElement('div'); dot.id  = 'jg-cur-dot';
-    document.body.appendChild(ring);
-    document.body.appendChild(dot);
+    /* ── Detect low-end device ── */
+    const LOW_END = (
+        navigator.hardwareConcurrency <= 2 ||
+        /Android [1-6]\./.test(navigator.userAgent) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
 
-    /* Target mouse position */
-    let mx = -200, my = -200;
-    /* Current ring position (lerped) */
-    let rx = -200, ry = -200;
-    /* rAF handle — only one loop running at a time */
-    let rafId = null;
+    /* ════════════════════════════════════════════
+       1. CUSTOM CURSOR  (single rAF loop, transform3d only)
+    ════════════════════════════════════════════ */
+    if (!LOW_END && window.matchMedia('(pointer:fine)').matches) {
+        const cursor = document.createElement('div'); cursor.id = 'jg-cursor';
+        const dot    = document.createElement('div'); dot.id    = 'jg-dot';
+        document.body.appendChild(cursor);
+        document.body.appendChild(dot);
 
-    const LERP = 0.14; /* lower = more lag/smoothness; 0.14 = natural feel */
+        let mx = -200, my = -200, cx = -200, cy = -200;
+        let running = false;
 
-    function tick() {
-        /* Lerp ring toward mouse */
-        rx += (mx - rx) * LERP;
-        ry += (my - ry) * LERP;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; if (!running) loop(); }, { passive:true });
+        document.addEventListener('mouseleave', () => { cursor.style.opacity='0'; dot.style.opacity='0'; });
+        document.addEventListener('mouseenter', () => { cursor.style.opacity='1'; dot.style.opacity='1'; });
+        document.addEventListener('mousedown',  () => cursor.classList.add('clicked'));
+        document.addEventListener('mouseup',    () => cursor.classList.remove('clicked'));
 
-        /* translate3d — compositor only, zero layout/paint */
-        ring.style.transform = `translate3d(${rx - 16}px, ${ry - 16}px, 0)`;
-        dot.style.transform  = `translate3d(${mx - 2.5}px, ${my - 2.5}px, 0)`;
+        document.querySelectorAll('a,button,.glass-card,.skill-pill,.chat-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
 
-        /* Keep running while ring hasn't settled */
-        if (Math.abs(rx - mx) > 0.15 || Math.abs(ry - my) > 0.15) {
-            rafId = requestAnimationFrame(tick);
-        } else {
-            rafId = null;
+        const LERP = 0.15;
+        function loop() {
+            running = true;
+            cx += (mx - cx) * LERP;
+            cy += (my - cy) * LERP;
+            cursor.style.transform = `translate3d(${cx - 14}px,${cy - 14}px,0)`;
+            dot.style.transform    = `translate3d(${mx - 2.5}px,${my - 2.5}px,0)`;
+            if (Math.abs(cx - mx) > 0.3 || Math.abs(cy - my) > 0.3) {
+                requestAnimationFrame(loop);
+            } else {
+                running = false;
+            }
         }
     }
 
-    document.addEventListener('mousemove', function (e) {
-        mx = e.clientX;
-        my = e.clientY;
-        /* Start the loop only if not already running */
-        if (!rafId) rafId = requestAnimationFrame(tick);
+    /* ════════════════════════════════════════════
+       2. UNIFIED IntersectionObserver SYSTEM
+       One observer per threshold, not per element
+    ════════════════════════════════════════════ */
+    setTimeout(() => {
+
+        /* — Section titles — fade+slide, with iframe/sandbox safety fallback — */
+        const titleEls = Array.from(document.querySelectorAll('.section-title'));
+
+        const titleObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                e.target.classList.add('jg-in');
+                e.target._jgRevealed = true;
+                titleObs.unobserve(e.target);
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px 60px 0px' });
+
+        titleEls.forEach(el => {
+            el.classList.add('jg-clip');
+            titleObs.observe(el);
+        });
+
+        // Safety net: if any title still hidden after 2s (iframe / no scroll room), reveal all
+        setTimeout(() => {
+            titleEls.forEach(el => {
+                if (!el._jgRevealed) {
+                    el.classList.add('jg-in');
+                }
+            });
+        }, 2000);
+
+        /* — Apply content-visibility only to sections below the fold — */
+        const allSections = Array.from(document.querySelectorAll('section'));
+        allSections.forEach((sec, i) => {
+            // Skip first 2 sections (likely in viewport), defer the rest
+            if (i >= 2) sec.classList.add('jg-cv-auto');
+        });
+
+        /* — Section dividers — */
+        const divObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add('jg-in');
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('section').forEach(sec => {
+            const d = document.createElement('div');
+            d.className = 'jg-divider';
+            sec.appendChild(d);
+            divObs.observe(d);
+        });
+
+        /* — Glass cards — stagger by sibling index — */
+        const cardEls = Array.from(document.querySelectorAll('.glass-card'));
+        const cardObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                e.target.classList.add('jg-in');
+                e.target._jgRevealed = true;
+                cardObs.unobserve(e.target);
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px 40px 0px' });
+
+        cardEls.forEach(el => {
+            el.classList.add('jg-reveal');
+            const siblings = Array.from(el.parentElement.children).filter(c => c.classList.contains('glass-card'));
+            const sibIdx = siblings.indexOf(el);
+            el.style.transitionDelay = Math.min(sibIdx * 0.07, 0.28) + 's';
+            cardObs.observe(el);
+        });
+        // Fallback: reveal all hidden cards after 2.5s
+        setTimeout(() => {
+            cardEls.forEach(el => { if (!el._jgRevealed) { el.classList.add('jg-in'); el.style.transitionDelay = '0s'; } });
+        }, 2500);
+
+        /* — Skill pills — per-group stagger — */
+        const pillGroupEls = Array.from(document.querySelectorAll('.skill-group'));
+        pillGroupEls.forEach(group => {
+            const pills = Array.from(group.querySelectorAll('.skill-pill'));
+            let revealed = false;
+            const pillObs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (!e.isIntersecting) return;
+                    revealed = true;
+                    pills.forEach((p, i) => { p.style.transitionDelay = (i * 0.04) + 's'; p.classList.add('jg-in'); });
+                    pillObs.unobserve(e.target);
+                });
+            }, { threshold: 0.05, rootMargin: '0px 0px 40px 0px' });
+            pillObs.observe(group);
+            // Fallback
+            setTimeout(() => { if (!revealed) pills.forEach(p => { p.style.transitionDelay = '0s'; p.classList.add('jg-in'); }); }, 2500);
+        });
+
+        /* — Service cards — */
+        const scEls = Array.from(document.querySelectorAll('.service-card'));
+        const scObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                e.target._jgRevealed = true;
+                e.target.classList.add('jg-in');
+                scObs.unobserve(e.target);
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px 40px 0px' });
+        scEls.forEach((el, i) => {
+            el.classList.add('jg-reveal-scale');
+            el.style.transitionDelay = (i * 0.07) + 's';
+            scObs.observe(el);
+        });
+        setTimeout(() => { scEls.forEach(el => { if (!el._jgRevealed) { el.classList.add('jg-in'); el.style.transitionDelay='0s'; }}); }, 2500);
+
+        /* — Testimonial cards — */
+        const tcEls = Array.from(document.querySelectorAll('.testimonial-card'));
+        const tcObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                e.target._jgRevealed = true;
+                e.target.classList.add('jg-in');
+                tcObs.unobserve(e.target);
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px 40px 0px' });
+        tcEls.forEach((el, i) => {
+            el.classList.add('jg-reveal-left');
+            el.style.transitionDelay = (i * 0.06) + 's';
+            tcObs.observe(el);
+        });
+        setTimeout(() => { tcEls.forEach(el => { if (!el._jgRevealed) { el.classList.add('jg-in'); el.style.transitionDelay='0s'; }}); }, 2500);
+
+    }, 3200);   /* after loader */
+
+
+    /* ════════════════════════════════════════════
+       3. NAV ACTIVE — throttled with rAF
+    ════════════════════════════════════════════ */
+    const sections  = Array.from(document.querySelectorAll('section[id]'));
+    const navLinks  = Array.from(document.querySelectorAll('.nav-menu a[href^="#"]'));
+    let navTicking  = false;
+
+    function markNav() {
+        let cur = '';
+        sections.forEach(s => { if (window.scrollY + 110 >= s.offsetTop) cur = s.id; });
+        navLinks.forEach(a => {
+            const match = a.getAttribute('href') === '#' + cur;
+            a.classList.toggle('jg-active', match);
+        });
+        navTicking = false;
+    }
+    window.addEventListener('scroll', () => {
+        if (!navTicking) { navTicking = true; requestAnimationFrame(markNav); }
     }, { passive: true });
+    markNav();
 
-    /* Hide when pointer leaves the window */
-    document.addEventListener('mouseleave', function () {
-        ring.style.opacity = '0';
-        dot.style.opacity  = '0';
-    });
-    document.addEventListener('mouseenter', function () {
-        ring.style.opacity = '1';
-        dot.style.opacity  = '1';
+
+    /* ════════════════════════════════════════════
+       4. SMOOTH SCROLL for nav links
+    ════════════════════════════════════════════ */
+    navLinks.forEach(a => {
+        a.addEventListener('click', e => {
+            const tgt = document.querySelector(a.getAttribute('href'));
+            if (!tgt) return;
+            e.preventDefault();
+            window.scrollTo({ top: tgt.offsetTop - 20, behavior: 'smooth' });
+        });
     });
 
-    /* Click feedback */
-    document.addEventListener('mousedown', function () { ring.classList.add('clicking'); });
-    document.addEventListener('mouseup',   function () { ring.classList.remove('clicking'); });
 
-    /* Expand on interactive elements */
-    const hoverSel = 'a, button, .skill-pill, .glass-card, .cr-card, .chat-btn, .nav-menu a, label';
-    document.querySelectorAll(hoverSel).forEach(function (el) {
-        el.addEventListener('mouseenter', function () { ring.classList.add('on-link'); },    { passive: true });
-        el.addEventListener('mouseleave', function () { ring.classList.remove('on-link'); }, { passive: true });
-    });
+    /* ════════════════════════════════════════════
+       5. GLASS CARD TILT — rAF-batched, CSS-var approach
+       Only on high-end devices
+    ════════════════════════════════════════════ */
+    if (!LOW_END) {
+        document.querySelectorAll('.glass-card').forEach(card => {
+            let tiltRaf;
+            card.addEventListener('mousemove', e => {
+                if (tiltRaf) return;
+                tiltRaf = requestAnimationFrame(() => {
+                    const r  = card.getBoundingClientRect();
+                    const dx = ((e.clientX - r.left) / r.width  - 0.5) * 6;
+                    const dy = ((e.clientY - r.top)  / r.height - 0.5) * 6;
+                    card.style.transform = `perspective(900px) rotateX(${-dy}deg) rotateY(${dx}deg) translateY(-4px)`;
+                    tiltRaf = null;
+                });
+            }, { passive: true });
+            card.addEventListener('mouseleave', () => {
+                if (tiltRaf) { cancelAnimationFrame(tiltRaf); tiltRaf = null; }
+                card.style.transform = '';
+            });
+        });
+    }
+
+
+    /* ════════════════════════════════════════════
+       6. TYPING EFFECT on sidebar subtitle
+       — Starts at 4500ms (after sub-entered at 4230ms settles)
+       — Text stays permanently after typing ends
+    ════════════════════════════════════════════ */
+    setTimeout(() => {
+        const sub = document.getElementById('sidebarSub');
+        if (!sub || LOW_END) return;
+        const txt = sub.textContent.trim();
+        if (!txt) return;
+
+        // Force visible — override any animation fill or CSS default
+        sub.style.opacity = '1';
+        sub.style.transform = 'translateY(0)';
+        sub.textContent = '';
+        sub.style.borderRight = '2px solid var(--accent)';
+        sub.style.animation = 'jgBlink 0.7s step-end infinite';
+
+        let i = 0;
+        const iv = setInterval(() => {
+            sub.textContent = txt.slice(0, ++i);
+            if (i >= txt.length) {
+                clearInterval(iv);
+                setTimeout(() => {
+                    sub.style.borderRight = 'none';
+                    sub.style.animation = 'none';
+                    // Lock permanently visible — survives theme switches and repaints
+                    sub.classList.add('sub-locked');
+                }, 1400);
+            }
+        }, 45);
+    }, 4500);
+
+
+    /* ════════════════════════════════════════════
+       7. PARALLAX — only on high-end, single rAF loop
+    ════════════════════════════════════════════ */
+    if (!LOW_END && navigator.hardwareConcurrency >= 6) {
+        let pTicking = false;
+        const titles = Array.from(document.querySelectorAll('.section-title'));
+        window.addEventListener('scroll', () => {
+            if (pTicking) return;
+            pTicking = true;
+            requestAnimationFrame(() => {
+                titles.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.bottom > 0 && rect.top < window.innerHeight) {
+                        const shift = (rect.top / window.innerHeight) * 8;
+                        el.style.transform = `translateY(${shift}px)`;
+                    }
+                });
+                pTicking = false;
+            });
+        }, { passive: true });
+    }
+
 })();
 </script>
 
