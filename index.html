@@ -142,7 +142,14 @@ button { font: inherit; color: inherit; }
 /* ============================================================
    SIGNATURE: CROSS FIELD + SIDE RAIL
    ============================================================ */
+/* Scroll scene: the page background shifts tone section by section, the way
+   Apple product pages do. One fixed layer, one colour write per frame. */
+#scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-color: var(--bg); overflow: hidden; }
+#scene-glow { position: absolute; inset: 0; }
+.lite #scene { transition: background-color .7s ease !important; }
+.lite #scene-glow { display: none; }
 #crossfield { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+main section { color: var(--text); }
 .wrapper { position: relative; z-index: 1; }
 
 .rail { position: fixed; right: 26px; top: 16vh; bottom: 16vh; width: 24px; z-index: 50; display: none; }
@@ -158,7 +165,8 @@ button { font: inherit; color: inherit; }
 .rail-tick:hover span, .rail-tick:focus-visible span { opacity: 1; }
 .rail-marker { position: absolute; left: 0; top: 0; width: 23px; height: 23px; margin-top: -11.5px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); display: grid; place-items: center; }
 .rail-marker svg { width: 11px; height: 11px; stroke: var(--accent); fill: none; will-change: transform; }
-.rail-label { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); font-size: .75rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.rail-label { position: absolute; right: 32px; top: 50%; transform: translateY(-50%); font-size: .75rem; font-weight: 600; color: var(--accent); white-space: nowrap; padding: 3px 10px; border-radius: 999px; background: var(--surface-strong); border: 1px solid var(--line); opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+.rail-label.show, .rail:hover .rail-label { opacity: 1; }
 
 #scroll-bar { position: fixed; top: 0; left: 0; height: 2px; width: 100%; z-index: 9998; pointer-events: none; background: linear-gradient(90deg, var(--accent), #4da6ff); transform-origin: 0 50%; transform: scaleX(0); }
 
@@ -299,7 +307,10 @@ section { margin-bottom: clamp(56px,8vw,96px); scroll-margin-top: 28px; }
 
 /* About: first-person prose with inline links */
 .hero { padding-top: clamp(4px,3vh,32px); }
-.hero-title { font-size: clamp(2.1rem,5.2vw,4rem); font-weight: 700; letter-spacing: -.045em; line-height: 1.05; max-width: 16ch; margin-bottom: 26px; }
+.hero-title { font-size: clamp(2.1rem,5.2vw,4rem); font-weight: 700; letter-spacing: -.045em; line-height: 1.08; max-width: 16ch; margin-bottom: 26px; padding-bottom: .06em;
+  background: var(--name-grad); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.launched .hero-title { animation: nameFlow 7s ease 1.2s infinite; }
+.lite .hero-title { animation: none !important; background-position: 30% 50%; }
 .prose { max-width: 68ch; font-size: clamp(1rem,1.25vw,1.1rem); line-height: 1.75; }
 .prose p + p { margin-top: 14px; }
 .prose a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-line); text-decoration-thickness: 1px; text-underline-offset: 3px; transition: text-decoration-color .2s ease; }
@@ -320,8 +331,8 @@ section { margin-bottom: clamp(56px,8vw,96px); scroll-margin-top: 28px; }
 /* Education */
 .edu-list { display: grid; gap: 14px; }
 .edu-item { display: flex; gap: 22px; align-items: stretch; }
-.edu-logo { flex-shrink: 0; width: 104px; border-radius: var(--radius-md); background: #fff; border: 1px solid var(--hairline); display: grid; place-items: center; padding: 10px; }
-.edu-logo img { width: 100%; height: 100%; max-height: 84px; object-fit: contain; }
+.edu-logo { flex-shrink: 0; width: 104px; min-height: 84px; border-radius: var(--radius-md); background: #fff; border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; padding: 10px; overflow: hidden; }
+.edu-logo img { display: block; width: auto; height: auto; max-width: 100%; max-height: 84px; object-fit: contain; }
 .edu-degree { font-weight: 700; font-size: 1.05rem; letter-spacing: -.2px; line-height: 1.35; }
 .edu-note { font-size: .92rem; margin-top: 8px; }
 .edu-note b { font-weight: 600; }
@@ -332,7 +343,7 @@ section { margin-bottom: clamp(56px,8vw,96px); scroll-margin-top: 28px; }
 .tl-item { position: relative; margin-bottom: 16px; }
 .tl-item.has-detail { cursor: default; }
 .tl-item:last-child { margin-bottom: 0; }
-.tl-mark { position: absolute; left: -34px; top: 26px; width: 17px; height: 17px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); display: grid; place-items: center; }
+.tl-mark { position: absolute; left: -34px; top: 26px; width: 17px; height: 17px; border-radius: 50%; background: var(--surface-strong); border: 1px solid var(--accent); display: grid; place-items: center; }
 .tl-mark svg { width: 9px; height: 9px; stroke: var(--accent); fill: none; }
 .tl-item.current .tl-mark { background: var(--accent); }
 .tl-item.current .tl-mark svg { stroke: #fff; }
@@ -354,11 +365,17 @@ section { margin-bottom: clamp(56px,8vw,96px); scroll-margin-top: 28px; }
 .pill.rated { border-color: var(--accent-line); }
 .stars { display: inline-block; max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; margin-left: 0; font-size: .82em; letter-spacing: 1px; color: var(--star-off); transition: max-width .3s ease, opacity .3s ease, margin-left .3s ease; }
 .stars b { color: var(--star); font-weight: 400; }
-.pill:hover .stars, .pill:focus-visible .stars { max-width: 6em; opacity: 1; margin-left: 8px; }
-@media (hover: none) { .stars { max-width: 6em; opacity: 1; margin-left: 7px; } }
+.pill:focus-visible .stars, .pill.show-stars .stars { max-width: 6em; opacity: 1; margin-left: 8px; }
+@media (hover: hover) { .pill:hover .stars { max-width: 6em; opacity: 1; margin-left: 8px; } }
+@media (hover: none) { .pill:hover { border-color: var(--line); color: inherit; } .pill.rated:hover { border-color: var(--accent-line); } .pill.show-stars { border-color: var(--accent); color: var(--accent); } }
 
 /* Publications */
-.pub-filter { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); margin-bottom: 22px; }
+.filters { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 22px; max-width: 100%; }
+.pub-filter { display: inline-flex; flex-wrap: nowrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); max-width: 100%; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+.pub-filter::-webkit-scrollbar { display: none; }
+.pub-filter button { flex-shrink: 0; white-space: nowrap; }
+.pub-filter button[hidden] { display: none; }
+.year-filter button { padding: 6px 14px; font-size: .84rem; }
 .pub-filter button { border: 0; background: transparent; color: var(--muted); padding: 7px 16px; border-radius: 999px; font-size: .87rem; font-weight: 600; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
 .pub-filter button[aria-pressed="true"] { background: var(--accent); color: #fff; }
 .pub-filter small { font-weight: 500; opacity: .75; margin-left: 4px; font-variant-numeric: tabular-nums; }
@@ -414,8 +431,7 @@ a.pub:hover .pub-ext { color: var(--accent); }
 .ach-title { font-weight: 700; letter-spacing: -.2px; line-height: 1.35; }
 .ach p { font-size: .9rem; margin-top: 4px; }
 .service-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,230px),1fr)); gap: 14px; margin-bottom: 14px; }
-.service-logo { height: 38px; width: auto; object-fit: contain; margin-bottom: 14px; filter: grayscale(100%); opacity: .75; transition: filter .3s ease, opacity .3s ease; }
-.service-card:hover .service-logo { filter: none; opacity: 1; }
+.service-logo { height: 38px; width: auto; max-width: 100%; object-fit: contain; margin-bottom: 14px; }
 .panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -.2px; }
 .plain-list { list-style: none; }
 .plain-list li { position: relative; padding-left: 16px; font-size: .9rem; color: var(--muted); margin-bottom: 6px; line-height: 1.45; }
@@ -493,8 +509,6 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
 .lite a.pub:hover { transform: none; box-shadow: none; }
 .lite .chat-btn { box-shadow: none; }
 .lite .chat-window { box-shadow: 0 0 0 1px var(--line); }
-.lite .service-logo { filter: none; opacity: .85; }
-.lite .stars { max-width: 6em; opacity: 1; margin-left: 7px; }
 
 /* ============================================================
    RESPONSIVE
@@ -508,7 +522,7 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
   .main-content { margin-left: 0; }
   #crossfield { opacity: .8; }
 }
-@media (min-width: 600px) and (max-width: 1023px) {
+@media (max-width: 1023px) {
   .sidebar { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "img name theme" "img social toggle" "nav nav nav"; column-gap: 20px; align-items: center; text-align: left; }
   .profile-wrap { grid-area: img; margin: 0; }
   .profile-img { width: 96px; height: 96px; }
@@ -525,7 +539,8 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
   .stat:nth-child(3) { border-left: 0; padding-left: 0; }
   .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
   .edu-item { flex-direction: column; gap: 14px; }
-  .edu-logo { width: 100%; height: 76px; }
+  .edu-logo { width: 100%; height: 84px; min-height: 0; padding: 12px 16px; }
+  .edu-logo img { max-height: 58px; }
   .cf-row { grid-template-columns: 1fr; }
   .pub { padding: 16px; }
   .pub-ext { top: 16px; right: 16px; }
@@ -535,6 +550,47 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
   .tl-mark { left: -26px; }
   .timeline::before { left: 8px; }
   .chip-link { padding: 8px 15px; font-size: .86rem; }
+}
+/* ---------- Phones: compact header, filters that wrap to fit, room for the chat button ---------- */
+@media (max-width: 599px) {
+  .sidebar { grid-template-columns: auto 1fr auto; grid-template-areas: "img name name" "img social social" "toggle toggle theme" "nav nav nav"; column-gap: 14px; row-gap: 6px; padding: 16px max(14px, env(safe-area-inset-left)) 12px; }
+  .profile-img { width: 72px; height: 72px; }
+  .sidebar-name { font-size: 1.2rem; }
+  .sidebar-role { font-size: .82rem; margin: 2px 0 0; }
+  .social-links { gap: 0; margin-left: -8px; }
+  .social-links a { width: 38px; height: 38px; }
+  .mobile-nav-toggle { justify-self: start; margin-top: 4px; }
+  .theme-switch-wrapper { justify-self: end; margin: 4px 0 0; }
+  .nav-menu.open { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 6px; }
+  .nav-menu a { padding: 9px 12px; }
+  .nav-menu a.active::before { display: none; }
+}
+@media (max-width: 640px) {
+  .filters { width: 100%; }
+  .pub-filter { display: flex; flex-wrap: wrap; width: 100%; border-radius: 16px; overflow: visible; }
+  .pub-filter button { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 7px 10px; }
+  .quick-links { gap: 8px; }
+  .quick-links .chip-link { flex: 1 1 auto; justify-content: center; }
+}
+@media (max-width: 1023px) {
+  .main-content { padding-left: max(clamp(16px,5vw,56px), env(safe-area-inset-left)); padding-right: max(clamp(16px,5vw,56px), env(safe-area-inset-right)); }
+}
+@media (max-width: 700px) {
+  .main-content { padding-bottom: 96px; }
+  .chat-btn { width: 50px; height: 50px; transition: transform .3s var(--ease), opacity .3s ease, background-color .2s ease; }
+  .chat-btn.fab-hide { transform: translateY(90px); opacity: 0; pointer-events: none; }
+  .chat-window { bottom: 80px; max-height: calc(100dvh - 110px); }
+}
+/* ---------- Short screens (phones in landscape, small laptops) ---------- */
+@media (max-height: 520px) {
+  #page-loader { gap: 12px; }
+  .ldr-scan-wrap { transform: scale(.6); margin: -44px 0; }
+  .chat-window { height: calc(100dvh - 100px); }
+}
+@media (min-width: 1024px) and (max-height: 700px) {
+  .profile-img { width: 76px; height: 76px; }
+  .nav-menu a { padding: 5px 16px; font-size: .9rem; }
+  .sidebar-role { margin-bottom: 8px; }
 }
 @media (max-width: 380px) {
   .stat { padding: 14px 10px; }
@@ -582,6 +638,7 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
 </svg>
 
 <div id="scroll-bar" aria-hidden="true"></div>
+<div id="scene" aria-hidden="true"><div id="scene-glow"></div></div>
 <canvas id="crossfield" aria-hidden="true"></canvas>
 
 <div id="page-loader" aria-hidden="true">
@@ -689,7 +746,7 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
         <!-- <p>I hold a master's degree in Advanced Electronics Engineering from AcSIR. I also hold a bachelor's degree in Electrical Engineering from <a href="https://www.charusat.ac.in" target="_blank" rel="noopener">CHARUSAT</a>. Before my PhD, I trained as a Graduate Apprentice at the <a href="https://www.sac.gov.in" target="_blank" rel="noopener">Space Applications Centre, ISRO</a>.</p> -->
       </div>
 
-      <h3 class="about-sub rv">Research</h3>
+      <!-- <h3 class="about-sub rv">Research</h3> -->
       <div class="prose rv">
         <p>My research interests lie at the intersection of hardware security, VLSI design, and cryptographic hardware. My research intrest includes developing hardware security techniques and architectures for trustworthy IC design. My work studies both the attack side and the defense side of this problem.</p>
         <!-- <p>On the attack side, I developed ULTRON, an oracle-less structural attack on locked netlists. On the defense side, I proposed <a href="https://ieeexplore.ieee.org/abstract/document/10900634" target="_blank" rel="noopener">SHAKTI</a> and <a href="https://ieeexplore.ieee.org/abstract/document/11043665" target="_blank" rel="noopener">DyLock</a> at the gate level. I also proposed <a href="https://ieeexplore.ieee.org/abstract/document/10509927" target="_blank" rel="noopener">LOKI</a> and <a href="https://link.springer.com/chapter/10.1007/978-981-97-3756-7_16" target="_blank" rel="noopener">LightLock</a> at the register-transfer level. My framework <a href="#publications">KAVACH</a> integrates obfuscation into standard CAD flows. My thesis further covers PUF-based key generation and generative ML-guided locking insertion.</p> -->
@@ -802,7 +859,7 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
     <section id="skills" data-label="Skills">
       <h2 class="section-title rv">Skills and expertise</h2>
       <div class="panel rv">
-        <p class="skill-note">Highlighted skills carry a self-rated proficiency out of five <span class="stars-static" aria-hidden="true">★</span>. Hover or focus a skill to see its rating.</p>
+        <p class="skill-note">Highlighted skills carry a self-rated proficiency out of five <span class="stars-static" aria-hidden="true">★</span>. Hover over or tap a skill to see its rating.</p>
         <div class="skill-grid">
           <div>
             <div class="skill-cat">Hardware description languages</div>
@@ -867,11 +924,14 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
     <!-- PUBLICATIONS -->
     <section id="publications" data-label="Publications">
       <h2 class="section-title rv">Publications and patents</h2>
-      <div class="pub-filter rv" role="group" aria-label="Filter publications">
+      <div class="filters rv">
+      <div class="pub-filter" id="typeFilter" role="group" aria-label="Filter by type">
         <button type="button" data-filter="all" aria-pressed="true">All<small data-n="all"></small></button>
         <button type="button" data-filter="journal" aria-pressed="false">Journals<small data-n="journal"></small></button>
         <button type="button" data-filter="conference" aria-pressed="false">Conferences<small data-n="conference"></small></button>
         <button type="button" data-filter="patent" aria-pressed="false">Patent<small data-n="patent"></small></button>
+      </div>
+      <div class="pub-filter year-filter" id="yearFilter" role="group" aria-label="Filter by year"></div>
       </div>
 
       <div class="pub-list" id="pubList">
@@ -1069,9 +1129,11 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
         <article class="panel ach rv"><span class="badge conf">Research fellowship, 2022 – 2025</span><div class="ach-title">Senior Research Fellowship (GATE)</div><div class="meta">CSIR-Human Resource Development Group</div><div class="reveal-box"><div class="reveal-inner"><p>Awarded after a three-member national expert evaluation for doctoral research at CSIR-CEERI, Pilani.</p></div></div></article>
         <article class="panel ach rv"><span class="badge conf">Research fellowship, 2020 – 2022</span><div class="ach-title">Junior Research Fellowship (GATE)</div><div class="meta">CSIR-Human Resource Development Group</div><div class="reveal-box"><div class="reveal-inner"><p>Awarded to GATE-qualified B.Tech. graduates for research at CSIR laboratories.</p></div></div></article>
         <article class="panel ach rv"><span class="badge flag">Travel grant, 2025</span><div class="ach-title">ANRF International Travel Scheme</div><div class="meta">Anusandhan National Research Foundation, Government of India</div><div class="reveal-box"><div class="reveal-inner"><p>Supported the presentation of peer-reviewed research at IEEE ISCAS 2025, London.</p></div></div></article>
-        <article class="panel ach rv"><span class="badge flag">Travel grants, 2025</span><div class="ach-title">IEEE CASS and IEEE CEDA Student Travel Grants</div><div class="meta">IEEE Circuits and Systems Society; IEEE Council on EDA</div><div class="reveal-box"><div class="reveal-inner"><p>Two independent awards for the presentation of an accepted paper at IEEE ISCAS 2025, London.</p></div></div></article>
+        <article class="panel ach rv"><span class="badge flag">Travel grant, 2025</span><div class="ach-title">IEEE CASS Student Travel Grant</div><div class="meta">IEEE Circuits and Systems Society (CASS)</div><div class="reveal-box"><div class="reveal-inner"><p>Awarded for the presentation of an accepted paper at IEEE ISCAS 2025, London.</p></div></div></article>
+        <article class="panel ach rv"><span class="badge flag">Travel grant, 2025</span><div class="ach-title">IEEE CEDA Student Travel Grant</div><div class="meta">IEEE Council on Electronic Design Automation (CEDA)</div><div class="reveal-box"><div class="reveal-inner"><p>Awarded for the presentation of an accepted paper at IEEE ISCAS 2025, London.</p></div></div></article>
         <article class="panel ach rv"><span class="badge flag">Travel grant, 2023</span><div class="ach-title">IEEE CASS Student Travel Grant</div><div class="meta">IEEE Circuits and Systems Society</div><div class="reveal-box"><div class="reveal-inner"><p>Awarded for IEEE APCCAS 2023, Hyderabad, a Region 10 flagship conference of IEEE CASS.</p></div></div></article>
-        <article class="panel ach rv"><span class="badge flag">Travel grants, 2022 – 2025</span><div class="ach-title">IEEE VLSID and VDAT Travel Grants</div><div class="meta">VLSID 2023, 2024, 2025; VDAT 2022, 2023</div><div class="reveal-box"><div class="reveal-inner"><p>Competitive grants for research presentations at national VLSI conferences.</p></div></div></article>
+        <article class="panel ach rv"><span class="badge flag">Travel grants, 2023 – 2025</span><div class="ach-title">IEEE VLSID Travel Grant</div><div class="meta">International Conference on VLSI Design (VLSID)</div><div class="reveal-box"><div class="reveal-inner"><p>Competitive grants for research presentations at VLSID 2023, 2024, and 2025.</p></div></div></article>
+        <article class="panel ach rv"><span class="badge flag">Travel grants, 2022 – 2023</span><div class="ach-title">VDAT Travel Grant</div><div class="meta">International Symposium on VLSI Design and Test (VDAT)</div><div class="reveal-box"><div class="reveal-inner"><p>Competitive grants for research presentations at VDAT 2022 and 2023.</p></div></div></article>
         <article class="panel ach rv"><span class="badge q2">University rank holder</span><div class="ach-title">3rd University Rank, B.Tech. Electrical Engineering</div><div class="meta">Charotar University of Science and Technology</div><div class="reveal-box"><div class="reveal-inner"><p>Felicitated in Semesters 1, 3, 5, 6, 7, and 8.</p></div></div></article>
       </div>
     </section>
@@ -1251,6 +1313,7 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
       hi = cs.getPropertyValue('--accent').trim();
       queue(true);
     }
+    function setCross(c, h) { if (c !== base || h !== hi) { base = c; hi = h; queue(true); } }
     function size() {
       var dpr = LITE ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       W = innerWidth; H = innerHeight;
@@ -1320,7 +1383,7 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
       document.addEventListener('mouseleave', function () { mx = my = -1e4; queue(false); });
     }
     size(); recolor();
-    return { recolor: recolor, queue: queue };
+    return { recolor: recolor, queue: queue, setCross: setCross };
   })();
 
   /* ---------- Theme ---------- */
@@ -1331,6 +1394,8 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('theme', t); } catch (e) {}
     field.recolor();
+    lastBg = lastGlow = ''; rootCross = '';
+    if (window.__measure) window.__measure();
   });
 
   /* ---------- Rail, active nav, progress bar (one rAF-batched handler) ---------- */
@@ -1340,6 +1405,64 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
   var marker = document.getElementById('railMarker'), railLabel = document.getElementById('railLabel'), railCross = document.getElementById('railCross');
   var bar = document.getElementById('scroll-bar');
   var ticks = [], tops = [], n = sections.length, railH = 0, maxScroll = 1;
+
+  /* Scene palettes: one formal tone per section, matched to its content.
+     [background, glow RGB]. Publications is the dark "stage" (Apple-style). */
+  var PAL = {
+    light: {                                        /* all tints stay light; no dark tones */
+      about:        ['#f0f2f5', '0,113,227'],       /* base canvas, brand blue       */
+      education:    ['#eef1f6', '58,86,170'],       /* academic navy glow            */
+      experience:   ['#edf1f6', '0,113,227'],       /* slate blue, professional      */
+      skills:       ['#eef2f5', '20,110,140'],      /* steel teal, technical         */
+      publications: ['#edf0f7', '30,80,170'],       /* ink-blue glow for the papers  */
+      achievements: ['#f3f2ee', '170,135,60'],      /* ivory with muted gold, awards */
+      service:      ['#eef2f1', '45,120,105'],      /* sage grey, community          */
+      endorsements: ['#f0f0f4', '88,92,150'],       /* slate lavender, voices        */
+      connect:      ['#f0f2f5', '0,113,227']        /* back to base                  */
+    },
+    dark: {                                         /* all tints stay dark           */
+      about:        ['#0a0a0f', '77,166,255'],
+      education:    ['#0a0b12', '100,125,230'],
+      experience:   ['#090c14', '77,166,255'],
+      skills:       ['#090d12', '40,160,190'],
+      publications: ['#0a0c15', '77,166,255'],
+      achievements: ['#0e0d0b', '200,165,85'],
+      service:      ['#090d0c', '60,160,140'],
+      endorsements: ['#0c0b12', '120,124,190'],
+      connect:      ['#0a0a0f', '77,166,255']
+    }
+  };
+  var GLOW_POS = [[18, 14], [84, 22], [20, 72], [80, 62], [50, 28], [16, 44], [86, 74], [30, 82], [70, 20]];
+  var sceneEl = document.getElementById('scene'), glowEl = document.getElementById('scene-glow');
+  var hex = function (h) { return [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)]; };
+  var rgbS = function (s) { return s.split(',').map(Number); };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var mix3 = function (a, b, t) { return [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)]; };
+  var smooth = function (e0, e1, x) { x = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return x * x * (3 - 2 * x); };
+  var lastBg = '', lastGlow = '', rootCross = '', rootAccent = '';
+
+  function paintScene(idx, frac) {
+    var theme = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light', pal = PAL[theme];
+    var a = pal[sections[idx].id] || pal.about, nxt = sections[Math.min(n - 1, idx + 1)];
+    var b = pal[nxt.id] || a;
+    /* hold each tone while reading; blend only as the next section arrives */
+    var t = idx >= n - 1 ? 0 : smooth(0.62, 1, frac);
+    if (LITE) t = t > 0.5 ? 1 : 0;
+    var bg = mix3(hex(a[0]), hex(b[0]), t);
+    var bgStr = 'rgb(' + (bg[0] | 0) + ',' + (bg[1] | 0) + ',' + (bg[2] | 0) + ')';
+    if (bgStr !== lastBg) { sceneEl.style.backgroundColor = bgStr; marker.style.background = bgStr; lastBg = bgStr; }
+    if (!LITE) {
+      var g = mix3(rgbS(a[1]), rgbS(b[1]), t);
+      var p0 = GLOW_POS[idx % GLOW_POS.length], p1 = GLOW_POS[(idx + 1) % GLOW_POS.length];
+      var gx = lerp(p0[0], p1[0], t), gy = lerp(p0[1], p1[1], t);
+      var alpha = theme === 'dark' ? 0.13 : 0.10;
+      var gStr = 'radial-gradient(62% 52% at ' + gx.toFixed(1) + '% ' + gy.toFixed(1) + '%, rgba(' + (g[0] | 0) + ',' + (g[1] | 0) + ',' + (g[2] | 0) + ',' + alpha + ') 0%, rgba(' + (g[0] | 0) + ',' + (g[1] | 0) + ',' + (g[2] | 0) + ',0) 72%)';
+      if (gStr !== lastGlow) { glowEl.style.background = gStr; lastGlow = gStr; }
+    }
+    /* crosses stay visible on both light and dark tones */
+    if (!rootCross) { var cs = getComputedStyle(root); rootCross = cs.getPropertyValue('--cross').trim(); rootAccent = cs.getPropertyValue('--accent').trim(); }
+    field.setCross(rootCross, rootAccent);
+  }
   sections.forEach(function (s, i) {
     var b = document.createElement('button');
     b.className = 'rail-tick'; b.type = 'button';
@@ -1364,6 +1487,10 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
     var f = idx;
     if (!atEnd && idx < n - 1) f += Math.min(1, Math.max(0, (y - tops[idx]) / (tops[idx + 1] - tops[idx])));
     var pct = f / (n - 1);
+    var cy = scrollY + innerHeight * 0.55, si = 0;
+    for (var j = 0; j < n; j++) if (cy >= tops[j]) si = j;
+    var sEnd = si < n - 1 ? tops[si + 1] : root.scrollHeight;
+    paintScene(si, (cy - tops[si]) / Math.max(1, sEnd - tops[si]));
     if (railH) {
       marker.style.transform = 'translateY(' + (pct * railH).toFixed(1) + 'px)';
       railCross.style.transform = 'rotate(' + (pct * 180).toFixed(1) + 'deg)';
@@ -1377,7 +1504,19 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
       navLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + sections[idx].id); });
     }
   }
-  addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  var labelTimer, fabTimer, lastY = scrollY, chatFab = document.getElementById('chatBtn'), smallScreen = matchMedia('(max-width: 700px)');
+  addEventListener('scroll', function () {
+    /* phones: the chat button steps aside while reading downward, returns on scroll-up or pause */
+    if (smallScreen.matches && !document.getElementById('chatWindow').classList.contains('active')) {
+      var yNow = scrollY;
+      if (yNow > lastY + 6) chatFab.classList.add('fab-hide'); else if (yNow < lastY - 6) chatFab.classList.remove('fab-hide');
+      lastY = yNow;
+      clearTimeout(fabTimer); fabTimer = setTimeout(function () { chatFab.classList.remove('fab-hide'); }, 1400);
+    }
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    railLabel.classList.add('show');
+    clearTimeout(labelTimer); labelTimer = setTimeout(function () { railLabel.classList.remove('show'); }, 1100);
+  }, { passive: true });
   var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(measure, 120); }, { passive: true });
   addEventListener('load', measure);
   window.__measure = measure;
@@ -1393,6 +1532,16 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
     navBtn.querySelector('use').setAttribute('href', open ? '#i-close' : '#i-menu');
   });
   navLinks.forEach(function (a) { a.addEventListener('click', function () { if (navMenu.classList.contains('open')) navBtn.click(); }); });
+
+  /* ---------- Skill stars on touch devices: tap to show, tap elsewhere to hide ---------- */
+  if (!matchMedia('(hover: hover)').matches) {
+    var ratedPills = document.querySelectorAll('.pill.rated');
+    document.addEventListener('click', function (e) {
+      var pill = e.target.closest('.pill.rated');
+      Array.prototype.forEach.call(ratedPills, function (p) { if (p !== pill) p.classList.remove('show-stars'); });
+      if (pill) pill.classList.toggle('show-stars');
+    });
+  }
 
   /* ---------- Details dropdown (experience, papers, achievements) ---------- */
   var canHover = matchMedia('(hover: hover)').matches;
@@ -1437,42 +1586,93 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
     rvEls.forEach(function (el) { el.classList.add('in'); });
   }
 
-  /* ---------- Publication counts + filter ---------- */
+  /* ---------- Publication counts + type and year filters ---------- */
   var pubs = Array.prototype.slice.call(document.querySelectorAll('#pubList .pub'));
   var counts = { all: pubs.length, journal: 0, conference: 0, patent: 0 };
-  pubs.forEach(function (p) { counts[p.dataset.kind]++; });
-  document.querySelectorAll('[data-n]').forEach(function (el) { el.textContent = counts[el.dataset.n]; });
-  var empty = document.getElementById('pubEmpty');
-  var fbtns = document.querySelectorAll('.pub-filter button');
-  Array.prototype.forEach.call(fbtns, function (btn) {
-    btn.addEventListener('click', function () {
-      var f = btn.dataset.filter, shown = 0;
-      Array.prototype.forEach.call(fbtns, function (b) { b.setAttribute('aria-pressed', b === btn); });
-      pubs.forEach(function (p) { var show = f === 'all' || p.dataset.kind === f; p.hidden = !show; if (show) { shown++; p.classList.add('in'); } });
-      empty.hidden = shown > 0;
-      measure();
-    });
+  pubs.forEach(function (p) {
+    counts[p.dataset.kind]++;
+    var yr = p.querySelector('.yr'), m = yr ? yr.textContent.match(/(19|20)\d{2}/) : null;
+    p.dataset.year = m ? m[0] : '';
   });
-
-  /* ---------- Stats (static values in HTML stay correct if JS never runs) ---------- */
-  var statEls = document.querySelectorAll('[data-count],[data-years]');
-  function runStats() {
-    statEls.forEach(function (el) {
-      var target = el.dataset.count ? counts[el.dataset.count] : (new Date().getFullYear() - (+el.dataset.years));
-      var suffix = el.dataset.years ? '+' : '';
-      if (RM || LITE) { el.textContent = target + suffix; return; }
-      var t0 = performance.now();
-      (function step(t) {
-        var k = Math.min(1, (t - t0) / 800), e = 1 - Math.pow(1 - k, 3);
-        el.textContent = Math.round(target * e) + (k === 1 ? suffix : '');
-        if (k < 1) requestAnimationFrame(step);
-      })(t0);
+  var empty = document.getElementById('pubEmpty');
+  var typeBtns = Array.prototype.slice.call(document.querySelectorAll('#typeFilter button'));
+  var yearBox = document.getElementById('yearFilter');
+  var curKind = 'all', curYear = 'all';
+  function fits(p, k, y) { return (k === 'all' || p.dataset.kind === k) && (y === 'all' || p.dataset.year === y); }
+  function countOf(k, y) { return pubs.filter(function (p) { return fits(p, k, y); }).length; }
+  function renderYears() {
+    /* only years that hold entries for the chosen type, newest first */
+    var years = [];
+    pubs.forEach(function (p) { if (fits(p, curKind, 'all') && p.dataset.year && years.indexOf(p.dataset.year) < 0) years.push(p.dataset.year); });
+    years.sort(function (a, b) { return b - a; });
+    if (curYear !== 'all' && years.indexOf(curYear) < 0) curYear = 'all';
+    yearBox.innerHTML = '';
+    ['all'].concat(years).forEach(function (y) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.dataset.year = y;
+      b.setAttribute('aria-pressed', y === curYear);
+      b.innerHTML = (y === 'all' ? 'All years' : y) + '<small>' + countOf(curKind, y) + '</small>';
+      b.addEventListener('click', function () { curYear = y; refresh(); });
+      yearBox.appendChild(b);
     });
   }
+  function renderTypes() {
+    typeBtns.forEach(function (b) {
+      var k = b.dataset.filter, c = countOf(k, curYear);
+      b.querySelector('small').textContent = c;
+      b.hidden = k !== 'all' && c === 0;                  /* hide types absent in the chosen year */
+      b.setAttribute('aria-pressed', k === curKind);
+    });
+  }
+  function refresh() {
+    renderYears(); renderTypes();
+    var shown = 0;
+    pubs.forEach(function (p) { var show = fits(p, curKind, curYear); p.hidden = !show; if (show) { shown++; p.classList.add('in'); } });
+    empty.hidden = shown > 0;
+    measure();
+  }
+  typeBtns.forEach(function (b) { b.addEventListener('click', function () { curKind = b.dataset.filter; refresh(); }); });
+  refresh();
+
+  /* ---------- Stats: count up from 1 each time the row comes into view ---------- */
+  var statEls = Array.prototype.slice.call(document.querySelectorAll('[data-count],[data-years]'));
+  /* The numbers typed in the HTML are the targets. Change them there; the counter follows.
+     "Years in research" stays automatic (current year minus data-years). */
+  statEls.forEach(function (el) {
+    var typed = parseInt(el.textContent, 10);
+    if (el.dataset.count) el.dataset.target = isNaN(typed) ? counts[el.dataset.count] : typed;
+  });
+  var statRun = 0;
+  function statTarget(el) { return el.dataset.count ? +el.dataset.target : (new Date().getFullYear() - (+el.dataset.years)); }
+  function statSuffix(el) { return el.dataset.years ? '+' : ''; }
+  function showFinal() { statEls.forEach(function (el) { el.textContent = statTarget(el) + statSuffix(el); }); }
+  function runStats() {
+    if (RM) { showFinal(); return; }
+    var run = ++statRun, t0 = performance.now(), DUR = 1200;
+    (function step(t) {
+      if (run !== statRun) return;                       /* a newer run took over */
+      var k = Math.min(1, (t - t0) / DUR), e = 1 - Math.pow(1 - k, 3);
+      statEls.forEach(function (el) {
+        var target = statTarget(el), v = target <= 1 ? target : Math.max(1, Math.round(1 + (target - 1) * e));
+        el.textContent = v + (k === 1 ? statSuffix(el) : '');
+      });
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  function resetStats() { statRun++; statEls.forEach(function (el) { el.textContent = statTarget(el) <= 1 ? statTarget(el) : 1; }); }
+  function startWhenReady() {                          /* wait for the loader and launch sequence */
+    if (!launched) { setTimeout(startWhenReady, 150); return; }
+    setTimeout(function () { if (statsIn) runStats(); }, 450);
+  }
   if ('IntersectionObserver' in window) {
-    var so = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { runStats(); so.disconnect(); } });
-    so.observe(document.querySelector('.stats'));
-  } else runStats();
+    resetStats();
+    var statsBox = document.querySelector('.stats'), statsIn = false;
+    new IntersectionObserver(function (entries) {
+      var vis = entries[0].isIntersecting;
+      if (vis && !statsIn) { statsIn = true; startWhenReady(); }
+      else if (!vis && statsIn) { statsIn = false; resetStats(); }
+    }, { threshold: 0.35 }).observe(statsBox);
+  } else showFinal();
 
   /* ---------- Carousels ---------- */
   document.querySelectorAll('.carousel').forEach(function (c) {
@@ -1501,12 +1701,14 @@ footer { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 20px;
       .then(function () { btn.disabled = false; label.textContent = 'Send message'; });
   });
 
+  function statNum(k) { var el = document.querySelector('[data-count="' + k + '"]'); return el ? el.dataset.target : counts[k]; }
+
   /* ---------- Chat assistant ---------- */
   var qa = [
     { q: 'Research focus', a: 'My research protects hardware IP with <b>logic locking</b>. It covers oracle-less structural attacks, gate- and RTL-level defenses, PUF-based key generation, ML-guided locking insertion, and CAD-integrated obfuscation.' },
     { q: 'Current role', a: 'I work as a Project Associate-II in the VLSI Design Lab at <b>CSIR-CEERI, Pilani</b>. I am also a final-year PhD candidate at AcSIR, supervised by Dr. Jai Gopal Pandey.' },
     { q: 'Key frameworks', a: '<b>KAVACH</b> (CAD-integrated bit-flip obfuscation), <b>ULTRON</b> (oracle-less attack), <b>DyLock</b> (dynamic-key locking), <b>SHAKTI/SHAKTI+</b> (cascade gated MUX locking), and <b>LOKI</b> (lightweight locking for IoT IPs).' },
-    { q: 'Publications', a: counts.journal + ' journal articles, ' + counts.conference + ' conference papers, and ' + counts.patent + ' Indian patent application. Two more journal articles are in revision. <a href="#publications">View the full list</a>.' },
+    { q: 'Publications', a: statNum('journal') + ' journal articles, ' + statNum('conference') + ' conference papers, and ' + statNum('patent') + ' Indian patent application. Two more journal articles are in revision. <a href="#publications">View the full list</a>.' },
     { q: 'Tools and skills', a: 'VHDL and Verilog, the Synopsys flow (Design Compiler, IC Compiler II, PrimeTime PX, VCS), Xilinx FPGA platforms, Python and TCL, and SAT-based attack evaluation.' },
     { q: 'Contact', a: 'Email <a href="mailto:jugal.gandhi@csir.res.in">jugal.gandhi@csir.res.in</a> or use the <a href="#connect">contact form</a>.' }
   ];
